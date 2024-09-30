@@ -19,10 +19,10 @@ namespace BoardGameNight.Domain
         public required string City { get; set; }
         public required int MaxPlayers { get; set; }
 
-        public ICollection<Person> Attendees { get; set; }
-        public ICollection<Game> Games { get; set; }
+        public ICollection<Person> Attendees { get; set; } = new List<Person>();
+        public ICollection<Game> Games { get; set; } = new List<Game>();
 
-        public ICollection<Review> reviews { get; set; }
+        public ICollection<Review> reviews { get; set; } = new List<Review>();
 
 
     }

@@ -22,5 +22,7 @@ namespace BoardGameNight.Domain
         public required string PostalCode { get; set; }
         public string? City { get; set; }
 
+        public ICollection<GameNight> GameNights { get; set; } = new List<GameNight>();
+
     }
 }

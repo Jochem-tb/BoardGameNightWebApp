@@ -23,5 +23,7 @@ namespace BoardGameNight.Domain
         public int? EstimatedTime { get; set; }
 
         //TODO : Add a property for the image
+
+        public ICollection<GameNight> GameNights { get; set; } = new List<GameNight>();
     }
 }
