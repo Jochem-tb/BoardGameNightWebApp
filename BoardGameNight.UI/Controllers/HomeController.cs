@@ -2,6 +2,7 @@ using BoardGameNight.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
+
 namespace BoardGameNight.Controllers
 {
     public class HomeController : Controller
@@ -20,6 +21,11 @@ namespace BoardGameNight.Controllers
 
         public IActionResult Privacy()
         {
+            //var person = new Person
+            //{
+            //    FirstName = "John",
+            //    LastName = "Doe"
+            //};
             return View();
         }
 

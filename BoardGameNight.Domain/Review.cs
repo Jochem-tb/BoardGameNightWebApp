@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameNight.Domain
 {
-    internal class Review
+    public class Review
     {
         public int Id { get; set; }
         public required string Title { get; set; }
