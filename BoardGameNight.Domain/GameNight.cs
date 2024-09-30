@@ -24,6 +24,8 @@ namespace BoardGameNight.Domain
 
         public ICollection<Review> reviews { get; set; } = new List<Review>();
 
+        public ICollection<FoodOptions> FoodOptions { get; set; } = new List<FoodOptions>();
+
 
     }
 }
