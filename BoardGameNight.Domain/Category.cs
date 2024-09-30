@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BoardGameNight.Domain
 {
-    internal enum Category
+    public enum Category
     {
         Partyspel,
         Rollenspel,
