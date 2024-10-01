@@ -74,21 +74,11 @@ namespace BGN.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("GameNightId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PersonId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("GameNightId");
-
-                    b.HasIndex("PersonId");
 
                     b.ToTable("FoodOptions");
 
@@ -376,6 +366,36 @@ namespace BGN.Infrastructure.Migrations
                     b.ToTable("Reviews");
                 });
 
+            modelBuilder.Entity("FoodOptionsGameNight", b =>
+                {
+                    b.Property<int>("FoodOptionsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("GameNightsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FoodOptionsId", "GameNightsId");
+
+                    b.HasIndex("GameNightsId");
+
+                    b.ToTable("FoodOptionsGameNight");
+                });
+
+            modelBuilder.Entity("FoodOptionsPerson", b =>
+                {
+                    b.Property<int>("PersonsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PreferencesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PersonsId", "PreferencesId");
+
+                    b.HasIndex("PreferencesId");
+
+                    b.ToTable("FoodOptionsPerson");
+                });
+
             modelBuilder.Entity("GameGameNight", b =>
                 {
                     b.Property<int>("GameNightsId")
@@ -406,25 +426,14 @@ namespace BGN.Infrastructure.Migrations
                     b.ToTable("GameNightAttendees");
                 });
 
-            modelBuilder.Entity("BGN.Domain.Entities.FoodOptions", b =>
-                {
-                    b.HasOne("BGN.Domain.Entities.GameNight", null)
-                        .WithMany("FoodOptions")
-                        .HasForeignKey("GameNightId");
-
-                    b.HasOne("BGN.Domain.Entities.Person", null)
-                        .WithMany("Preferences")
-                        .HasForeignKey("PersonId");
-                });
-
             modelBuilder.Entity("BGN.Domain.Entities.Game", b =>
                 {
                     b.HasOne("BGN.Domain.Entities.Category", "category")
-                        .WithMany()
+                        .WithMany("Games")
                         .HasForeignKey("CategoryId");
 
                     b.HasOne("BGN.Domain.Entities.Genre", "Genre")
-                        .WithMany()
+                        .WithMany("Games")
                         .HasForeignKey("GenreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -448,7 +457,7 @@ namespace BGN.Infrastructure.Migrations
             modelBuilder.Entity("BGN.Domain.Entities.Person", b =>
                 {
                     b.HasOne("BGN.Domain.Entities.Gender", "Gender")
-                        .WithMany()
+                        .WithMany("Persons")
                         .HasForeignKey("GenderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -473,6 +482,36 @@ namespace BGN.Infrastructure.Migrations
                     b.Navigation("GameNight");
 
                     b.Navigation("Reviewer");
+                });
+
+            modelBuilder.Entity("FoodOptionsGameNight", b =>
+                {
+                    b.HasOne("BGN.Domain.Entities.FoodOptions", null)
+                        .WithMany()
+                        .HasForeignKey("FoodOptionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BGN.Domain.Entities.GameNight", null)
+                        .WithMany()
+                        .HasForeignKey("GameNightsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("FoodOptionsPerson", b =>
+                {
+                    b.HasOne("BGN.Domain.Entities.Person", null)
+                        .WithMany()
+                        .HasForeignKey("PersonsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BGN.Domain.Entities.FoodOptions", null)
+                        .WithMany()
+                        .HasForeignKey("PreferencesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("GameGameNight", b =>
@@ -505,17 +544,28 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("BGN.Domain.Entities.Category", b =>
+                {
+                    b.Navigation("Games");
+                });
+
             modelBuilder.Entity("BGN.Domain.Entities.GameNight", b =>
                 {
-                    b.Navigation("FoodOptions");
-
                     b.Navigation("reviews");
+                });
+
+            modelBuilder.Entity("BGN.Domain.Entities.Gender", b =>
+                {
+                    b.Navigation("Persons");
+                });
+
+            modelBuilder.Entity("BGN.Domain.Entities.Genre", b =>
+                {
+                    b.Navigation("Games");
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.Person", b =>
                 {
-                    b.Navigation("Preferences");
-
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
