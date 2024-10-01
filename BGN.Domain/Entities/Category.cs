@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace BGN.Domain.Entities
 {
-    public enum Category
+    public class Category
     {
-        Partyspel,
-        Rollenspel,
-        Kaartspel,
-        Bordspel,
-        Kinderspel
+       public int Id { get; set; }
+       public required string Name { get; set; }
     }
 }

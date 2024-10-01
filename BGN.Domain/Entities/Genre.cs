@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace BGN.Domain.Entities
 {
-    public enum Genre
+    public class Genre
     {
-        Geen,
-        Coöperatief,
-        Strategie,
-        Tactiek,
-        Abstract,
-        Familie
-
+        public int Id { get; set; }
+        public required string Name { get; set; }
     }
 }

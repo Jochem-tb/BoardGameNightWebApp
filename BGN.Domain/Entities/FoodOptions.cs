@@ -6,13 +6,9 @@ using System.Threading.Tasks;
 
 namespace BGN.Domain.Entities
 {
-    public enum FoodOptions
+    public class FoodOptions
     {
-        Lactose,
-        Alcohol,
-        Vegetarisch,
-        Veganistisch,
-        Glutenvrij,
-        Noten
+        public int Id { get; set; }
+        public required string Name { get; set; }
     }
 }

@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace BGN.Domain.Entities
 {
-    public enum Gender
+    public class Gender
     {
-        M,
-        V,
-        X
+        public int Id { get; set; }
+        public required string Name { get; set; }
     }
 }
