@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{CC0269C0-E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGN.Shared", "BGN.Shared\BGN.Shared.csproj", "{FB5FD9CA-D435-4543-A491-D24E012C29B9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGN.Infrastructure", "BGN.Infrastructure\BGN.Infrastructure.csproj", "{0C67CF17-8397-4627-BE2A-77D80052CC10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{FB5FD9CA-D435-4543-A491-D24E012C29B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB5FD9CA-D435-4543-A491-D24E012C29B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB5FD9CA-D435-4543-A491-D24E012C29B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C67CF17-8397-4627-BE2A-77D80052CC10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C67CF17-8397-4627-BE2A-77D80052CC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C67CF17-8397-4627-BE2A-77D80052CC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C67CF17-8397-4627-BE2A-77D80052CC10}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
