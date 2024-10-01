@@ -1,0 +1,17 @@
+﻿@using BGN.Shared
+@model IEnumerable<GameNightDto>
+
+<div>
+    <h2>Game Night List</h2>
+</div>
+
+@{
+    foreach(var gameNight in Model)
+    {
+        <div>
+            <h3>GameNight name: @gameNight.Name</h3>
+            <p>Date : @gameNight.Date</p>
+            <p>Time : @gameNight.Time</p>
+        </div>
+    }
+}

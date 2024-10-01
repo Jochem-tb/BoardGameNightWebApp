@@ -5,10 +5,15 @@ using BGN.Services.Abstractions;
 using BGN.Services;
 using BGN.Domain;
 using Microsoft.EntityFrameworkCore;
+using BGN.Services.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container.
+//Automate the mapping of DTOs to Entities and reverse
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+//Dependency Injection
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
 

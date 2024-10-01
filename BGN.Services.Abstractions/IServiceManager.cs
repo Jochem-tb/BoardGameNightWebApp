@@ -9,5 +9,6 @@ namespace BGN.Services.Abstractions
     public interface IServiceManager
     {
         IPersonService PersonService { get; }
+        IGameNightService GameNightService { get; }
     }
 }

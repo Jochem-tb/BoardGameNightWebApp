@@ -10,7 +10,6 @@ namespace BGN.Controllers
     public class HomeController(ILogger<HomeController> logger, IServiceManager serviceManager) : Controller
     {
         private readonly ILogger<HomeController> _logger = logger;
-        private readonly IRepositoryManager _repositoryManager;
         private readonly IServiceManager _serviceManager = serviceManager;
 
         public IActionResult Index()

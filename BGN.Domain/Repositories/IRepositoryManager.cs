@@ -9,5 +9,6 @@ namespace BGN.Domain.Repositories
     public interface IRepositoryManager
     {
         IPersonRepository PersonRepository { get; }
+        IGameNightRepository GameNightRepository { get; }
     }
 }

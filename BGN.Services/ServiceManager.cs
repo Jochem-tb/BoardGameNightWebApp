@@ -1,4 +1,5 @@
-﻿using BGN.Domain.Repositories;
+﻿using AutoMapper;
+using BGN.Domain.Repositories;
 using BGN.Services.Abstractions;
 using System;
 using System.Collections.Generic;
@@ -12,20 +13,25 @@ namespace BGN.Services
     {
         // Lazy<T> is a thread-safe way to create a singleton
         //Lazy zorgt ervoor dat de service pas wordt aangemaakt als deze nodig is
+        private readonly IMapper _mapper;
         private readonly Lazy<IPersonService> _lazyPersonService;
+        private readonly Lazy<IGameNightService> _lazyGameNightService;
 
 
         // Constructor to inject the repository manager
 
         //TODO: Implement the constructor
-        public ServiceManager(IRepositoryManager repositoryManager)
+        public ServiceManager(IMapper mapper, IRepositoryManager repositoryManager)
         {
+            _mapper = mapper;
             _lazyPersonService = new Lazy<IPersonService>(() => new PersonService(repositoryManager));
+            _lazyGameNightService = new Lazy<IGameNightService>(() => new GameNightService(repositoryManager, _mapper));
         }
 
 
         // Property to access the PersonService
         // This is the only way to access the service
         public IPersonService PersonService => _lazyPersonService.Value;
+        public IGameNightService GameNightService => _lazyGameNightService.Value;
     }
 }
