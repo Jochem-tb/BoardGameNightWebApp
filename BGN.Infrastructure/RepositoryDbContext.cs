@@ -24,11 +24,9 @@ namespace BGN.Infrastructure
         //public DbSet<Genre> Genres { get; set; } = null!;
 
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            //TODO: Place connection string in appsettings.json
-            optionsBuilder.UseSqlServer(@"Data Source=(localdb)\MSSQLLocalDB;Database=BGN;Trusted_Connection=True;");
-        }
+
+        public RepositoryDbContext(DbContextOptions<RepositoryDbContext> options) : base(options) { }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
