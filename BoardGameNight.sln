@@ -10,6 +10,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BoardGameNight.UI", "BoardG
 		{EA361A03-1E25-47CF-BCEF-5D23EE82761E} = {EA361A03-1E25-47CF-BCEF-5D23EE82761E}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameNight.Services", "BoardGameNight.Services\BoardGameNight.Services.csproj", "{438E4077-7EB1-4C72-A268-B4C5ECB86D32}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BoardGameNight.Services.Abstractions", "BoardGameNight.Services.Abstractions\BoardGameNight.Services.Abstractions.csproj", "{27C8D6A4-EF4D-4669-8E53-E572711C12E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,6 +28,14 @@ Global
 		{43BD67C1-5AE7-44F1-9CB6-57A31F0BE27E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{43BD67C1-5AE7-44F1-9CB6-57A31F0BE27E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{43BD67C1-5AE7-44F1-9CB6-57A31F0BE27E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{438E4077-7EB1-4C72-A268-B4C5ECB86D32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{438E4077-7EB1-4C72-A268-B4C5ECB86D32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{438E4077-7EB1-4C72-A268-B4C5ECB86D32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{438E4077-7EB1-4C72-A268-B4C5ECB86D32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27C8D6A4-EF4D-4669-8E53-E572711C12E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27C8D6A4-EF4D-4669-8E53-E572711C12E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27C8D6A4-EF4D-4669-8E53-E572711C12E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27C8D6A4-EF4D-4669-8E53-E572711C12E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
