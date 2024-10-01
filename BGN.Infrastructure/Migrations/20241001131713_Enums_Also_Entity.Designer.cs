@@ -4,6 +4,7 @@ using BGN.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BGN.Infrastructure.Migrations
 {
     [DbContext(typeof(RepositoryDbContext))]
-    partial class RepositoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241001131713_Enums_Also_Entity")]
+    partial class Enums_Also_Entity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,33 +40,6 @@ namespace BGN.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Partyspel"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Rollenspel"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Kaartspel"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Bordspel"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Kinderspel"
-                        });
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.FoodOptions", b =>
@@ -91,38 +67,6 @@ namespace BGN.Infrastructure.Migrations
                     b.HasIndex("PersonId");
 
                     b.ToTable("FoodOptions");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Lactose"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Alcohol"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Vegetarisch"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Veganistisch"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Glutenvrij"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Noten"
-                        });
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.Game", b =>
@@ -142,7 +86,7 @@ namespace BGN.Infrastructure.Migrations
                     b.Property<int?>("EstimatedTime")
                         .HasColumnType("int");
 
-                    b.Property<int>("GenreId")
+                    b.Property<int?>("GenreId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsAdult")
@@ -224,23 +168,6 @@ namespace BGN.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genders");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "M"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "V"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "X"
-                        });
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.Genre", b =>
@@ -258,38 +185,6 @@ namespace BGN.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Genres");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Geen"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Coöperatief"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Strategie"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Tactiek"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Abstract"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "Familie"
-                        });
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.Person", b =>
@@ -314,7 +209,7 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GenderId")
+                    b.Property<int?>("GenderId")
                         .HasColumnType("int");
 
                     b.Property<string>("HouseNr")
@@ -423,15 +318,13 @@ namespace BGN.Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("CategoryId");
 
-                    b.HasOne("BGN.Domain.Entities.Genre", "Genre")
+                    b.HasOne("BGN.Domain.Entities.Genre", "genre")
                         .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Genre");
+                        .HasForeignKey("GenreId");
 
                     b.Navigation("category");
+
+                    b.Navigation("genre");
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.GameNight", b =>
@@ -449,9 +342,7 @@ namespace BGN.Infrastructure.Migrations
                 {
                     b.HasOne("BGN.Domain.Entities.Gender", "Gender")
                         .WithMany()
-                        .HasForeignKey("GenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("GenderId");
 
                     b.Navigation("Gender");
                 });

@@ -6,31 +6,48 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BGN.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Second_Test : Migration
+    public partial class Enums_Also_Entity : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Games",
+                name: "Categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MinPlayers = table.Column<int>(type: "int", nullable: true),
-                    MaxPlayers = table.Column<int>(type: "int", nullable: true),
-                    IsAdult = table.Column<bool>(type: "bit", nullable: false),
-                    genre = table.Column<int>(type: "int", nullable: false),
-                    GenreId = table.Column<int>(type: "int", nullable: true),
-                    category = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
-                    EstimatedTime = table.Column<int>(type: "int", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.Id);
+                    table.PrimaryKey("PK_Categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Genders",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genders", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Genres",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Genres", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -42,19 +59,52 @@ namespace BGN.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Gender = table.Column<int>(type: "int", nullable: true),
                     GenderId = table.Column<int>(type: "int", nullable: true),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HouseNr = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Preferences = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Persons", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Persons_Genders_GenderId",
+                        column: x => x.GenderId,
+                        principalTable: "Genders",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Games",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    MinPlayers = table.Column<int>(type: "int", nullable: true),
+                    MaxPlayers = table.Column<int>(type: "int", nullable: true),
+                    IsAdult = table.Column<bool>(type: "bit", nullable: false),
+                    GenreId = table.Column<int>(type: "int", nullable: true),
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    EstimatedTime = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Games", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Games_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Games_Genres_GenreId",
+                        column: x => x.GenreId,
+                        principalTable: "Genres",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -70,8 +120,7 @@ namespace BGN.Infrastructure.Migrations
                     Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HouseNr = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MaxPlayers = table.Column<int>(type: "int", nullable: false),
-                    FoodOptions = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    MaxPlayers = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -82,6 +131,31 @@ namespace BGN.Infrastructure.Migrations
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FoodOptions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    GameNightId = table.Column<int>(type: "int", nullable: true),
+                    PersonId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FoodOptions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FoodOptions_GameNights_GameNightId",
+                        column: x => x.GameNightId,
+                        principalTable: "GameNights",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_FoodOptions_Persons_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "Persons",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -162,6 +236,16 @@ namespace BGN.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_FoodOptions_GameNightId",
+                table: "FoodOptions",
+                column: "GameNightId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FoodOptions_PersonId",
+                table: "FoodOptions",
+                column: "PersonId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GameGameNight_GamesId",
                 table: "GameGameNight",
                 column: "GamesId");
@@ -175,6 +259,21 @@ namespace BGN.Infrastructure.Migrations
                 name: "IX_GameNights_OrganiserId",
                 table: "GameNights",
                 column: "OrganiserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_CategoryId",
+                table: "Games",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Games_GenreId",
+                table: "Games",
+                column: "GenreId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Persons_GenderId",
+                table: "Persons",
+                column: "GenderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_GameNightId",
@@ -191,6 +290,9 @@ namespace BGN.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "FoodOptions");
+
+            migrationBuilder.DropTable(
                 name: "GameGameNight");
 
             migrationBuilder.DropTable(
@@ -206,7 +308,16 @@ namespace BGN.Infrastructure.Migrations
                 name: "GameNights");
 
             migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Genres");
+
+            migrationBuilder.DropTable(
                 name: "Persons");
+
+            migrationBuilder.DropTable(
+                name: "Genders");
         }
     }
 }

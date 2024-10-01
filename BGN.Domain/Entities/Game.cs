@@ -15,8 +15,8 @@ namespace BGN.Domain.Entities
         public int? MaxPlayers { get; set; }
         public bool IsAdult { get; set; } = false;
         
-        public Genre genre { get; set; }
-        public int? GenreId { get; set; }
+        public required Genre Genre { get; set; }
+        public int GenreId { get; set; }
 
         public Category category { get; set; }
         public int? CategoryId { get; set; }

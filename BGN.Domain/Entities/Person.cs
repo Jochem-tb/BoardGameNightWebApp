@@ -14,7 +14,7 @@ namespace BGN.Domain.Entities
         public required string LastName { get; set; }
         public required string Email { get; set; }
         public Gender? Gender { get; set; }
-        public int? GenderId { get; set; }
+        public int GenderId { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Street { get; set; }

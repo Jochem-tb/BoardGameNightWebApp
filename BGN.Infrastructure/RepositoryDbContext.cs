@@ -17,11 +17,10 @@ namespace BGN.Infrastructure
         public DbSet<Review> Reviews { get; set; } = null!;
 
 
-        //public DbSet<Category> Categories { get; set; } = null!;
-        //public DbSet<FoodOptions> FoodOptions { get; set; } = null!;
-
-        //public DbSet<Gender> Genders { get; set; } = null!;
-        //public DbSet<Genre> Genres { get; set; } = null!;
+        public DbSet<Category> Categories { get; set; } = null!;
+        public DbSet<FoodOptions> FoodOptions { get; set; } = null!;
+        public DbSet<Gender> Genders { get; set; } = null!;
+        public DbSet<Genre> Genres { get; set; } = null!;
 
 
 
@@ -30,6 +29,8 @@ namespace BGN.Infrastructure
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            SeedData(modelBuilder);
+
             base.OnModelCreating(modelBuilder);
 
             //Configuring the many-to-many relationship between Game and GameNight
@@ -63,7 +64,49 @@ namespace BGN.Infrastructure
                 .HasOne(gn => gn.Organiser);
         }
 
+        private void SeedData(ModelBuilder modelBuilder)
+        {
+            var CategoryList = new List<Category>() 
+            { 
+                new() {Id = 1, Name="Partyspel" },
+                new() {Id = 2, Name="Rollenspel" },
+                new() {Id = 3, Name="Kaartspel" },
+                new() {Id = 4, Name="Bordspel" },
+                new() {Id = 5, Name="Kinderspel" } 
+            };
+
+            var GenreList = new List<Genre>()
+            {
+                new() {Id = 1, Name="Geen" },
+                new() {Id = 2, Name="Coöperatief" },
+                new() {Id = 3, Name="Strategie" },
+                new() {Id = 4, Name="Tactiek" },
+                new() {Id = 5, Name="Abstract" },
+                new() {Id = 6, Name="Familie" }
+            };
+
+            var GenderList = new List<Gender>()
+            {
+                new() {Id = 1, Name="M" },
+                new() {Id = 2, Name="V" },
+                new() {Id = 3, Name="X" }
+            };
+
+            var FoodOptionsList = new List<FoodOptions>()
+            {
+                new() {Id = 1, Name="Lactose" },
+                new() {Id = 2, Name="Alcohol" },
+                new() {Id = 3, Name="Vegetarisch" },
+                new() {Id = 4, Name="Veganistisch" },
+                new() {Id = 5, Name="Glutenvrij" },
+                new() {Id = 6, Name="Noten" }
+            };
 
 
+            modelBuilder.Entity<Category>().HasData(CategoryList);
+            modelBuilder.Entity<Genre>().HasData(GenreList);
+            modelBuilder.Entity<Gender>().HasData(GenderList);
+            modelBuilder.Entity<FoodOptions>().HasData(FoodOptionsList);
+        }
     }
 }

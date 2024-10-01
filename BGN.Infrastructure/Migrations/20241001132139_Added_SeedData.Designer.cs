@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BGN.Infrastructure.Migrations
 {
     [DbContext(typeof(RepositoryDbContext))]
-    [Migration("20241001123833_Second_Test")]
-    partial class Second_Test
+    [Migration("20241001132139_Added_SeedData")]
+    partial class Added_SeedData
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,109 @@ namespace BGN.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("BGN.Domain.Entities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Partyspel"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Rollenspel"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Kaartspel"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Bordspel"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Kinderspel"
+                        });
+                });
+
+            modelBuilder.Entity("BGN.Domain.Entities.FoodOptions", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("GameNightId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PersonId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GameNightId");
+
+                    b.HasIndex("PersonId");
+
+                    b.ToTable("FoodOptions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Lactose"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Alcohol"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Vegetarisch"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Veganistisch"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Glutenvrij"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Noten"
+                        });
+                });
 
             modelBuilder.Entity("BGN.Domain.Entities.Game", b =>
                 {
@@ -42,7 +145,7 @@ namespace BGN.Infrastructure.Migrations
                     b.Property<int?>("EstimatedTime")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GenreId")
+                    b.Property<int>("GenreId")
                         .HasColumnType("int");
 
                     b.Property<bool>("IsAdult")
@@ -58,13 +161,11 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("category")
-                        .HasColumnType("int");
-
-                    b.Property<int>("genre")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("GenreId");
 
                     b.ToTable("Games");
                 });
@@ -83,10 +184,6 @@ namespace BGN.Infrastructure.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("FoodOptions")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("HouseNr")
                         .IsRequired()
@@ -115,6 +212,89 @@ namespace BGN.Infrastructure.Migrations
                     b.ToTable("GameNights");
                 });
 
+            modelBuilder.Entity("BGN.Domain.Entities.Gender", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genders");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "M"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "V"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "X"
+                        });
+                });
+
+            modelBuilder.Entity("BGN.Domain.Entities.Genre", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Genres");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Geen"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Coöperatief"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Strategie"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Tactiek"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Abstract"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "Familie"
+                        });
+                });
+
             modelBuilder.Entity("BGN.Domain.Entities.Person", b =>
                 {
                     b.Property<int>("Id")
@@ -137,10 +317,7 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Gender")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("GenderId")
+                    b.Property<int>("GenderId")
                         .HasColumnType("int");
 
                     b.Property<string>("HouseNr")
@@ -158,14 +335,12 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Preferences")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Street")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GenderId");
 
                     b.ToTable("Persons");
                 });
@@ -234,6 +409,34 @@ namespace BGN.Infrastructure.Migrations
                     b.ToTable("GameNightAttendees");
                 });
 
+            modelBuilder.Entity("BGN.Domain.Entities.FoodOptions", b =>
+                {
+                    b.HasOne("BGN.Domain.Entities.GameNight", null)
+                        .WithMany("FoodOptions")
+                        .HasForeignKey("GameNightId");
+
+                    b.HasOne("BGN.Domain.Entities.Person", null)
+                        .WithMany("Preferences")
+                        .HasForeignKey("PersonId");
+                });
+
+            modelBuilder.Entity("BGN.Domain.Entities.Game", b =>
+                {
+                    b.HasOne("BGN.Domain.Entities.Category", "category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId");
+
+                    b.HasOne("BGN.Domain.Entities.Genre", "Genre")
+                        .WithMany()
+                        .HasForeignKey("GenreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Genre");
+
+                    b.Navigation("category");
+                });
+
             modelBuilder.Entity("BGN.Domain.Entities.GameNight", b =>
                 {
                     b.HasOne("BGN.Domain.Entities.Person", "Organiser")
@@ -243,6 +446,17 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Organiser");
+                });
+
+            modelBuilder.Entity("BGN.Domain.Entities.Person", b =>
+                {
+                    b.HasOne("BGN.Domain.Entities.Gender", "Gender")
+                        .WithMany()
+                        .HasForeignKey("GenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Gender");
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.Review", b =>
@@ -296,11 +510,15 @@ namespace BGN.Infrastructure.Migrations
 
             modelBuilder.Entity("BGN.Domain.Entities.GameNight", b =>
                 {
+                    b.Navigation("FoodOptions");
+
                     b.Navigation("reviews");
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.Person", b =>
                 {
+                    b.Navigation("Preferences");
+
                     b.Navigation("Reviews");
                 });
 #pragma warning restore 612, 618
