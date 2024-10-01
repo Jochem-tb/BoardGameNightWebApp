@@ -1,4 +1,5 @@
-﻿using BGN.Services.Abstractions;
+﻿using BGN.Domain.Repositories;
+using BGN.Services.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BGN.Services
 {
-    internal sealed class ServiceManager : IServiceManager
+    public sealed class ServiceManager : IServiceManager
     {
         // Lazy<T> is a thread-safe way to create a singleton
         //Lazy zorgt ervoor dat de service pas wordt aangemaakt als deze nodig is
@@ -17,10 +18,10 @@ namespace BGN.Services
         // Constructor to inject the repository manager
 
         //TODO: Implement the constructor
-                //public ServiceManager(IRepositoryManager repositoryManager)
-                //{
-                 //    _lazyPersonService = new Lazy<IPersonService>(() => new PersonService(repositoryManager));
-                 //}
+        public ServiceManager(IRepositoryManager repositoryManager)
+        {
+            _lazyPersonService = new Lazy<IPersonService>(() => new PersonService(repositoryManager));
+        }
 
 
         // Property to access the PersonService

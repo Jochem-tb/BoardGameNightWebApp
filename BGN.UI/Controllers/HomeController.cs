@@ -2,36 +2,27 @@ using BGN.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using BGN.Domain.Entities;
-
-
+using BGN.Domain.Repositories;
+using BGN.Services.Abstractions;
 
 namespace BGN.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(ILogger<HomeController> logger, IServiceManager serviceManager) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        private readonly ILogger<HomeController> _logger = logger;
+        private readonly IRepositoryManager _repositoryManager;
+        private readonly IServiceManager _serviceManager = serviceManager;
 
         public IActionResult Index()
         {
+           
             return View();
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> PrivacyAsync()
         {
-            var person = new Person
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "fiets",
-                HouseNr = "123",
-                PostalCode = "1234AD"
-            };
-            ViewBag.Person = person;
+            var person1 = await _serviceManager.PersonService.GetByIdAsync(3);
+            ViewBag.Person = person1;
             return View();
         }
 
