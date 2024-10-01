@@ -6,8 +6,7 @@ namespace BGN.UI.Controllers
 {
     public class GameNightController : Controller
     {
-        private readonly IRepositoryManager _repositoryManager;
-        private readonly IGameNightService _gameNightService;
+        private readonly  IGameNightService _gameNightService;
         public GameNightController(IServiceManager serviceManager)
         {
             _gameNightService = serviceManager.GameNightService;
