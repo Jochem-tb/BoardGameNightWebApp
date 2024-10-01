@@ -15,7 +15,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BoardGameNight.Domain\BoardGameNight.Domain.csproj" />
+    <ProjectReference Include="..\BGN.Domain\BGN.Domain.csproj" />
+    <ProjectReference Include="..\BGN.Services.Abstractions\BGN.Services.Abstractions.csproj" />
+    <ProjectReference Include="..\BGN.Services\BGN.Services.csproj" />
   </ItemGroup>
+
+  
 
 </Project>

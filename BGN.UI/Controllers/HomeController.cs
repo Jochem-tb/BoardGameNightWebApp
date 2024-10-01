@@ -1,10 +1,11 @@
-using BoardGameNight.Models;
+using BGN.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using BoardGameNight.Domain;
+using BGN.Domain.Entities;
 
 
-namespace BoardGameNight.Controllers
+
+namespace BGN.Controllers
 {
     public class HomeController : Controller
     {

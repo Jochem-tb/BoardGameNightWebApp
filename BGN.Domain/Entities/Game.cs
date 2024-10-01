@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BoardGameNight.Domain
+namespace BGN.Domain.Entities
 {
     public class Game
     {
