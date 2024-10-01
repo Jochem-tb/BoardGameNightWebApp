@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BGN.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Test : Migration
+    public partial class Second_Test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -142,8 +142,7 @@ namespace BGN.Infrastructure.Migrations
                     Details = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     ReviewerId = table.Column<int>(type: "int", nullable: false),
-                    GameId = table.Column<int>(type: "int", nullable: false),
-                    GameNightId = table.Column<int>(type: "int", nullable: true)
+                    GameNightId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -152,11 +151,6 @@ namespace BGN.Infrastructure.Migrations
                         name: "FK_Reviews_GameNights_GameNightId",
                         column: x => x.GameNightId,
                         principalTable: "GameNights",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Reviews_Games_GameId",
-                        column: x => x.GameId,
-                        principalTable: "Games",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -164,7 +158,7 @@ namespace BGN.Infrastructure.Migrations
                         column: x => x.ReviewerId,
                         principalTable: "Persons",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -181,11 +175,6 @@ namespace BGN.Infrastructure.Migrations
                 name: "IX_GameNights_OrganiserId",
                 table: "GameNights",
                 column: "OrganiserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_GameId",
-                table: "Reviews",
-                column: "GameId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_GameNightId",
@@ -211,10 +200,10 @@ namespace BGN.Infrastructure.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
-                name: "GameNights");
+                name: "Games");
 
             migrationBuilder.DropTable(
-                name: "Games");
+                name: "GameNights");
 
             migrationBuilder.DropTable(
                 name: "Persons");

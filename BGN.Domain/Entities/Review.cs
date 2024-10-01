@@ -14,8 +14,8 @@ namespace BGN.Domain.Entities
         public required int Rating { get; set; }
         public required Person Reviewer { get; set; }
         public required int ReviewerId { get; set; }
-        public required Game Game { get; set; }
-        public required int GameId { get; set; }
+        public required GameNight GameNight { get; set; }
+        public required int GameNightId { get; set; }
 
     }
 }

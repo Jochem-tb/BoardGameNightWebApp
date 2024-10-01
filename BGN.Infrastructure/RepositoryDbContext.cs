@@ -55,6 +55,11 @@ namespace BGN.Infrastructure
                         j.HasKey("GameNightId", "AttendeesId");
                     });
 
+            //Configuring the one-to-many relationship between Review and Person --> Reviewer
+            modelBuilder.Entity<Review>()
+                .HasOne(r => r.Reviewer)
+                .WithMany(p => p.Reviews).OnDelete(DeleteBehavior.Restrict);
+
             //Configuring the one-to-one relationship between GameNight and Organiser --> Person
             modelBuilder.Entity<GameNight>()
                 .HasOne(gn => gn.Organiser);

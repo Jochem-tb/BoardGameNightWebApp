@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BGN.Infrastructure.Migrations
 {
     [DbContext(typeof(RepositoryDbContext))]
-    [Migration("20241001120856_Initial_Test")]
-    partial class Initial_Test
+    [Migration("20241001123833_Second_Test")]
+    partial class Second_Test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -182,10 +182,7 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("GameNightId")
+                    b.Property<int>("GameNightId")
                         .HasColumnType("int");
 
                     b.Property<int>("Rating")
@@ -199,8 +196,6 @@ namespace BGN.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GameId");
 
                     b.HasIndex("GameNightId");
 
@@ -252,23 +247,19 @@ namespace BGN.Infrastructure.Migrations
 
             modelBuilder.Entity("BGN.Domain.Entities.Review", b =>
                 {
-                    b.HasOne("BGN.Domain.Entities.Game", "Game")
-                        .WithMany()
-                        .HasForeignKey("GameId")
+                    b.HasOne("BGN.Domain.Entities.GameNight", "GameNight")
+                        .WithMany("reviews")
+                        .HasForeignKey("GameNightId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("BGN.Domain.Entities.GameNight", null)
-                        .WithMany("reviews")
-                        .HasForeignKey("GameNightId");
 
                     b.HasOne("BGN.Domain.Entities.Person", "Reviewer")
                         .WithMany("Reviews")
                         .HasForeignKey("ReviewerId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Game");
+                    b.Navigation("GameNight");
 
                     b.Navigation("Reviewer");
                 });
