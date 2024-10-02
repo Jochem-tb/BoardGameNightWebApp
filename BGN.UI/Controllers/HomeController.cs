@@ -18,10 +18,8 @@ namespace BGN.Controllers
             return View();
         }
 
-        public async Task<IActionResult> PrivacyAsync()
+        public  IActionResult GameNight()
         {
-            var person1 = await _serviceManager.PersonService.GetByIdAsync(3);
-            ViewBag.Person = person1;
             return View();
         }
 
