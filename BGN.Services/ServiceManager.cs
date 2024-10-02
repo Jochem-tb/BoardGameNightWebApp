@@ -16,6 +16,7 @@ namespace BGN.Services
         private readonly IMapper _mapper;
         private readonly Lazy<IPersonService> _lazyPersonService;
         private readonly Lazy<IGameNightService> _lazyGameNightService;
+        private readonly Lazy<IGameService> _lazyGameService;
 
 
         // Constructor to inject the repository manager
@@ -26,6 +27,7 @@ namespace BGN.Services
             _mapper = mapper;
             _lazyPersonService = new Lazy<IPersonService>(() => new PersonService(repositoryManager));
             _lazyGameNightService = new Lazy<IGameNightService>(() => new GameNightService(repositoryManager, _mapper));
+            _lazyGameService = new Lazy<IGameService>(() => new GameService(repositoryManager, _mapper));
         }
 
 
@@ -33,5 +35,6 @@ namespace BGN.Services
         // This is the only way to access the service
         public IPersonService PersonService => _lazyPersonService.Value;
         public IGameNightService GameNightService => _lazyGameNightService.Value;
+        public IGameService GameService => _lazyGameService.Value;
     }
 }

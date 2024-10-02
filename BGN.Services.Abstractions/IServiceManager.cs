@@ -10,5 +10,6 @@ namespace BGN.Services.Abstractions
     {
         IPersonService PersonService { get; }
         IGameNightService GameNightService { get; }
+        IGameService GameService { get; }
     }
 }

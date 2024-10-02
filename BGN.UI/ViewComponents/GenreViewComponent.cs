@@ -18,7 +18,7 @@ namespace YourAppNamespace.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            //var genres = await serviceManager; // Fetch genres from database
+            var genres = await _serviceManager.GameService.GetAllGenresAsync(); // Fetch genres from database
             return View(genres);  // Pass the genres to the view
         }
     }

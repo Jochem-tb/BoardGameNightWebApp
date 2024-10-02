@@ -1,5 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model IEnumerable<BGN.Shared.GenreDto>
+
+<ul class="dropdown-menu">
+    @foreach (var genre in Model)
+    {
+        <li><a class="dropdown-item" asp-area="" asp-controller="Game" asp-action="Index" asp-route-genreId="@genre.Id">@genre.Name</a></li>
+    }
+</ul>
