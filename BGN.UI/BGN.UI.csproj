@@ -23,6 +23,11 @@
     <ProjectReference Include="..\BGN.Services\BGN.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\img\carousel\" />
+    <Folder Include="wwwroot\img\gamenight\" />
+  </ItemGroup>
+
   
 
 </Project>

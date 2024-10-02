@@ -6,7 +6,8 @@
     <title>@ViewData["Title"] - BGN</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BoardGameNight.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+    
 </head>
 <body>
     <header>
@@ -17,24 +18,34 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                <div class="navbar-collapse collapse d-sm-inline-flex ">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        
 
-                        <!--Dynamicly load the genres from database-->
-                        <li class="nav-item dropdown ">
-                            <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown">Games</a>
-                                @await Component.InvokeAsync("Genre")
+                        <!-- Dropdown for Games -->
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown" href="#">Games</a>
+                            <ul class="dropdown-menu">
+                                <!-- Genres Submenu -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">Genres</a>
+                                        @await Component.InvokeAsync("Genre")
+                                </li>
+                                <!-- Categories Submenu -->
+                                <li class="dropdown-submenu">
+                                    <a class="dropdown-item dropdown-toggle" href="#">Categories</a>
+                                        @await Component.InvokeAsync("Category")
+                                </li>
+                            </ul>
                         </li>
 
-                        <li class="nav-item dropdown ">
+                        <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" role="button" data-bs-toggle="dropdown">Gamenights</a>
                             <ul class="dropdown-menu">
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="GameNight" asp-action="Attending">My Gamenights</a>
-                                <a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="GameNight" asp-action="List">List</a>
+                                <li><a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="GameNight" asp-action="Attending">My Gamenights</a></li>
+                                <li><a class="dropdown-item nav-link text-dark" asp-area="" asp-controller="GameNight" asp-action="List">Join the fun!</a></li>
                             </ul>
                         </li>
                     </ul>

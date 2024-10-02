@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BGN.Services.Abstractions;
 using BGN.Services;
 
-namespace YourAppNamespace.ViewComponents
+namespace BGN.UI.ViewComponents
 {
     public class GenreViewComponent : ViewComponent
     {
