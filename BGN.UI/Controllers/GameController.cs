@@ -14,7 +14,7 @@ namespace BGN.UI.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("List");
         }
 
         public async Task<IActionResult> List()
@@ -32,13 +32,13 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> CategoryId(int catId)
         {
             var games = await _gameService.GetAllGameByCategoryIdAsync(catId);
-            return View("List", games);
+            return View("List", new GameListModel() { DisplayGames = games});
         }
 
         public async Task<IActionResult> GenreId(int genId)
         {
             var games = await _gameService.GetAllGameByGenreIdAsync(genId);
-            return View("List", games);
+            return View("List", new GameListModel() { DisplayGames = games});
         }
 
         [HttpGet]

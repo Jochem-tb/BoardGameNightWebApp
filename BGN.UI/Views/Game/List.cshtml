@@ -19,7 +19,7 @@
 
                 <!-- Example filter: Search by name -->
                 <div class="mb-3">
-                    <label asp-for="SearchName" class="form-label">Search by Name</label>
+                    <label class="form-label">Search by Name</label>
                     <input asp-for="SearchName" type="text" class="form-control" id="searchName" placeholder="Enter game name">
                 </div>
 
@@ -27,12 +27,18 @@
                 <div class="mb-3">
                     <label class="form-label">Age Restriction</label>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="ageFilterAll" checked>
-                        <label class="form-check-label" for="ageFilterAll">All Ages</label>
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="" id="ageFilterAll" checked>
+                        <label  class="form-check-label" for="ageFilterAll">All</label>
                     </div>
+
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="ageFilter18">
-                        <label class="form-check-label" for="ageFilter18">18+</label>
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="false" id="ageFilterNo18">
+                        <label class="form-check-label" for="ageFilterNo18">No 18+</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="true" id="ageFilterOnly18">
+                        <label class="form-check-label" for="ageFilterOnly18">Only 18+</label>
                     </div>
                 </div>
 

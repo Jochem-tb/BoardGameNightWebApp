@@ -69,8 +69,20 @@ namespace BGN.Services
 
             if (filterObject.SearchIsAdult.HasValue)
             {
-                gamesQueryable = gamesQueryable.Where(x => x.IsAdult == filterObject.SearchIsAdult);
+                if (filterObject.SearchIsAdult.Value)
+                {
+                    // Only 18+
+                    gamesQueryable = gamesQueryable.Where(x => x.IsAdult == true);
+                }
+                else
+                {
+                    // No 18+
+                    gamesQueryable = gamesQueryable.Where(x => x.IsAdult == false);
+                }
             }
+            // "All" case: No filtering on IsAdult
+            // No need to apply a filter in this case.
+
 
             if (filterObject.SearchGenreId.HasValue)
             {
