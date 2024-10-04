@@ -33,6 +33,8 @@ namespace BGN.Infrastructure.Repositories
         public async Task<IEnumerable<Game>> GetAllGameByCategoryIdAsync(int catId)
         {
             return await _dbContext.Games.Where(x => x.CategoryId == catId)
+                .Include(x => x.Category)
+                .Include(x => x.Genre)
                 .ToListAsync();
         }
 

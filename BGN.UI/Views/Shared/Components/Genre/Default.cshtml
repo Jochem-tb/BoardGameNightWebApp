@@ -3,6 +3,6 @@
 <ul class="dropdown-menu">
     @foreach (var genre in Model)
     {
-        <li><a class="dropdown-item" asp-area="" asp-controller="Game" asp-action="Index" asp-route-genreId="@genre.Id">@genre.Name</a></li>
+        <li><a class="dropdown-item" asp-area="" asp-controller="Game" asp-action="GenreId" asp-route-genId="@genre.Id">@genre.Name</a></li>
     }
 </ul>
