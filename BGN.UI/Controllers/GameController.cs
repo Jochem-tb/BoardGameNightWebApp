@@ -1,4 +1,5 @@
 ﻿using BGN.Services.Abstractions;
+using BGN.UI.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BGN.UI.Controllers
@@ -19,7 +20,7 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> List()
         {
             var games = await _gameService.GetAllAsync();
-            return View(games);
+            return View(new GameListModel() { DisplayGames = games});
         }
 
         public IActionResult Details()
@@ -38,6 +39,15 @@ namespace BGN.UI.Controllers
         {
             var games = await _gameService.GetAllGameByGenreIdAsync(genId);
             return View("List", games);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Filter(GameListModel gameListModel)
+        {
+            var games = await _gameService.GetAllAsync(gameListModel);
+            
+
+            return View("List", new GameListModel() { DisplayGames = games});
         }
     }
 }

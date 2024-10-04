@@ -23,5 +23,8 @@ namespace BGN.Domain.Repositories
         Task<Genre?> GetGenreByIdAsync(int id);
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
         Task<Category?> GetCategoryByIdAsync(int id);
+
+
+        Task<IQueryable<Game>> GetAllGamesAsQueryableAsync();
     }
 }

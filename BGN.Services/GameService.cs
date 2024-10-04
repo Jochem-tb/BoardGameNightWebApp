@@ -2,6 +2,7 @@
 using BGN.Domain.Entities;
 using BGN.Domain.Repositories;
 using BGN.Services.Abstractions;
+using BGN.Services.Abstractions.FilterModels;
 using BGN.Shared;
 using System;
 using System.Collections.Generic;
@@ -43,6 +44,57 @@ namespace BGN.Services
         {
             var games = await _repositoryManager.GameRepository.GetAllGameByGenreIdAsync(genId);
             return _mapper.Map<IEnumerable<GameDto>>(games);
+        }
+
+        public async Task<IEnumerable<GameDto>> GetAllAsync(AbstractGameFilterObject filterObject)
+        {
+            // Get the base query with all games
+            var gamesQueryable = await _repositoryManager.GameRepository.GetAllGamesAsQueryableAsync();
+
+            // Apply filters to the query
+            if (!string.IsNullOrEmpty(filterObject.SearchName))
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.Name.Contains(filterObject.SearchName));
+            }
+
+            if (filterObject.SearchMinPlayers.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.MinPlayers >= filterObject.SearchMinPlayers);
+            }
+
+            if (filterObject.SearchMaxPlayers.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.MaxPlayers <= filterObject.SearchMaxPlayers);
+            }
+
+            if (filterObject.SearchIsAdult.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.IsAdult == filterObject.SearchIsAdult);
+            }
+
+            if (filterObject.SearchGenreId.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.GenreId == filterObject.SearchGenreId);
+            }
+
+            if (filterObject.SearchCategoryId.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.CategoryId == filterObject.SearchCategoryId);
+            }
+
+            if (filterObject.SearchEstimatedTimeLower.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.EstimatedTime >= filterObject.SearchEstimatedTimeLower);
+            }
+
+            if (filterObject.SearchEstimatedTimeUpper.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.EstimatedTime <= filterObject.SearchEstimatedTimeUpper);
+            }
+
+            // Materialize the query and map to DTOs
+            var gamesList = gamesQueryable.ToList(); //Calls the database when the Query is done
+            return _mapper.Map<IEnumerable<GameDto>>(gamesList);
         }
 
         public async Task<IEnumerable<GenreDto>> GetAllGenresAsync()

@@ -1,4 +1,5 @@
-﻿using BGN.Shared;
+﻿using BGN.Services.Abstractions.FilterModels;
+using BGN.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,7 @@ namespace BGN.Services.Abstractions
         Task<GenreDto?> GetGenreByIdAsync(int id);
         Task<IEnumerable<CategoryDto>> GetAllCategoriesAsync();
         Task<CategoryDto?> GetCategoryByIdAsync(int id);
+
+        Task<IEnumerable<GameDto>> GetAllAsync(AbstractGameFilterObject filterObject);
     }
 }

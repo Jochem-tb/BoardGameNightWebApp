@@ -44,6 +44,14 @@ namespace BGN.Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        public async Task<IQueryable<Game>> GetAllGamesAsQueryableAsync()
+        {
+            return await Task.FromResult(_dbContext.Games.AsQueryable()
+                .Include(x => x.Category)
+                .Include(x => x.Genre)
+                );
+        }
+
         public async Task<IEnumerable<Genre>> GetAllGenresAsync()
         {
             return await _dbContext.Genres.ToListAsync();
