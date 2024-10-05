@@ -85,7 +85,7 @@
         <div class="row g-4">
 
             @{
-                var isUserAdult = true; //TODO: replace with actual user check
+                var isUserAdult = false; //TODO: replace with actual user check
 
                 foreach (var game in Model.DisplayGames)
                 {
@@ -94,8 +94,7 @@
 
                         <div class="card h-100 @gameCardClass">
 
-                            <!-- PlaceHolder Image for now
-                            TODO: fix custom img per game -->
+                           
                             <img src=@game.ImgUrl class="card-img-top img-fluid" alt="Photo of Boardgame">
                             
 
@@ -108,14 +107,16 @@
                                     }
                                 </h5>
 
-
+                                
                                 <p class="card-text">
                                     @game.Description <br />
                                     Playable with: @game.MinPlayers/@game.MaxPlayers
                                 </p>
 
-                                <!-- Details button on the bottem, alsways bot-->
-                                <a href="#" class="btn btn-primary mt-auto btn-sm">Details</a>
+                                @if(!game.IsAdult || (isUserAdult && game.IsAdult)){
+                                     <!-- Details button on the bottem, alsways bot-->
+                                     <a href="#" class="btn btn-primary mt-auto btn-sm">Details</a>
+                                }
                             </div>
                         </div>
                     </div>
