@@ -14,12 +14,15 @@ namespace BGN.UI.Controllers
         }
         public IActionResult Index()
         {
+            //List is the base view
             return RedirectToAction("List");
         }
 
         public async Task<IActionResult> List()
         {
             var games = await _gameService.GetAllAsync();
+
+            //We dont specify the slectedCategories, because no filtering has been done
             return View(new GameListModel() { DisplayGames = games});
         }
 
@@ -32,20 +35,37 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> CategoryId(int catId)
         {
             var games = await _gameService.GetAllGameByCategoryIdAsync(catId);
-            return View("List", new GameListModel() { DisplayGames = games});
+
+            //Return GameListModel with the games, so they will be displayed. 
+            //Return also SelectedCategories, so the ViewComponents know to set the checkbox to checked
+            return View("List", new GameListModel() { DisplayGames = games, SelectedCategories = new List<int>() { catId } });
         }
 
         public async Task<IActionResult> GenreId(int genId)
         {
             var games = await _gameService.GetAllGameByGenreIdAsync(genId);
-            return View("List", new GameListModel() { DisplayGames = games});
+
+            //Return GameListModel with the games, so they will be displayed. 
+            //Return also SelectedGenres, so the ViewComponents know to set the checkbox to checked
+            return View("List", new GameListModel() { DisplayGames = games, SelectedGenres = new List<int>() { genId } });
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> Filter(GameListModel gameListModel)
         {
-            var games = await _gameService.GetAllAsync(gameListModel);
-            return View("List", new GameListModel() { DisplayGames = games});
+
+            // Ensure selected genres and categories are also set
+            gameListModel.SelectedGenres = gameListModel.SelectedGenres ?? new List<int>();
+            gameListModel.SelectedCategories = gameListModel.SelectedCategories ?? new List<int>();
+
+            // If the model state is valid, fetch games based on the filter criteria
+            var filteredGames = await _gameService.GetAllAsync(gameListModel);
+            gameListModel.DisplayGames = filteredGames;
+
+            // Return the filtered games to the view
+            return View("List", gameListModel);
         }
     }
 }

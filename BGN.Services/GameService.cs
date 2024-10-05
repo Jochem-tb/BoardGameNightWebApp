@@ -80,14 +80,14 @@ namespace BGN.Services
                 gamesQueryable = gamesQueryable.Where(x => x.MaxPlayers <= filterObject.SearchMaxPlayers.Value);
             }
 
-            if (filterObject.SearchGenreId.HasValue)
+            if (filterObject.SelectedGenres.Any())
             {
-                gamesQueryable = gamesQueryable.Where(x => x.GenreId == filterObject.SearchGenreId);
+                gamesQueryable = gamesQueryable.Where(g => g.GenreId != null && filterObject.SelectedGenres.Contains(g.GenreId.Value));
             }
 
-            if (filterObject.SearchCategoryId.HasValue)
+            if (filterObject.SelectedCategories.Any())
             {
-                gamesQueryable = gamesQueryable.Where(x => x.CategoryId == filterObject.SearchCategoryId);
+                gamesQueryable = gamesQueryable.Where(g => g.CategoryId != null && filterObject.SelectedCategories.Contains(g.CategoryId.Value));
             }
 
             if (filterObject.SearchEstimatedTimeLower.HasValue)

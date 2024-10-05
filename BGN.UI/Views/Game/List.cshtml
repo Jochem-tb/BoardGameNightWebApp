@@ -60,23 +60,16 @@
                     </div>
                 </div>
 
-                <!-- Example filter: Game type (checkboxes) -->
+                <!-- Example filter: Genres -->
                 <div class="mb-3">
-                    <label class="form-label">Game Type</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="gameTypeBoard">
-                        <label class="form-check-label" for="gameTypeBoard">Board Game</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="gameTypeCard">
-                        <label class="form-check-label" for="gameTypeCard">Card Game</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="gameTypeStrategy">
-                        <label class="form-check-label" for="gameTypeStrategy">Strategy</label>
-                    </div>
+                   @await Component.InvokeAsync("GenreCheckboxFilter", Model)
                 </div>
+                
 
+                <!-- Example filter: Categories -->
+                <div class="mb-3">
+                    @await Component.InvokeAsync("CategoryCheckboxFilter", Model)
+                </div>
                 <!-- Filter button -->
                 <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
 

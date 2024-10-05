@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BGN.Services.Abstractions;
 using BGN.Services;
+using BGN.Services.Abstractions.FilterModels;
 
 namespace BGN.UI.ViewComponents
 {
@@ -21,5 +22,6 @@ namespace BGN.UI.ViewComponents
             var genres = await _serviceManager.GameService.GetAllGenresAsync(); // Fetch genres from database
             return View(genres);  // Pass the genres to the view
         }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BGN.Shared;
 using BGN.Services.Abstractions.FilterModels;
+using BGN.Domain.Entities;
 
 namespace BGN.UI.Models
 {
@@ -8,7 +9,12 @@ namespace BGN.UI.Models
         //Filter terms for Game
         //Already defined in the AbstractGameFilterObject class..
 
+        
+
+
         //List with games to display
+
+
         public IEnumerable<GameDto> DisplayGames { get; set; } = new List<GameDto>();
 
     }
