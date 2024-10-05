@@ -77,7 +77,7 @@ namespace BGN.Infrastructure
 
             var GenreList = new List<Genre>()
             {
-                new() {Id = 1, Name="Geen" },
+                //new() {Id = 1, Name="Geen" },
                 new() {Id = 2, Name="Coöperatief" },
                 new() {Id = 3, Name="Strategie" },
                 new() {Id = 4, Name="Tactiek" },

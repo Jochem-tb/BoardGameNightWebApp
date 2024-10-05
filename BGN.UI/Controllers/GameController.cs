@@ -45,8 +45,6 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> Filter(GameListModel gameListModel)
         {
             var games = await _gameService.GetAllAsync(gameListModel);
-            
-
             return View("List", new GameListModel() { DisplayGames = games});
         }
     }

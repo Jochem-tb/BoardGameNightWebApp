@@ -57,32 +57,28 @@ namespace BGN.Services
                 gamesQueryable = gamesQueryable.Where(x => x.Name.Contains(filterObject.SearchName));
             }
 
-            if (filterObject.SearchMinPlayers.HasValue)
-            {
-                gamesQueryable = gamesQueryable.Where(x => x.MinPlayers >= filterObject.SearchMinPlayers);
-            }
-
-            if (filterObject.SearchMaxPlayers.HasValue)
-            {
-                gamesQueryable = gamesQueryable.Where(x => x.MaxPlayers <= filterObject.SearchMaxPlayers);
-            }
-
+            // Apply age restriction filter
             if (filterObject.SearchIsAdult.HasValue)
             {
-                if (filterObject.SearchIsAdult.Value)
-                {
-                    // Only 18+
-                    gamesQueryable = gamesQueryable.Where(x => x.IsAdult == true);
-                }
-                else
-                {
-                    // No 18+
-                    gamesQueryable = gamesQueryable.Where(x => x.IsAdult == false);
-                }
+                gamesQueryable = filterObject.SearchIsAdult.Value
+                    ? gamesQueryable.Where(x => x.IsAdult == true)
+                    : gamesQueryable.Where(x => x.IsAdult == false);
             }
             // "All" case: No filtering on IsAdult
             // No need to apply a filter in this case.
 
+
+            // Apply player count filter
+            if (filterObject.SearchMinPlayers.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.MinPlayers >= filterObject.SearchMinPlayers.Value);
+            }
+
+            // Apply maximum players filter; if Unlimited is selected, skip max player filtering
+            if ( filterObject.SearchMaxPlayers.HasValue)
+            {
+                gamesQueryable = gamesQueryable.Where(x => x.MaxPlayers <= filterObject.SearchMaxPlayers.Value);
+            }
 
             if (filterObject.SearchGenreId.HasValue)
             {
