@@ -29,6 +29,8 @@ namespace BGN.UI.Controllers
         public IActionResult Details()
         {
             //TODO: Implement GameDetails Method
+
+            //Should get all Details of a game, and display them on New Detail View
             return View();
         }
 
@@ -61,6 +63,7 @@ namespace BGN.UI.Controllers
             gameListModel.SelectedCategories = gameListModel.SelectedCategories ?? new List<int>();
 
             // If the model state is valid, fetch games based on the filter criteria
+            //GetAllAsync is overloaded, so we can pass the GameListModel to it
             var filteredGames = await _gameService.GetAllAsync(gameListModel);
             gameListModel.DisplayGames = filteredGames;
 

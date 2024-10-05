@@ -44,7 +44,9 @@ namespace BGN.Domain.Entities
         [Range(1, 720)] // Maximum playtime = 12 hours
         public int? EstimatedTime { get; set; }
 
-        //TODO : Add a property for the image
+        [Required]
+        [MaxLength(255)]
+        public required string ImgUrl { get; set; } = "~/img/gamenight/BoardGameDefaultSmall.jpg";
 
         public ICollection<GameNight> GameNights { get; set; } = new List<GameNight>();
     }

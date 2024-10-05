@@ -27,5 +27,6 @@ namespace BGN.Shared
 
         public int? CategoryId { get; set; }
         public int? EstimatedTime { get; set; }
+        public required string ImgUrl { get; set; }
     }
 }
