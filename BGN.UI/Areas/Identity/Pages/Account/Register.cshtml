@@ -43,6 +43,64 @@
         <label asp-for="Input.ConfirmPassword">Confirm Password</label>
         <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
     </div>
+
+    <!-- New fields for Gender, DateOfBirth, PhoneNumber, Street, HouseNr, PostalCode, and City -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                <select asp-for="Input.Gender" class="form-select" aria-required="true">
+                    <option value="" disabled>Select gender</option>
+                    @await Component.InvokeAsync("Gender")
+                </select>
+                <label asp-for="Input.Gender">Gender</label>
+                <span asp-validation-for="Input.Gender" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                <input asp-for="Input.DateOfBirth" type="date" class="form-control" aria-required="true" placeholder="Date of birth" />
+                <label asp-for="Input.DateOfBirth">Date of Birth</label>
+                <span asp-validation-for="Input.DateOfBirth" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="tel" aria-required="true" placeholder="Phone number" />
+        <label asp-for="Input.PhoneNumber">Phone Number</label>
+        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Street" class="form-control" aria-required="true" placeholder="Street" />
+                <label asp-for="Input.Street">Street</label>
+                <span asp-validation-for="Input.Street" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-floating mb-3">
+                <input asp-for="Input.HouseNr" class="form-control" aria-required="true" placeholder="House Nr" />
+                <label asp-for="Input.HouseNr">House Nr</label>
+                <span asp-validation-for="Input.HouseNr" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-floating mb-3">
+                <input asp-for="Input.PostalCode" class="form-control" aria-required="true" placeholder="Postal Code" />
+                <label asp-for="Input.PostalCode">Postal Code</label>
+                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-floating mb-3">
+        <input asp-for="Input.City" class="form-control" aria-required="true" placeholder="City" />
+        <label asp-for="Input.City">City</label>
+        <span asp-validation-for="Input.City" class="text-danger"></span>
+    </div>
+
     <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
 </form>
 

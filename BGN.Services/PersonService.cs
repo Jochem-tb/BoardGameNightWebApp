@@ -1,4 +1,5 @@
-﻿using BGN.Domain.Entities;
+﻿using AutoMapper;
+using BGN.Domain.Entities;
 using BGN.Domain.Repositories;
 using BGN.Services.Abstractions;
 using BGN.Shared;
@@ -13,7 +14,12 @@ namespace BGN.Services
     internal sealed class PersonService : IPersonService
     {
         private readonly IRepositoryManager _repositoryManager;
-        public PersonService(IRepositoryManager repositoryManager) => _repositoryManager = repositoryManager;
+        private readonly IMapper _mapper;
+        public PersonService(IRepositoryManager repositoryManager, IMapper mapper)
+        {
+            _repositoryManager = repositoryManager;
+            _mapper = mapper;
+        }
 
         public Task<PersonDto> CreateAsync(PersonDto person)
         {
@@ -50,6 +56,12 @@ namespace BGN.Services
         public Task<PersonDto> UpdateAsync(int id, PersonDto person)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<GenderDto>> GetAllGendersAsync()
+        {
+            var genders = await _repositoryManager.PersonRepository.GetAllGendersAsync();
+            return _mapper.Map<IEnumerable<GenderDto>>(genders);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace BGN.Services
         public ServiceManager(IMapper mapper, IRepositoryManager repositoryManager)
         {
             _mapper = mapper;
-            _lazyPersonService = new Lazy<IPersonService>(() => new PersonService(repositoryManager));
+            _lazyPersonService = new Lazy<IPersonService>(() => new PersonService(repositoryManager, _mapper));
             _lazyGameNightService = new Lazy<IGameNightService>(() => new GameNightService(repositoryManager, _mapper));
             _lazyGameService = new Lazy<IGameService>(() => new GameService(repositoryManager, _mapper));
         }

@@ -114,6 +114,39 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             [DataType(DataType.Text)]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
+
+            [Required]
+            public Gender Gender { get; set; }
+
+            [Required]
+            [DataType(DataType.Date)]
+            [Display(Name = "Date of Birth")]
+            public DateTime DateOfBirth { get; set; }
+
+            [Phone]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; } = null;
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Street")]
+            public string Street { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "House Number")]
+            public string HouseNr { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Postal Code")]
+            public string PostalCode { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "City")]
+            public string City { get; set; }
+
         }
 
 
@@ -131,8 +164,6 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             {
                 var user = CreateUserAuth();
                 
-
-
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);

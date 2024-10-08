@@ -40,5 +40,10 @@ namespace BGN.Infrastructure.Repositories
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<Gender>> GetAllGendersAsync()
+        {
+            return await _dbContext.Genders.ToListAsync();
+        }
     }
 }

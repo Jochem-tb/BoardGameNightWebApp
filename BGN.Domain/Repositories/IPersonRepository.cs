@@ -13,5 +13,7 @@ namespace BGN.Domain.Repositories
         Task<Person> GetByIdAsync(int id);
         void Insert(Person person);
         void Remove(Person person);
+
+        Task<IEnumerable<Gender>> GetAllGendersAsync();
     }
 }

@@ -21,9 +21,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGN.UI", "BGN.UI\BGN.UI.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{CC0269C0-EE38-4480-9999-C9A50713C32F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGN.Shared", "BGN.Shared\BGN.Shared.csproj", "{FB5FD9CA-D435-4543-A491-D24E012C29B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGN.Shared", "BGN.Shared\BGN.Shared.csproj", "{FB5FD9CA-D435-4543-A491-D24E012C29B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGN.Infrastructure", "BGN.Infrastructure\BGN.Infrastructure.csproj", "{0C67CF17-8397-4627-BE2A-77D80052CC10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGN.Infrastructure", "BGN.Infrastructure\BGN.Infrastructure.csproj", "{0C67CF17-8397-4627-BE2A-77D80052CC10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
