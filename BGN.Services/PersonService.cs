@@ -1,4 +1,5 @@
-﻿using BGN.Domain.Repositories;
+﻿using BGN.Domain.Entities;
+using BGN.Domain.Repositories;
 using BGN.Services.Abstractions;
 using BGN.Shared;
 using System;
@@ -17,6 +18,11 @@ namespace BGN.Services
         public Task<PersonDto> CreateAsync(PersonDto person)
         {
             throw new NotImplementedException();
+        }
+
+        public void Insert(Person person)
+        {
+            _repositoryManager.PersonRepository.Insert(person);
         }
 
         public Task DeleteAsync(int id)

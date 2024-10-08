@@ -1,4 +1,5 @@
-﻿using BGN.Shared;
+﻿using BGN.Domain.Entities;
+using BGN.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace BGN.Services.Abstractions
         Task<IEnumerable<PersonDto>> GetAllAsync();
         Task<PersonDto> GetByIdAsync(int id);
         Task<PersonDto> CreateAsync(PersonDto person);
+        void Insert(Person person);
         Task<PersonDto> UpdateAsync(int id, PersonDto person);
         Task DeleteAsync(int id);
     }

@@ -32,7 +32,8 @@ namespace BGN.Infrastructure.Repositories
 
         public void Insert(Person person)
         {
-            throw new NotImplementedException();
+            _dbContext.Persons.Add(person);
+            _dbContext.SaveChanges();
         }
 
         public void Remove(Person person)

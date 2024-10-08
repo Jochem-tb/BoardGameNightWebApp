@@ -7,7 +7,9 @@ using BGN.Domain;
 using Microsoft.EntityFrameworkCore;
 using BGN.Services.Mapping;
 using Microsoft.AspNetCore.Identity;
-using BGN.UI.Areas.Identity.Data;
+using BGN.UI.Areas.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,9 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 //Dependency Injection
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+
+//Add Email Sender to container
+builder.Services.AddTransient<IEmailSender, EmailSenderConsole>();
 
 
 // Add services to the container.
@@ -31,10 +36,9 @@ builder.Services.AddDbContext<RepositoryDbContext>(options =>
 builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BGN_Accounts")));
 
-//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AuthDbContext>();
 
 //Add Identity Services
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     //Identity Password options --> The annoying onces
     options.Password.RequireDigit = true;
@@ -45,6 +49,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddAuthorization(polictyBuilder =>
+{
+    //Policies / Claims Config
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddRazorPages();
 
@@ -63,7 +74,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",

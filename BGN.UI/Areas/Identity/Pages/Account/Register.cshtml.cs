@@ -10,6 +10,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
 using System.Threading.Tasks;
+using BGN.Domain.Entities;
+using BGN.Services.Abstractions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -29,13 +31,15 @@ namespace BGN.UI.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IPersonService _personService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IServiceManager serviceManager)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -43,6 +47,7 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _personService = serviceManager.PersonService;
         }
 
         /// <summary>
@@ -97,6 +102,18 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+
+            //Now we create the form fields for the Person Entity
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "First Name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Last Name")]
+            public string LastName { get; set; }
         }
 
 
@@ -112,17 +129,24 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser();
+                var user = CreateUserAuth();
+                
+
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("User created in AuthDB a new account with password.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
+
+                    var person = CreatePersonEntity(userId);
+                    _personService.Insert(person);
+
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
@@ -154,7 +178,43 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private IdentityUser CreateUser()
+        private Person CreatePersonEntity(string authId)
+        {
+            try
+            {
+                return new Person()
+                {
+                    IdentityUserId = authId,
+
+
+                    FirstName = Input.FirstName,
+                    LastName = Input.LastName,
+                    Email = Input.Email,
+                    //Gender = Input.Gender,
+                    //DateOfBirth = Input.DateOfBirth,
+                    //PhoneNumber = Input.PhoneNumber,
+                    //Street = Input.Street,
+                    //HouseNr = Input.HouseNr,
+                    //PostalCode = Input.PostalCode,
+                    //City = Input.City
+
+                    Gender = new Gender() { Name = "Test"},
+                    DateOfBirth = DateTime.Now,
+                    PhoneNumber = "1234567890",
+                    Street = "Test",
+                    HouseNr = "1",
+                    PostalCode = "1234AB",
+                    City = "Test"
+
+                };
+            } 
+            catch
+            {
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(Person)}'. ");
+            }
+        }
+
+        private IdentityUser CreateUserAuth()
         {
             try
             {

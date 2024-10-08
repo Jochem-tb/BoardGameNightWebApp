@@ -13,6 +13,10 @@ namespace BGN.Domain.Entities
 
         public int Id { get; set; }
 
+        //FK to link with IdentityUser
+        [MaxLength(450)]
+        public required string IdentityUserId { get; init; }
+
         [Required]
         [MaxLength(30)]
         public required string FirstName { get; set; }
