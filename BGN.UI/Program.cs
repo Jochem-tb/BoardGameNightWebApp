@@ -6,6 +6,8 @@ using BGN.Services;
 using BGN.Domain;
 using Microsoft.EntityFrameworkCore;
 using BGN.Services.Mapping;
+using Microsoft.AspNetCore.Identity;
+using BGN.UI.Areas.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +27,26 @@ builder.Services.AddDbContext<RepositoryDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BGN_Database")));
 
 
+//Database for Login.
+builder.Services.AddDbContext<AuthDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BGN_Accounts")));
 
+//builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<AuthDbContext>();
+
+//Add Identity Services
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    //Identity Password options --> The annoying onces
+    options.Password.RequireDigit = true;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequiredLength = 6;
+})
+    .AddEntityFrameworkStores<AuthDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -47,5 +68,7 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapRazorPages();
 
 app.Run();
