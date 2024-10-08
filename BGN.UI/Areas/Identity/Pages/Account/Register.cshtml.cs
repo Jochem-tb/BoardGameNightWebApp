@@ -116,7 +116,7 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             public string LastName { get; set; }
 
             [Required]
-            public Gender Gender { get; set; }
+            public int GenderId { get; set; }
 
             [Required]
             [DataType(DataType.Date)]
@@ -221,22 +221,13 @@ namespace BGN.UI.Areas.Identity.Pages.Account
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     Email = Input.Email,
-                    //Gender = Input.Gender,
-                    //DateOfBirth = Input.DateOfBirth,
-                    //PhoneNumber = Input.PhoneNumber,
-                    //Street = Input.Street,
-                    //HouseNr = Input.HouseNr,
-                    //PostalCode = Input.PostalCode,
-                    //City = Input.City
-
-                    Gender = new Gender() { Name = "Test"},
-                    DateOfBirth = DateTime.Now,
-                    PhoneNumber = "1234567890",
-                    Street = "Test",
-                    HouseNr = "1",
-                    PostalCode = "1234AB",
-                    City = "Test"
-
+                    GenderId = Input.GenderId,
+                    DateOfBirth = Input.DateOfBirth,
+                    PhoneNumber = Input.PhoneNumber,
+                    Street = Input.Street,
+                    HouseNr = Input.HouseNr,
+                    PostalCode = Input.PostalCode,
+                    City = Input.City
                 };
             } 
             catch

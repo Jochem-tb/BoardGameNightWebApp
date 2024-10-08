@@ -31,9 +31,9 @@ namespace BGN.Domain.Entities
         public required string Email { get; set; }
 
         [Required]
-        public required Gender Gender { get; set; }
+        public Gender? Gender { get; set; }
 
-        public int? GenderId { get; set; }
+        public int GenderId { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
