@@ -85,10 +85,10 @@
         <div class="row g-4">
 
             @{
-                var isUserAdult = false; //TODO: replace with actual user check
+                var isUserAdult = true; //TODO: replace with actual user check
 
                 foreach (var game in Model.DisplayGames)
-                {
+                { 
                     var gameCardClass = game.IsAdult && !isUserAdult ? "bg-danger bg-opacity-50" : "bg-white";
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3 ">
 
@@ -112,6 +112,9 @@
                                     @game.Description <br />
                                     Playable with: @game.MinPlayers/@game.MaxPlayers
                                 </p>
+
+
+                                <!--Dont display the details button if user is Not 18+ and game is-->
 
                                 @if(!game.IsAdult || (isUserAdult && game.IsAdult)){
                                      <!-- Details button on the bottem, alsways bot-->
