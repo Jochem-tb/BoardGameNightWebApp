@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using BGN.Domain.Entities;
 using BGN.Services.Abstractions;
+using BGN.UI.Models.Attributes;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -120,6 +121,8 @@ namespace BGN.UI.Areas.Identity.Pages.Account
 
             [Required]
             [DataType(DataType.Date)]
+            //Place attribute to test if user is at least 16 years old 
+            [MinAge(16)]
             [Display(Name = "Date of Birth")]
             public DateTime DateOfBirth { get; set; }
 
