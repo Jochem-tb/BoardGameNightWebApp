@@ -1,0 +1,16 @@
+﻿@model BGN.UI.Models.GameNightListModel
+
+<div class="mb-3">
+    <label class="form-label">Food options</label>
+    @foreach (var foodOption in Model.AvailableFoodOptions)
+    {
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox"
+                   value="@foodOption.Id"
+                   id="foodOption_@foodOption.Id"
+                   name="SelectedFoodOptions"
+            @(Model.SelectedFoodOptions.Contains(foodOption.Id) ? "checked" : "") />
+            <label class="form-check-label" for="foodOption_@foodOption.Id">@foodOption.Name</label>
+        </div>
+    }
+</div>

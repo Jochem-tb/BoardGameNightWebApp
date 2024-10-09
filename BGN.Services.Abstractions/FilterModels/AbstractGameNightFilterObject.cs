@@ -10,7 +10,7 @@ namespace BGN.Services.Abstractions.FilterModels
         public string? SearchGameName { get; set; }
 
 
-        public IEnumerable<int>? SelectedFoodOptions { get; set; } = new List<int>();
+        public IEnumerable<int>? SelectedFoodOptions { get; set; } 
         public IEnumerable<FoodOptionDto> AvailableFoodOptions { get; set; } = new List<FoodOptionDto>();
     }
 }

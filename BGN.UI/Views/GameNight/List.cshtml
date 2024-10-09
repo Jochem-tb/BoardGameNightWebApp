@@ -48,6 +48,17 @@
                     </div>
                 </div>
 
+                <!-- Example filter: Search by gameName -->
+                <div class="mb-3">
+                    <label class="form-label">Search by Game name</label>
+                    <input asp-for="SearchGameName" type="text" class="form-control" id="searchGameName" placeholder="Enter game name">
+                </div>
+
+                <!-- Generate Checkboxes for Foodoptions -->
+                <div class="mb-3">
+                    @await Component.InvokeAsync("FoodOptionsCheckboxFilter", Model)
+                </div>
+
                 <!-- Filter button -->
                 <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
 
@@ -71,17 +82,17 @@
                 foreach (var gameNight in Model.DisplayGameNights)
                 {
 
-                        //Check if game night contains 18+ games
-                        
-                        foreach (var game in gameNight.Games)
+                    //Check if game night contains 18+ games
+
+                    foreach (var game in gameNight.Games)
+                    {
+                        if (game.IsAdult)
                         {
-                            if (game.IsAdult)
-                            {
-                                //Set variable to true and break the loop
-                                isGameNightAdult = true;
-                                break;
-                            }
+                            //Set variable to true and break the loop
+                            isGameNightAdult = true;
+                            break;
                         }
+                    }
 
                     //if user is not 18+ and game night contains 18+ games, skip this game night
                     if (isGameNightAdult && !isUserAdult)
@@ -132,6 +143,35 @@
                                                 @gameNight.Street @gameNight.HouseNr
                                                 <br />
                                                 @gameNight.City
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <h4>What:</h4>
+                                            <div class="col-6">
+                                                <ul>
+                                                    @foreach (var game in gameNight.Games)
+                                                    {
+                                                        <li>@game.Name</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                            <div class="col-6">
+                                                <ul>
+                                                    @foreach (var option in gameNight.FoodOptions)
+                                                    {
+                                                        <li>
+                                                        @if(false) //TODO: Logic if Options is in User Options
+                                                        {
+                                                                <span class="badge bg-success">@option.Name</span>
+                                                        } 
+                                                        else
+                                                        {
+                                                                <span class="badge bg-danger">@option.Name</span>
+                                                        }
+                                                        </li>
+                                                    }
+                                                </ul>
                                             </div>
                                         </div>
                                     </p>

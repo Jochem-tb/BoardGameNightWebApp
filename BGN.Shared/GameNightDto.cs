@@ -19,7 +19,7 @@ namespace BGN.Shared
         public int MaxPlayers { get; set; }
 
         public IEnumerable<GameDto> Games { get; set; } = new List<GameDto>();
-    public IEnumerable<PersonDto> Attendees { get; set; } = new List<PersonDto>();
-        //public IEnumerable<FoodOptionsDto> Foods { get; set; }
+        public IEnumerable<PersonDto> Attendees { get; set; } = new List<PersonDto>();
+        public IEnumerable<FoodOptionDto> FoodOptions { get; set; } = new List<FoodOptionDto>();
     }
 }

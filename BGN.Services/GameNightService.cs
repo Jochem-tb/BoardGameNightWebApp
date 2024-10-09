@@ -52,40 +52,42 @@ namespace BGN.Services
 
         public async Task<IEnumerable<GameNightDto>> GetAllAsync(AbstractGameNightFilterObject filterObject)
         {
+            // Await the asynchronous call to get the IQueryable
             var gameNightQuery = await _repositoryManager.GameNightRepository.GetAllGameNightsAsQueryableAsync();
 
-
-            //Search by isAdult
-
+            // Search by isAdult
             if (filterObject.SearchIsAdult.HasValue)
             {
+                // Use the correct filtering logic based on the isAdult search value
                 gameNightQuery = filterObject.SearchIsAdult.Value
-                    ? gameNightQuery.Where(x => x.Games.Any(g => g.IsAdult) == true)
-
-                    : gameNightQuery.Where(x => x.Games.Any(g => g.IsAdult) == false);
+                    ? gameNightQuery.Where(x => x.Games.Any(g => g.IsAdult)) 
+                    : gameNightQuery.Where(x => !x.Games.Any(g => g.IsAdult)); 
             }
 
-            //Search by organizer name
-            if (filterObject.SearchOrganizerName != null)
+            // Search by organizer name
+            if (!string.IsNullOrEmpty(filterObject.SearchOrganizerName))
             {
-                gameNightQuery = gameNightQuery.Where(x => (x.Organiser.FirstName + " " + x.Organiser.LastName)
-                .Contains(filterObject.SearchOrganizerName));
+                gameNightQuery = gameNightQuery.Where(x =>
+                    (x.Organiser.FirstName + " " + x.Organiser.LastName).Contains(filterObject.SearchOrganizerName));
             }
 
-            //Search by game name
-            if (filterObject.SearchGameName != null)
+            // Search by game name
+            if (!string.IsNullOrEmpty(filterObject.SearchGameName))
             {
                 gameNightQuery = gameNightQuery.Where(x => x.Games.Any(y => y.Name.Contains(filterObject.SearchGameName)));
             }
 
-            //Search by food options 
-            if (filterObject.SelectedFoodOptions!.Any())
+            // Check if any food options were selected
+            if (filterObject.SelectedFoodOptions != null && filterObject.SelectedFoodOptions.Any())
             {
-                gameNightQuery = gameNightQuery.Where(x => x.FoodOptions != null && filterObject.SelectedFoodOptions!.Contains(x.Id));
-
+                gameNightQuery = gameNightQuery.Where(gameNight =>
+                    gameNight.FoodOptions.Any(fo => filterObject.SelectedFoodOptions.Contains(fo.Id)));
             }
 
-            var gameNightList = gameNightQuery.ToList();
+            // Execute the query and convert it to a list
+            var gameNightList = gameNightQuery.ToList(); 
+
+            // Map the results to GameNightDto
             return _mapper.Map<List<GameNightDto>>(gameNightList);
         }
     }

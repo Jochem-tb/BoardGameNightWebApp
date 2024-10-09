@@ -17,6 +17,7 @@ namespace BGN.Services
         private readonly Lazy<IPersonService> _lazyPersonService;
         private readonly Lazy<IGameNightService> _lazyGameNightService;
         private readonly Lazy<IGameService> _lazyGameService;
+        private readonly Lazy<IMiscService> _lazyMiscService;
 
 
         // Constructor to inject the repository manager
@@ -28,6 +29,7 @@ namespace BGN.Services
             _lazyPersonService = new Lazy<IPersonService>(() => new PersonService(repositoryManager, _mapper));
             _lazyGameNightService = new Lazy<IGameNightService>(() => new GameNightService(repositoryManager, _mapper));
             _lazyGameService = new Lazy<IGameService>(() => new GameService(repositoryManager, _mapper));
+            _lazyMiscService = new Lazy<IMiscService>(() => new MiscService(repositoryManager, _mapper));
         }
 
 
@@ -36,5 +38,6 @@ namespace BGN.Services
         public IPersonService PersonService => _lazyPersonService.Value;
         public IGameNightService GameNightService => _lazyGameNightService.Value;
         public IGameService GameService => _lazyGameService.Value;
+        public IMiscService MiscService => _lazyMiscService.Value;
     }
 }

@@ -11,5 +11,6 @@ namespace BGN.Domain.Repositories
         IPersonRepository PersonRepository { get; }
         IGameNightRepository GameNightRepository { get; }
         IGameRepository GameRepository { get; }
+        IMiscRepository MiscRepository { get; }
     }
 }
