@@ -19,7 +19,11 @@ namespace BGN.Infrastructure.Repositories
         }
         public async Task<IEnumerable<GameNight>> GetAllAsync()
         {
-            return await _dbContext.GameNights.ToListAsync();
+            return await Task.FromResult(_dbContext.GameNights
+                .Include(x => x.Games)
+                .Include(x => x.Attendees)
+                .Include(x => x.FoodOptions)
+                .Include(x => x.Organiser));
         }
 
         public Task<GameNight> GetByIdAsync(int id)
@@ -35,6 +39,15 @@ namespace BGN.Infrastructure.Repositories
         public void Remove(GameNight gameNight)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IQueryable<GameNight>> GetAllGameNightsAsQueryableAsync()
+        {
+            return await Task.FromResult(_dbContext.GameNights.AsQueryable()
+                .Include(x => x.Games)
+                .Include(x => x.Attendees)
+                .Include(x => x.FoodOptions)
+                .Include(x => x.Organiser));
         }
     }
 }

@@ -1,17 +1,154 @@
 ﻿@using BGN.Shared
-@model IEnumerable<GameNightDto>
-
-<div>
-    <h2>Game Night List</h2>
-</div>
+@model BGN.UI.Models.GameNightListModel
 
 @{
-    foreach(var gameNight in Model)
-    {
-        <div>
-            <h3>GameNight name: @gameNight.Name</h3>
-            <p>Date : @gameNight.Date</p>
-            <p>Time : @gameNight.Time</p>
-        </div>
-    }
+    var isUserAbleToOrganize = true; //TODO: replace with actual user check
 }
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Gamenights</h2>
+        @if (isUserAbleToOrganize)
+        {
+            <a asp-area="" asp-controller="GameNight" asp-action="Create" class="btn btn-primary">Organise GameNight</a>
+        }
+    </div>
+</div>
+
+<!-- Row for sidebar and game list -->
+<div class="row">
+    <!-- Sidebar for filters -->
+    <div class="col-12 col-md-3 mb-4">
+        <div class="bg-light p-3 rounded">
+            <h5 class="fw-bold mb-3">Filters</h5>
+
+            <form method="get" asp-controller="GameNight" asp-action="Filter">
+
+                <!-- Example filter: Search by name -->
+                <div class="mb-3">
+                    <label class="form-label">Search by Organizer Name</label>
+                    <input asp-for="SearchOrganizerName" type="text" class="form-control" id="searchName" placeholder="Enter organizer name">
+                </div>
+
+                <!-- Example filter: Age restriction -->
+                <div class="mb-3">
+                    <label class="form-label">Age Restriction</label>
+                    <div class="form-check">
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="" id="ageFilterAll" checked>
+                        <label class="form-check-label" for="ageFilterAll">All</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="false" id="ageFilterNo18">
+                        <label class="form-check-label" for="ageFilterNo18">No 18+</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="true" id="ageFilterOnly18">
+                        <label class="form-check-label" for="ageFilterOnly18">Only 18+</label>
+                    </div>
+                </div>
+
+                <!-- Filter button -->
+                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="col-12 col-md-9">
+        <div class="row g-4">
+
+            @{
+                var isUserAdult = true; //TODO: replace with actual user check
+                var isGameNightAdult = false;
+
+
+                //Iterate over all gamenights and display them
+                foreach (var gameNight in Model.DisplayGameNights)
+                {
+
+                        //Check if game night contains 18+ games
+                        
+                        foreach (var game in gameNight.Games)
+                        {
+                            if (game.IsAdult)
+                            {
+                                //Set variable to true and break the loop
+                                isGameNightAdult = true;
+                                break;
+                            }
+                        }
+
+                    //if user is not 18+ and game night contains 18+ games, skip this game night
+                    if (isGameNightAdult && !isUserAdult)
+                    {
+                        break;
+                    }
+                    else
+                    {
+
+
+                        <div class="col-12 col-sm-6 col-md-6 col-lg-6 ">
+
+                            <div class="card h-100">
+
+
+                                <img src='~/img/gamenight/BoardGameDefaultSmall.jpg' class="card-img-top img-fluid" alt="Random photo for GameNight">
+
+
+                                <div class="card-body d-flex flex-column">
+                                    <h5 class="card-title fw-semibold">
+                                        @gameNight.Name
+                                        @if (isGameNightAdult)
+                                        {
+                                            <span class="badge bg-danger ms-auto small float-end">18+</span>
+                                        }
+                                    </h5>
+
+
+                                    <p class="card-text">
+                                        <h4>Who:</h4>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                @gameNight.OrganiserFirstname @gameNight.OrganiserLastname <br />
+                                            </div>
+                                            <div class="col-6">
+                                                @gameNight.Attendees.Count() / @gameNight.MaxPlayers
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <h4>When:</h4>
+                                                Date: @gameNight.Date.ToShortDateString() <br />
+                                                Time: @gameNight.Time.ToString(@"hh\:mm") <br />
+                                            </div>
+                                            <div class="col-6">
+                                                <h4>Where:</h4>
+                                                @gameNight.Street @gameNight.HouseNr
+                                                <br />
+                                                @gameNight.City
+                                            </div>
+                                        </div>
+                                    </p>
+
+
+
+                                    <!-- Details button on the bottem, alsways bot-->
+                                    <a href="#" class="btn btn-primary mt-auto btn-sm">Details</a>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    }
+                }
+            }
+
+        </div>
+    </div>
+</div>

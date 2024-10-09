@@ -14,7 +14,7 @@ namespace BGN.Domain.Entities
         public int Id { get; set; }
 
         //FK to link with IdentityUser
-        [MaxLength(450)]
+        [MaxLength(450)] //Same Lenght as in AuthDb
         public required string IdentityUserId { get; init; }
 
         [Required]

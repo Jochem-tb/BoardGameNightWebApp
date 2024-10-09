@@ -10,6 +10,7 @@ namespace BGN.Domain.Repositories
     public interface IGameNightRepository
     {
         Task<IEnumerable<GameNight>> GetAllAsync();
+        Task<IQueryable<GameNight>> GetAllGameNightsAsQueryableAsync();
         Task<GameNight> GetByIdAsync(int id);
         void Insert(GameNight gameNight);
         void Remove(GameNight gameNight);
