@@ -49,5 +49,51 @@ namespace BGN.Infrastructure.Repositories
                 .Include(x => x.FoodOptions)
                 .Include(x => x.Organiser));
         }
+
+        public async Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey)
+        {
+            var gameNight = await _dbContext.GameNights
+                .Include(x => x.Attendees)
+                .FirstOrDefaultAsync(x => x.Id == gameNightId);
+
+            var person = await _dbContext.Persons.FirstOrDefaultAsync(x => x.IdentityUserId == identityUserKey);
+
+            if (gameNight == null || person == null)
+            {
+                //Game night or person not found
+                return false;
+            }
+            else
+            {
+                //Add the person to the game night
+                gameNight.Attendees.Add(person);
+
+                //Save changes
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
+        }
+
+        public Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Person>> GetAttendeesAsync(int gameNightId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Game>> GetGamesAsync(int gameNightId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<FoodOptions>> GetFoodOptionsAsync(int gameNightId)
+        {
+            throw new NotImplementedException();
+        }
+
+        
     }
 }

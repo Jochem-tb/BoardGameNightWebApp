@@ -90,5 +90,56 @@ namespace BGN.Services
             // Map the results to GameNightDto
             return _mapper.Map<List<GameNightDto>>(gameNightList);
         }
+
+        public async Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey)
+        {
+            var gameNights = await _repositoryManager.GameNightRepository.GetAllAsync();
+            gameNights = gameNights.Where(x => x.Id == gameNightId).ToList();
+
+            //Check if Attending == MaxPlayers
+            var isPlaceAvailable = gameNights.Where(x => x.Attendees.Count() < x.MaxPlayers).Any();
+            if (!isPlaceAvailable)
+            {
+                return false;
+            }
+
+            //Check if person is already attending
+            var isAttending = gameNights.Where(x => x.Attendees.Any(y => y.IdentityUserId == identityUserKey)).Any();
+            if (isAttending)
+            {
+                return false;
+            }
+
+            //Check if person is the organizer
+            var isOrganiser = gameNights.Where(x => x.Organiser.IdentityUserId == identityUserKey).Any();
+            if (isOrganiser)
+            {
+                return false;
+            }
+
+            var isSuccess = await _repositoryManager.GameNightRepository.JoinGameNightAsync(gameNightId, identityUserKey);
+
+            return isSuccess;
+        }
+
+        public Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<PersonDto>> GetAttendeesAsync(int gameNightId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<GameDto>> GetGamesAsync(int gameNightId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<FoodOptionDto>> GetFoodOptionsAsync(int gameNightId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

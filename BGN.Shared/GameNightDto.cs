@@ -8,6 +8,7 @@ namespace BGN.Shared
 {
     public class GameNightDto
     {
+        public int Id { get; set; }
         public string? Name { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan Time { get; set; }

@@ -16,5 +16,13 @@ namespace BGN.Services.Abstractions
         Task<GameNightDto> CreateAsync(GameNightDto gameNight);
         Task<GameNightDto> UpdateAsync(int id, GameNightDto gameNight);
         Task DeleteAsync(int id);
+
+        Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey);
+        Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey);
+
+        Task<IEnumerable<PersonDto>> GetAttendeesAsync(int gameNightId);
+        Task<IEnumerable<GameDto>> GetGamesAsync(int gameNightId);
+        Task<IEnumerable<FoodOptionDto>> GetFoodOptionsAsync(int gameNightId);
+
     }
 }

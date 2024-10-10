@@ -15,5 +15,7 @@ namespace BGN.Domain.Repositories
         void Remove(Person person);
 
         Task<IEnumerable<Gender>> GetAllGendersAsync();
+
+        Task<Person> GetPersonIdByUserKey(string userIdentityKey);
     }
 }

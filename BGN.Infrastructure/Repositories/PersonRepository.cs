@@ -45,5 +45,20 @@ namespace BGN.Infrastructure.Repositories
         {
             return await _dbContext.Genders.ToListAsync();
         }
+
+        public async Task<Person>? GetPersonIdByUserKey(string userIdentityKey)
+        {
+            if(userIdentityKey == null)
+            {
+                return await _dbContext.Persons.FirstOrDefaultAsync(x => x.IdentityUserId == userIdentityKey);
+            }
+            else
+            {
+                userIdentityKey = "";
+                return await _dbContext.Persons.FirstOrDefaultAsync(x => x.IdentityUserId == userIdentityKey);
+                    ;
+            }
+
+        }
     }
 }
