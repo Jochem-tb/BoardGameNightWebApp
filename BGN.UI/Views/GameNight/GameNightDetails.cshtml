@@ -1,0 +1,61 @@
+﻿@model BGN.Shared.GameNightDto
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="fw-bold">GameNight Details</h1>
+                    <p><strong>ID:</strong> @Model.Id</p>
+                    <p><strong>Name:</strong> @Model.Name</p>
+                    <p><strong>Max Players:</strong> @Model.MaxPlayers</p>
+                    <p><strong>Organiser:</strong> @Model.OrganiserFirstname</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold">Games</h5>
+                    <ul class="list-group">
+                        @foreach (var game in Model.Games)
+                        {
+                            <li class="list-group-item">@game.Name</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold">Attendees</h5>
+                    <ul class="list-group">
+                        @foreach (var person in Model.Attendees)
+                        {
+                            <li class="list-group-item">@person.FirstName</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold">Food Options</h5>
+                    <ul class="list-group">
+                        @foreach (var option in Model.FoodOptions)
+                        {
+                            <li class="list-group-item">@option.Name</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

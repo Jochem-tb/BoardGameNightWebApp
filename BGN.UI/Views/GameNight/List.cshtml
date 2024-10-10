@@ -14,6 +14,14 @@
     </div>
 </div>
 
+<!-- Error message box -->
+@if (TempData["JoinGameNightError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["JoinGameNightError"]
+    </div>
+}
+
 <!-- Row for sidebar and game list -->
 <div class="row">
     <!-- Sidebar for filters -->
@@ -179,7 +187,7 @@
                                     <!-- Details button on the bottem, alsways bot-->
                                     <div class="row mt-auto">
                                         <div class="col-6 col-sm-6 ">
-                                            <a asp-controller="GameNight" asp-action="List" class="btn btn-primary w-100">Details</a>
+                                                        <a asp-controller="GameNight" asp-action="GameNightDetails" asp-route-gameNightId="@gameNight.Id" class="btn btn-primary w-100">Details</a>
                                         </div>
                                         <div class="col-4 col-sm-6 ">
                                             <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@gameNight.Id" class="btn btn-primary w-100">Join Now!</a>

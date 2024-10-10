@@ -40,9 +40,10 @@ namespace BGN.Services
             return _mapper.Map<List<GameNightDto>>(gameNightList);
         }
 
-        public Task<GameNightDto> GetByIdAsync(int id)
+        public async Task<GameNightDto> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(id);
+            return _mapper.Map<GameNightDto>(gameNight);
         }
 
         public Task<GameNightDto> UpdateAsync(int id, GameNightDto gameNight)

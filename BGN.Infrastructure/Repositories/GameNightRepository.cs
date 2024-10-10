@@ -26,9 +26,15 @@ namespace BGN.Infrastructure.Repositories
                 .Include(x => x.Organiser));
         }
 
-        public Task<GameNight> GetByIdAsync(int id)
+        public async Task<GameNight> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await Task.FromResult(_dbContext.GameNights
+                .Include(x => x.Games)
+                .Include(x => x.Attendees)
+                .Include(x => x.FoodOptions)
+                .Include(x => x.Organiser)
+                .FirstOrDefault(x => x.Id == id)
+                );
         }
 
         public void Insert(GameNight gameNight)

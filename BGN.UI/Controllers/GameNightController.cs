@@ -3,7 +3,9 @@ using BGN.Services.Abstractions;
 using BGN.UI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using System.Security.Claims;
+using System.Security.Principal;
 
 namespace BGN.UI.Controllers
 {
@@ -16,9 +18,10 @@ namespace BGN.UI.Controllers
             _gameNightService = serviceManager.GameNightService;
         }
         
-        public IActionResult Index()
+        public async Task<IActionResult> GameNightDetails(int gameNightId)
         {
-            return View();
+            var gameNightDetails = await _gameNightService.GetByIdAsync(gameNightId);
+            return View(gameNightDetails);
         }
 
         [Authorize]
@@ -34,7 +37,7 @@ namespace BGN.UI.Controllers
 
                 if (result)
                 {
-                    return RedirectToAction("GameNightDetails");
+                    return RedirectToAction("GameNightDetails", gameNightId);
                 }
                 else
                 {
@@ -48,7 +51,13 @@ namespace BGN.UI.Controllers
             {
                 //Handle case where user is not authenticated
                 TempData["JoinGameNightError"] = "You must be logged in to join a game night.";
-                return RedirectToAction("Login", "Identity/Account");
+
+                //TODO: Fix the redirection to login page
+                //return RedirectToAction("Login", $"Identity/Account");
+
+                //Temporary fix
+                return RedirectToAction("List");
+
             }
         }
 
