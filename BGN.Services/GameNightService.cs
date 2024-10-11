@@ -111,12 +111,8 @@ namespace BGN.Services
                 return false;
             }
 
-            //Check if person is the organizer
-            var isOrganiser = gameNights.Where(x => x.Organiser.IdentityUserId == identityUserKey).Any();
-            if (isOrganiser)
-            {
-                return false;
-            }
+
+            //Organiser can join his own game, only once as per check above
 
             var isSuccess = await _repositoryManager.GameNightRepository.JoinGameNightAsync(gameNightId, identityUserKey);
 
