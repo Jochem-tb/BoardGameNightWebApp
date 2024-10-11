@@ -79,6 +79,8 @@ namespace BGN.UI.Controllers
             // If the model state is valid, fetch games based on the filter criteria
             //GetAllAsync is overloaded, so we can pass the GameListModel to it
             var filteredGameNights = await _gameNightService.GetAllAsync(gameNightListModel);
+            var currentUser = await _userService.GetLoggedInUserAsync();
+            gameNightListModel.CurrentUser = currentUser;
             gameNightListModel.DisplayGameNights = filteredGameNights;
 
             // Return the filtered games to the view
@@ -97,7 +99,7 @@ namespace BGN.UI.Controllers
 
                 if (result)
                 {
-                    return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                    return RedirectToAction("List");
                 }
                 else
                 {

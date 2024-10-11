@@ -2,7 +2,29 @@
 @model BGN.UI.Models.GameNightListModel
 
 @{
-    var isUserAbleToOrganize = true; //TODO: replace with actual user check
+    const int _minAgeOrganise = 16;
+    var isUserAbleToOrganize = false;
+    var isUserAdult = false;
+
+    var today = DateTime.Today;
+    // Calculate the age
+    var age = today.Year - @Model.CurrentUser.DateOfBirth.Year;
+
+    // Check if the birthdate hasn't occurred yet this year
+    if (@Model.CurrentUser.DateOfBirth > today.AddYears(-age))
+    {
+        age--; // If the birthday hasn't occurred yet this year, subtract one year from age
+    }
+
+    // If the calculated age is greater than or equal to the minimum required age
+    if (age >= _minAgeOrganise)
+    {
+        isUserAbleToOrganize = true;
+    }
+    if (age >= 18)
+    {
+        isUserAdult = true;
+    }
 }
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
@@ -82,16 +104,18 @@
         <div class="row g-4">
 
             @{
-                var isUserAdult = true; //TODO: replace with actual user check
-                var isGameNightAdult = false;
-
-
+                var joinButtonClassAttribute = "";
+                
                 //Iterate over all gamenights and display them
                 foreach (var gameNight in Model.DisplayGameNights)
                 {
+                    //Reset variables to default value each iteration
+                    var isAttending = false;
+                    var isGameNightAdult = false;
+
+
 
                     //Check if game night contains 18+ games
-
                     foreach (var game in gameNight.Games)
                     {
                         if (game.IsAdult)
@@ -102,13 +126,25 @@
                         }
                     }
 
-                    //if user is not 18+ and game night contains 18+ games, skip this game night
+                    // if user is not 18+ and game night contains 18+ games, set the join button on disabled
                     if (isGameNightAdult && !isUserAdult)
                     {
-                        break;
+                        joinButtonClassAttribute = "disabled text-warning text-decoration-underline";
                     }
-                    else
+
+                    //if user is already attending set join button to leave button
+                    var currentUserId = Model.CurrentUser.Id;
+                    foreach(var person in gameNight.Attendees)
                     {
+                        if (person.Id == currentUserId)
+                        {
+                            isAttending = true;
+                            break;
+                        }
+                    }
+
+
+                    
                         <div class="col-12 col-sm-6 col-md-6 col-lg-6 ">
 
                             <div class="card h-100 border border-1 ">
@@ -189,9 +225,21 @@
                                         <div class="col-6 col-sm-6 ">
                                              <a asp-controller="GameNight" asp-action="GameNightDetails" asp-route-gameNightId="@gameNight.Id" class="btn btn-primary w-100">Details</a>
                                         </div>
+
+                                    @if (isAttending)
+                                    {
                                         <div class="col-4 col-sm-6 ">
-                                            <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@gameNight.Id" class="btn btn-primary w-100">Join Now!</a>
+                                            <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@gameNight.Id" class="btn btn-danger w-100">Leave</a>
                                         </div>
+                                    } 
+                                    else
+                                    {
+                                        <div class="col-4 col-sm-6 ">
+                                            <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@gameNight.Id" class="btn btn-success w-100 @joinButtonClassAttribute">Join Now!</a>
+                                        </div>
+                                    }
+                                    
+
                                     </div>
 
                                 </div>
