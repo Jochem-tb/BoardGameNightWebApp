@@ -1,4 +1,5 @@
 ﻿using BGN.Domain.Repositories;
+using BGN.Services;
 using BGN.Services.Abstractions;
 using BGN.UI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -13,15 +14,18 @@ namespace BGN.UI.Controllers
     public class GameNightController : Controller
     {
         private readonly  IGameNightService _gameNightService;
-        public GameNightController(IServiceManager serviceManager)
+        private readonly  IUserService _userService;
+        public GameNightController(IServiceManager serviceManager, IUserService userService)
         {
             _gameNightService = serviceManager.GameNightService;
+            _userService = userService;
         }
         
         public async Task<IActionResult> GameNightDetails(int gameNightId)
         {
             var gameNightDetails = await _gameNightService.GetByIdAsync(gameNightId);
-            return View(gameNightDetails);
+            var currentUser = await _userService.GetLoggedInUserAsync();
+            return View(new GameNightDetailsModel() { GameNight = gameNightDetails, CurrentUser = currentUser});
         }
 
         [Authorize]
@@ -37,7 +41,7 @@ namespace BGN.UI.Controllers
 
                 if (result)
                 {
-                    return RedirectToAction("GameNightDetails", gameNightId);
+                    return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
                 }
                 else
                 {
@@ -64,7 +68,8 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> List()
         {
             var gameNightList = await _gameNightService.GetAllAsync();
-            return View(new GameNightListModel() { DisplayGameNights = gameNightList });
+            var currentUser = await _userService.GetLoggedInUserAsync();
+            return View(new GameNightListModel() { DisplayGameNights = gameNightList , CurrentUser = currentUser});
         }
 
         [HttpGet]
@@ -78,6 +83,42 @@ namespace BGN.UI.Controllers
 
             // Return the filtered games to the view
             return View("List", gameNightListModel);
+        }
+
+        public async Task<IActionResult> Leave(int gameNightId)
+        {
+            // Get the current user's ID
+            var identityUserKey = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (identityUserKey != null)
+            {
+                //Call the service to join the game night
+                var result = await _gameNightService.LeaveGameNightAsync(gameNightId, identityUserKey);
+
+                if (result)
+                {
+                    return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                }
+                else
+                {
+                    //Handle case where user is already attending or game night is full
+                    TempData["LeaveGameNightError"] = "Something went wrong when leaving... Try again";
+                    return RedirectToAction("List");
+                }
+            }
+
+            else
+            {
+                //Handle case where user is not authenticated
+                TempData["LeaveGameNightError"] = "You must be logged in to leave a game night.";
+
+                //TODO: Fix the redirection to login page
+                //return RedirectToAction("Login", $"Identity/Account");
+
+                //Temporary fix
+                return RedirectToAction("List");
+
+            }
         }
     }
 }

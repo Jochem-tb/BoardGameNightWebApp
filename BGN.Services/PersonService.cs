@@ -44,12 +44,7 @@ namespace BGN.Services
         public async Task<PersonDto> GetByIdAsync(int id)
         {
             var dbPerson = await _repositoryManager.PersonRepository.GetByIdAsync(id);
-            return new PersonDto()
-            {
-                FirstName = dbPerson.FirstName,
-                LastName = dbPerson.LastName,
-                Email = dbPerson.Email
-            };
+            return _mapper.Map<PersonDto>(dbPerson);
 
         }
 

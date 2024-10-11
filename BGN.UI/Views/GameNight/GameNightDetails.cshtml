@@ -1,16 +1,51 @@
-﻿@model BGN.Shared.GameNightDto
-
-
+﻿@model BGN.UI.Models.GameNightDetailsModel
 
 <div class="container mt-5">
+
+    <div>
+        <h1 class="fw-bold pb-4">Testing how many characters i can put here untill it becomes bothersome to read huh, 
+            i dont know what the limit is but i think at this point it is already too long 
+            for anywone to actually read through</h1>
+         <div>
+             @if(@Model.CurrentUser != null)
+             {
+                 if(@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
+                 {
+                    <a asp-controller="GameNight" asp-action="Edit" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-primary">Edit</a>
+                 }
+                 
+                 if(@Model.GameNight.Attendees.Any(a => a.Id == @Model.CurrentUser.Id))
+                 {
+                    <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-danger">Leave</a>
+                 }
+                 else
+                 {
+                    <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success">Join</a>
+                 }
+             }
+         </div>  
+    </div>
+
+
     <div class="row">
         <div class="col-12 col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <h1 class="fw-bold">GameNight Details</h1>
-                    <p><strong>Name:</strong> @Model.Name</p>
-                    <p><strong>Max Players:</strong> @Model.MaxPlayers</p>
-                    <p><strong>Organiser:</strong> @Model.OrganiserFirstname</p>
+
+                    <h1 class="fw-bold pb-4">Testing how many character s</h1>
+                    <div class="row">
+                        <div class="col-6">
+                            <p><strong>Name:</strong> @Model.GameNight.Name</p>
+                            <p><strong>Max Players:</strong> @Model.GameNight.MaxPlayers</p>
+                            <p><strong>Organiser:</strong> @Model.GameNight.OrganiserFirstname</p>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="text-decoration-underline"><strong>Location:</strong></h5>
+                            
+                            <p><strong>House:</strong> @Model.GameNight.Street @Model.GameNight.HouseNr</p>
+                            <p><strong>City:</strong> @Model.GameNight.City</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -19,15 +54,15 @@
             <div class="card shadow-sm">
                 <div class="card-body">
                     <div>
-                        <h5 class="fw-bold d-inline">@Model.Attendees.Count() Attendees</h5>
+                        <h5 class="fw-bold d-inline">@Model.GameNight.Attendees.Count() Attendees</h5>
                         <h6 class="d-inline ms-2 fst-italic">
-                            @(Model.MaxPlayers - @Model.Attendees.Count())
+                            @(Model.GameNight.MaxPlayers - @Model.GameNight.Attendees.Count())
                             Places left
                         </h6>
                     </div>
-                    
+
                     <ul class="list-group">
-                        @foreach (var person in Model.Attendees)
+                        @foreach (var person in Model.GameNight.Attendees)
                         {
                             <li class="list-group-item">
                                 <!-- nice icon-->
@@ -49,7 +84,7 @@
                 <div class="card-body">
                     <h5 class="fw-bold">Food Options</h5>
                     <ul class="list-group">
-                        @foreach (var option in Model.FoodOptions)
+                        @foreach (var option in Model.GameNight.FoodOptions)
                         {
                             <li class="list-group-item">@option.Name</li>
                         }
@@ -65,16 +100,17 @@
                     <hr />
 
                     @{
+
                         var isUserAdult = true; //TODO: replace with actual user check
                     }
 
                     <div class="row">
-                        @foreach (var game in Model.Games)
+                        @foreach (var game in Model.GameNight.Games)
                         {
                             var gameCardClass = game.IsAdult && !isUserAdult ? "bg-danger bg-opacity-50" : "bg-white";
                             <div class="col-12 col-sm-6 col-md-4 col-lg-3 mb-3 mt-1">
 
-                                <div class="card h-100 border-2 border-secondary @gameCardClass">
+                                <div class="card h-100 border-1 border-secondary @gameCardClass">
 
 
                                     <img src=@game.ImgUrl class="card-img-top img-fluid" alt="Photo of Boardgame">

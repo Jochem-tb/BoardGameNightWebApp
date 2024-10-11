@@ -20,10 +20,12 @@ builder.Services.AddAutoMapper(typeof(MappingProfile));
 //Dependency Injection
 builder.Services.AddScoped<IServiceManager, ServiceManager>();
 builder.Services.AddScoped<IRepositoryManager, RepositoryManager>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 //Add Email Sender to container
 builder.Services.AddTransient<IEmailSender, EmailSenderConsole>();
 
+builder.Services.AddHttpContextAccessor();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

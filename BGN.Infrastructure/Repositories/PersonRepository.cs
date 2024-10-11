@@ -26,7 +26,6 @@ namespace BGN.Infrastructure.Repositories
 
         public async Task<Person?> GetByIdAsync(int id)
         {
-            Console.WriteLine("Getting person by id in repository");
             return await _dbContext.Persons.FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -48,15 +47,23 @@ namespace BGN.Infrastructure.Repositories
 
         public async Task<Person>? GetPersonIdByUserKey(string userIdentityKey)
         {
-            if(userIdentityKey == null)
+
+            
+            if (string.IsNullOrWhiteSpace(userIdentityKey))
             {
-                return await _dbContext.Persons.FirstOrDefaultAsync(x => x.IdentityUserId == userIdentityKey);
+                return null;
+                
             }
             else
             {
-                userIdentityKey = "";
-                return await _dbContext.Persons.FirstOrDefaultAsync(x => x.IdentityUserId == userIdentityKey);
-                    ;
+#pragma warning disable CS8603 // Possible null reference return. Already checked above.
+
+                return await _dbContext.Persons
+                    .Include(x => x.Gender)
+                    .Include(x => x.Preferences)
+                    .FirstOrDefaultAsync(x => x.IdentityUserId == userIdentityKey);
+
+#pragma warning restore CS8603 // Possible null reference return. Already checked above.
             }
 
         }

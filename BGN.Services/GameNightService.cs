@@ -94,18 +94,20 @@ namespace BGN.Services
 
         public async Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey)
         {
-            var gameNights = await _repositoryManager.GameNightRepository.GetAllAsync();
-            gameNights = gameNights.Where(x => x.Id == gameNightId).ToList();
+            
+            var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
 
             //Check if Attending == MaxPlayers
-            var isPlaceAvailable = gameNights.Where(x => x.Attendees.Count() < x.MaxPlayers).Any();
+            //var isPlaceAvailable = gameNight.Where(x => x.Attendees.Count() < x.MaxPlayers).Any();
+            var isPlaceAvailable = gameNight.Attendees.Count() < gameNight.MaxPlayers;
             if (!isPlaceAvailable)
             {
                 return false;
             }
 
             //Check if person is already attending
-            var isAttending = gameNights.Where(x => x.Attendees.Any(y => y.IdentityUserId == identityUserKey)).Any();
+            //var isAttending = gameNight.Where(x => x.Attendees.Any(y => y.IdentityUserId == identityUserKey)).Any();
+            var isAttending = gameNight.Attendees.Any(y => y.IdentityUserId == identityUserKey);
             if (isAttending)
             {
                 return false;
@@ -119,9 +121,20 @@ namespace BGN.Services
             return isSuccess;
         }
 
-        public Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey)
+        public async Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey)
         {
-            throw new NotImplementedException();
+            var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
+
+            //Check if person is attending
+            var isAttending = gameNight.Attendees.Any(y => y.IdentityUserId == identityUserKey);
+            if (!isAttending)
+            {
+                return false;
+            }
+
+            //Organiser can leave his own game
+            var isSuccess = await _repositoryManager.GameNightRepository.LeaveGameNightAsync(gameNightId, identityUserKey);
+            return isSuccess;
         }
 
         public Task<IEnumerable<PersonDto>> GetAttendeesAsync(int gameNightId)

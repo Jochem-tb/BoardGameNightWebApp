@@ -80,9 +80,28 @@ namespace BGN.Infrastructure.Repositories
             }
         }
 
-        public Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey)
+        public async Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey)
         {
-            throw new NotImplementedException();
+            var gameNight = await _dbContext.GameNights
+                .Include(x => x.Attendees)
+                .FirstOrDefaultAsync(x => x.Id == gameNightId);
+
+            var person = await _dbContext.Persons.FirstOrDefaultAsync(x => x.IdentityUserId == identityUserKey);
+
+            if (gameNight == null || person == null)
+            {
+                //Game night or person not found
+                return false;
+            }
+            else
+            {
+                //Remove the person from the game night
+                gameNight.Attendees.Remove(person);
+
+                //Save changes
+                await _dbContext.SaveChangesAsync();
+                return true;
+            }
         }
 
         public Task<IEnumerable<Person>> GetAttendeesAsync(int gameNightId)
