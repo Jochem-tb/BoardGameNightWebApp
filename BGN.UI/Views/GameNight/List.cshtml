@@ -105,7 +105,7 @@
 
             @{
                 var joinButtonClassAttribute = "";
-                
+
                 //Iterate over all gamenights and display them
                 foreach (var gameNight in Model.DisplayGameNights)
                 {
@@ -134,7 +134,7 @@
 
                     //if user is already attending set join button to leave button
                     var currentUserId = Model.CurrentUser.Id;
-                    foreach(var person in gameNight.Attendees)
+                    foreach (var person in gameNight.Attendees)
                     {
                         if (person.Id == currentUserId)
                         {
@@ -144,112 +144,135 @@
                     }
 
 
-                    
-                        <div class="col-12 col-sm-6 col-md-6 col-lg-6 ">
 
-                            <div class="card h-100 border border-1 ">
+                    <div class="col-12 col-sm-6 col-md-6 col-lg-6 ">
 
-                                <img src='~/img/gamenight/BoardGameDefaultSmall.jpg' class="card-img-top img-fluid" alt="Random photo for GameNight">
+                        <div class="card h-100 border border-1 ">
 
-                                <div class="card-body d-flex flex-column">
-                                    <h5 class="card-title fw-semibold">
-                                        @gameNight.Name
-                                        @if (isGameNightAdult)
-                                        {
-                                            <span class="badge bg-danger ms-auto small float-end">18+</span>
+                            <img src='~/img/gamenight/BoardGameDefaultSmall.jpg' class="card-img-top img-fluid" alt="Random photo for GameNight">
+
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-semibold">
+                                    @gameNight.Name
+                                    @if (isGameNightAdult)
+                                    {
+                                        <span class="badge bg-danger ms-auto small float-end">18+</span>
+                                    }
+                                </h5>
+
+
+                                <p class="card-text">
+                                    <h4>Who:</h4>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            @gameNight.OrganiserFirstname @gameNight.OrganiserLastname <br />
+                                        </div>
+                                        <div class="col-6">
+                                            @gameNight.Attendees.Count() / @gameNight.MaxPlayers
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <h4>When:</h4>
+                                            Date: @gameNight.Date.ToShortDateString() <br />
+                                            Time: @gameNight.Time.ToString(@"hh\:mm") <br />
+                                        </div>
+                                        <div class="col-6">
+                                            <h4>Where:</h4>
+                                            @gameNight.Street @gameNight.HouseNr
+                                            <br />
+                                            @gameNight.City
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <h4>What:</h4>
+                                        <div class="col-6">
+                                            <ul>
+                                                @foreach (var game in gameNight.Games)
+                                                {
+                                                    <li>@game.Name</li>
+                                                }
+                                            </ul>
+                                        </div>
+
+
+                                        @{
+                                            var gameNightFoodOptions = gameNight.FoodOptions; // Assuming this is already initialized
+                                            var preferences = Model.CurrentUser.Preferences ?? new List<FoodOptionDto>(); // Ensure preferences is never null
+                                            var checkIfNotComplete = preferences.Select(pref => pref.Id).ToList(); // List of preference IDs
                                         }
-                                    </h5>
 
-
-                                    <p class="card-text">
-                                        <h4>Who:</h4>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                @gameNight.OrganiserFirstname @gameNight.OrganiserLastname <br />
-                                            </div>
-                                            <div class="col-6">
-                                                @gameNight.Attendees.Count() / @gameNight.MaxPlayers
-                                            </div>
-                                        </div>
-                                        <hr />
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <h4>When:</h4>
-                                                Date: @gameNight.Date.ToShortDateString() <br />
-                                                Time: @gameNight.Time.ToString(@"hh\:mm") <br />
-                                            </div>
-                                            <div class="col-6">
-                                                <h4>Where:</h4>
-                                                @gameNight.Street @gameNight.HouseNr
-                                                <br />
-                                                @gameNight.City
-                                            </div>
-                                        </div>
-                                        <hr />
-                                        <div class="row">
-                                            <h4>What:</h4>
-                                            <div class="col-6">
-                                                <ul>
-                                                    @foreach (var game in gameNight.Games)
+                                        <div class="col-6">
+                                            <ul>
+                                                @if (preferences.Any()) // Check if preferences is not empty
+                                                {
+                                                    // Loop through each food option in the game night
+                                                    foreach (var option in gameNightFoodOptions)
                                                     {
-                                                        <li>@game.Name</li>
+                                                        if (checkIfNotComplete.Contains(option.Id))
+                                                        {
+                                                            checkIfNotComplete.Remove(option.Id); // Remove matched ID
+                                                            <li>
+                                                                <span class="badge bg-success">@option.Name</span> <!-- Matched preference -->
+                                                            </li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li>
+                                                                <span class="badge bg-secondary">@option.Name</span> <!-- Unmatched preference -->
+                                                            </li>
+                                                        }
                                                     }
-                                                </ul>
-                                            </div>
-                                            <div class="col-6">
-                                                <ul>
-                                                    @foreach (var option in gameNight.FoodOptions)
+
+
+                                                    // Display any remaining preferences that were not matched, indicating they are missing
+                                                    if (checkIfNotComplete.Count > 0)
                                                     {
-                                                        
-
-                                                        <li>
-                                                            @if (false) //TODO: Logic if Options is in User Options
+                                                        foreach (var missingOptionId in checkIfNotComplete)
+                                                        {
+                                                            var missingOption = preferences.FirstOrDefault(opt => opt.Id == missingOptionId);
+                                                            if (missingOption != null)
                                                             {
-                                                                <span class="badge bg-success">@option.Name</span>
+                                                                <li>
+                                                                    <span class="badge bg-danger bg-opacity-75">@missingOption.Name</span> <!-- Missing option -->
+                                                                </li>
                                                             }
-                                                            else
-                                                            {
-                                                                <span class="badge bg-secondary">@option.Name</span>
-                                                            }
-                                                        </li>
+                                                        }
                                                     }
-                                                </ul>
-                                            </div>
+                                                }
+                                            </ul>
                                         </div>
-                                    </p>
+                                    </div>
+                                </p>
 
 
 
-                                    <!-- Details button on the bottem, alsways bot-->
-                                    <div class="row mt-auto">
-                                        <div class="col-6 col-sm-6 ">
-                                             <a asp-controller="GameNight" asp-action="GameNightDetails" asp-route-gameNightId="@gameNight.Id" class="btn btn-primary w-100">Details</a>
-                                        </div>
+                                <!-- Details button on the bottem, alsways bot-->
+                                <div class="row mt-auto">
+                                    <div class="col-6 col-sm-6 ">
+                                        <a asp-controller="GameNight" asp-action="GameNightDetails" asp-route-gameNightId="@gameNight.Id" class="btn btn-primary w-100">Details</a>
+                                    </div>
 
                                     @if (isAttending)
                                     {
                                         <div class="col-4 col-sm-6 ">
                                             <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@gameNight.Id" class="btn btn-danger w-100">Leave</a>
                                         </div>
-                                    } 
+                                    }
                                     else
                                     {
                                         <div class="col-4 col-sm-6 ">
                                             <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@gameNight.Id" class="btn btn-success w-100 @joinButtonClassAttribute">Join Now!</a>
                                         </div>
                                     }
-                                    
-
-                                    </div>
-
                                 </div>
                             </div>
                         </div>
-
-                    }
+                    </div>
                 }
             }
-
         </div>
     </div>
 </div>

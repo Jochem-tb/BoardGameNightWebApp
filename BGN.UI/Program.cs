@@ -57,6 +57,12 @@ builder.Services.AddAuthorization(polictyBuilder =>
     //Policies / Claims Config
 });
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Identity/Account/Login"; // Correct the login path
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+});
+
 builder.Services.AddAuthorization();
 
 builder.Services.AddRazorPages();

@@ -1,29 +1,32 @@
-﻿@model BGN.UI.Models.GameNightDetailsModel
+﻿@using BGN.Shared
+@model BGN.UI.Models.GameNightDetailsModel
 
 <div class="container mt-5">
 
     <div>
-        <h1 class="fw-bold pb-4">Testing how many characters i can put here untill it becomes bothersome to read huh, 
-            i dont know what the limit is but i think at this point it is already too long 
-            for anywone to actually read through</h1>
-         <div>
-             @if(@Model.CurrentUser != null)
-             {
-                 if(@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
-                 {
+        <h1 class="fw-bold pb-4">
+            Testing how many characters i can put here untill it becomes bothersome to read huh,
+            i dont know what the limit is but i think at this point it is already too long
+            for anywone to actually read through
+        </h1>
+        <div>
+            @if (@Model.CurrentUser != null)
+            {
+                if (@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
+                {
                     <a asp-controller="GameNight" asp-action="Edit" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-primary">Edit</a>
-                 }
-                 
-                 if(@Model.GameNight.Attendees.Any(a => a.Id == @Model.CurrentUser.Id))
-                 {
+                }
+
+                if (@Model.GameNight.Attendees.Any(a => a.Id == @Model.CurrentUser.Id))
+                {
                     <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-danger">Leave</a>
-                 }
-                 else
-                 {
+                }
+                else
+                {
                     <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success">Join</a>
-                 }
-             }
-         </div>  
+                }
+            }
+        </div>
     </div>
 
 
@@ -41,7 +44,7 @@
                         </div>
                         <div class="col-6">
                             <h5 class="text-decoration-underline"><strong>Location:</strong></h5>
-                            
+
                             <p><strong>House:</strong> @Model.GameNight.Street @Model.GameNight.HouseNr</p>
                             <p><strong>City:</strong> @Model.GameNight.City</p>
                         </div>
@@ -79,14 +82,54 @@
             </div>
         </div>
 
+        @{
+            var gameNightFoodOptions = Model.GameNight.FoodOptions;
+            var preferences = Model.CurrentUser.Preferences;
+            var checkIfNotComplete = new List<int>();
+            foreach (var pref in preferences)
+            {
+                checkIfNotComplete.Add(pref.Id);
+            }
+        }
+
         <div class="col-12 col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="fw-bold">Food Options</h5>
                     <ul class="list-group">
-                        @foreach (var option in Model.GameNight.FoodOptions)
+
+                        <!--If preferences is empty, we dont have to do the whole logic, just display-->
+                        @if (preferences != null)
                         {
-                            <li class="list-group-item">@option.Name</li>
+                            //Display the foodoptions from GameNight, if it is also our pref its background is green else normal
+                            @foreach (var option in gameNightFoodOptions)
+                            {
+
+                                if (checkIfNotComplete.Contains(option.Id))
+                                    {
+                                    checkIfNotComplete.Remove(option.Id);
+                                        <li class="list-group-item bg-success bg-opacity-50">@option.Name</li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item">@option.Name</li>
+                                    }
+                                
+                            }
+
+                            // Display any remaining preferences that were not matched, and are not present in this gamenight
+                            if (checkIfNotComplete.Count > 0)
+                            {
+                                foreach (var missingOptionId in checkIfNotComplete)
+                                {
+                                    // Find the missing option name using the ID
+                                    var missingOption = preferences.FirstOrDefault(opt => opt.Id == missingOptionId);
+                                    if (missingOption != null)
+                                    {
+                                        <li class="list-group-item bg-danger bg-opacity-75">@missingOption.Name</li>
+                                    }
+                                }
+                            }
                         }
                     </ul>
                 </div>

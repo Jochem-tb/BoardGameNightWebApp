@@ -10,7 +10,7 @@ using System.Security.Principal;
 
 namespace BGN.UI.Controllers
 {
-    [AllowAnonymous]
+    [Authorize]
     public class GameNightController : Controller
     {
         private readonly  IGameNightService _gameNightService;
@@ -47,7 +47,7 @@ namespace BGN.UI.Controllers
                 {
                     //Handle case where user is already attending or game night is full
                     TempData["JoinGameNightError"] = "You are already attending this game night or it is full.";
-                    return RedirectToAction("List");
+                    return RedirectToAction("GameNightDetails");
                 }
             }
 
