@@ -17,7 +17,7 @@ namespace BGN.Shared
 
         public required string IdentityUserId { get; init; }
 
-        public Gender? Gender { get; set; }
+        public GenderDto? Gender { get; set; }
 
         public DateTime DateOfBirth { get; set; }
         public string? PhoneNumber { get; set; }

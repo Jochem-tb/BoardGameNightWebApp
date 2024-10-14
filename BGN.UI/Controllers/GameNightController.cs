@@ -28,6 +28,14 @@ namespace BGN.UI.Controllers
             return View(new GameNightDetailsModel() { GameNight = gameNightDetails, CurrentUser = currentUser});
         }
 
+        public async Task<IActionResult> Attending()
+        {
+            var gameNightList = await _gameNightService.GetAllAsync();
+            var currentUser = await _userService.GetLoggedInUserAsync();
+
+            return View("UserList", new GameNightListModel() { DisplayGameNights = gameNightList, CurrentUser = currentUser });
+        }
+
         [Authorize]
         public async Task<IActionResult> Join(int gameNightId)
         {

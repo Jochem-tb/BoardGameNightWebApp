@@ -1,0 +1,95 @@
+﻿@model BGN.Shared.GameNightDto
+@{
+    var isUserAdult = (bool)ViewData["IsUserAdult"];
+    var isAttending = (bool)ViewData["IsAttending"];
+    var joinButtonClassAttribute = ViewData["JoinButtonClassAttribute"]?.ToString() ?? "";
+    var preferences = (List<BGN.Shared.FoodOptionDto>)ViewData["Preferences"] ?? new List<BGN.Shared.FoodOptionDto>();
+    var includeWhatSection = (bool)ViewData["IncludeWhatSection"];
+}
+
+<div class="col-12 col-sm-6 col-md-6 col-lg-6 w-auto">
+    <div class="card h-100 border border-1">
+        <img src='~/img/gamenight/BoardGameDefaultSmall.jpg' class="card-img-top img-fluid" alt="Random photo for GameNight">
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-semibold">
+                @Model.Name
+                @if (Model.Games.Any(g => g.IsAdult))
+                {
+                    <span class="badge bg-danger ms-auto small float-end">18+</span>
+                }
+            </h5>
+            <p>@isUserAdult isAdult -- @isAttending isAttending</p>
+            <p class="card-text">
+                <h4>Who:</h4>
+                <div class="row">
+                    <div class="col-6">
+                        @Model.OrganiserFirstname @Model.OrganiserLastname <br />
+                    </div>
+                    <div class="col-6">
+                        @Model.Attendees.Count() / @Model.MaxPlayers
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-6">
+                        <h4>When:</h4>
+                        Date: @Model.Date.ToShortDateString() <br />
+                        Time: @Model.Time.ToString(@"hh\:mm") <br />
+                    </div>
+                    <div class="col-6">
+                        <h4>Where:</h4>
+                        @Model.Street @Model.HouseNr
+                        <br />
+                        @Model.City
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    @if (includeWhatSection)
+                    {
+                    <h4>What:</h4>
+                    <div class="col-6">
+                        <ul>
+                            @foreach (var game in Model.Games)
+                            {
+                                <li>@game.Name</li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="col-6">
+                        <ul>
+                            @foreach (var option in Model.FoodOptions)
+                            {
+                                var isPreferred = preferences.Any(pref => pref.Id == option.Id);
+                                var badgeClass = isPreferred ? "bg-success" : "bg-secondary";
+                                <li>
+                                    <span class="badge @badgeClass">@option.Name</span>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    }
+                </div>
+            </p>
+
+            <!-- Details button on the bottom, always bottom-->
+            <div class="row mt-auto">
+                <div class="col-6 col-sm-6">
+                    <a asp-controller="GameNight" asp-action="GameNightDetails" asp-route-gameNightId="@Model.Id" class="btn btn-primary w-100">Details</a>
+                </div>
+                @if (isAttending)
+                {
+                    <div class="col-4 col-sm-6">
+                        <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.Id" class="btn btn-danger w-100">Leave</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-4 col-sm-6">
+                        <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.Id" class="btn btn-success w-100 @joinButtonClassAttribute">Join Now!</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
