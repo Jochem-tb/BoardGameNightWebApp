@@ -150,7 +150,8 @@
                     ViewData["Preferences"] = Model.CurrentUser.Preferences;
                     ViewData["IncludeWhatSection"] = true;
 
-                    @await Html.PartialAsync("_GameNightCardPartial", gameNight)
+                    //Other class sends a string to same partial
+                    @await Html.PartialAsync("_GameNightCardPartial", (gameNight, ""))
 
                 }
             }

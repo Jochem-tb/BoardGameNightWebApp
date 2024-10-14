@@ -51,84 +51,102 @@
 
     <!-- Game Night Sections -->
     <div class="game-night-sections">
-        <!-- Attending Section -->
-        <h4>Attending</h4>
-        <div class="game-night-slider">
-            @foreach (var gameNight in Model.DisplayGameNights.OrderBy(x => x.Date))
-            {
-                var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
-                if (isAttending)
-                {
-                    moreThenZeroAttending = true;
-                    var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
-                    var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <!-- Attending Section -->
+                <h4>Attending</h4>
+                <hr />
+                <div class="game-night-slider">
+                    @foreach (var gameNight in Model.DisplayGameNights.OrderBy(x => x.Date))
+                    {
+                        var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
+                        if (isAttending)
+                        {
+                            moreThenZeroAttending = true;
+                            var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                            var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 
-                    ViewData["IsUserAdult"] = isUserAdult;
-                    ViewData["IsAttending"] = isAttending;
-                    ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
-                    ViewData["CurrentUserId"] = Model.CurrentUser.Id;
-                    ViewData["Preferences"] = Model.CurrentUser.Preferences;
-                    ViewData["IncludeWhatSection"] = false;
+                            ViewData["IsUserAdult"] = isUserAdult;
+                            ViewData["IsAttending"] = isAttending;
+                            ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
+                            ViewData["CurrentUserId"] = Model.CurrentUser.Id;
+                            ViewData["Preferences"] = Model.CurrentUser.Preferences;
+                            ViewData["IncludeWhatSection"] = false;
 
-                    <div class="game-night-card">
-                        @await Html.PartialAsync("_GameNightCardPartial", gameNight)
+                            <div class="game-night-card">
+                                @await Html.PartialAsync("_GameNightCardPartial", (gameNight, "w-100"))
+                            </div>
+                        }
+                    }
                 </div>
-                }
-            }
+            </div>
         </div>
 
 
 
         <!-- Organizing Section -->
-        <h4>Organizing</h4>
-        <div class="game-night-slider">
-            @foreach (var gameNight in Model.DisplayGameNights)
-            {
-                var isOrganiser = gameNight.OrganiserId == Model.CurrentUser.Id;
-                if (isOrganiser)
-                {
-                    moreThenZeroOrganising = true;
-                    var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
-                    var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
-                    var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <h4>Organizing</h4>
+                <hr />
+                <div class="game-night-slider">
+                    @foreach (var gameNight in Model.DisplayGameNights)
+                    {
+                        var isOrganiser = gameNight.OrganiserId == Model.CurrentUser.Id;
+                        if (isOrganiser)
+                        {
+                            moreThenZeroOrganising = true;
+                            var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
+                            var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                            var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 
-                    ViewData["IsUserAdult"] = isUserAdult;
-                    ViewData["IsAttending"] = isAttending;
-                    ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
-                    ViewData["CurrentUserId"] = Model.CurrentUser.Id;
-                    ViewData["Preferences"] = Model.CurrentUser.Preferences;
-                    ViewData["IncludeWhatSection"] = false;
+                            ViewData["IsUserAdult"] = isUserAdult;
+                            ViewData["IsAttending"] = isAttending;
+                            ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
+                            ViewData["CurrentUserId"] = Model.CurrentUser.Id;
+                            ViewData["Preferences"] = Model.CurrentUser.Preferences;
+                            ViewData["IncludeWhatSection"] = false;
 
-                    <div class="game-night-card">
-                        @await Html.PartialAsync("_GameNightCardPartial", gameNight)
+                            <div class="game-night-card">
+                                @await Html.PartialAsync("_GameNightCardPartial", (gameNight, "w-100"))
+                            </div>
+                        }
+                    }
                 </div>
-                }
-            }
+            </div>
         </div>
 
-        <!-- Most Recent Section -->
-        <h4>Most Recent</h4>
-        <div class="game-night-slider">
-            @foreach (var gameNight in Model.DisplayGameNights.OrderByDescending(x => x.Date))
-            {
-                moreThenZeroGameNights = true;
-                var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
-                var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
-                var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 
-                ViewData["IsUserAdult"] = isUserAdult;
-                ViewData["IsAttending"] = isAttending;
-                ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
-                ViewData["CurrentUserId"] = Model.CurrentUser.Id;
-                ViewData["Preferences"] = Model.CurrentUser.Preferences;
-                ViewData["IncludeWhatSection"] = false;
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <!-- Most Recent Section -->
+                <h4>Most Recent</h4>
+                <hr />
+                <div class="game-night-slider">
+                    @foreach (var gameNight in Model.DisplayGameNights.OrderByDescending(x => x.Date))
+                    {
+                        moreThenZeroGameNights = true;
+                        var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
+                        var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                        var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 
-                <div class="game-night-card">
-                    @await Html.PartialAsync("_GameNightCardPartial", gameNight)
+                        ViewData["IsUserAdult"] = isUserAdult;
+                        ViewData["IsAttending"] = isAttending;
+                        ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
+                        ViewData["CurrentUserId"] = Model.CurrentUser.Id;
+                        ViewData["Preferences"] = Model.CurrentUser.Preferences;
+                        ViewData["IncludeWhatSection"] = false;
+
+                        <div class="game-night-card">
+                            @await Html.PartialAsync("_GameNightCardPartial", (gameNight, "w-100"))
+                        </div>
+
+                    }
                 </div>
-
-            }
+            </div>
         </div>
     </div>
 </div>
+
+
 

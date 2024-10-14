@@ -1,4 +1,5 @@
-﻿@model BGN.Shared.GameNightDto
+﻿@model (BGN.Shared.GameNightDto, string)
+
 @{
     var isUserAdult = (bool)ViewData["IsUserAdult"];
     var isAttending = (bool)ViewData["IsAttending"];
@@ -7,40 +8,39 @@
     var includeWhatSection = (bool)ViewData["IncludeWhatSection"];
 }
 
-<div class="col-12 col-sm-6 col-md-6 col-lg-6 w-auto">
+<div class="col-12 col-sm-6 col-md-6 col-lg-6 @Model.Item2">
     <div class="card h-100 border border-1">
         <img src='~/img/gamenight/BoardGameDefaultSmall.jpg' class="card-img-top img-fluid" alt="Random photo for GameNight">
         <div class="card-body d-flex flex-column">
             <h5 class="card-title fw-semibold">
-                @Model.Name
-                @if (Model.Games.Any(g => g.IsAdult))
+                @Model.Item1.Name
+                @if (Model.Item1.Games.Any(g => g.IsAdult))
                 {
                     <span class="badge bg-danger ms-auto small float-end">18+</span>
                 }
             </h5>
-            <p>@isUserAdult isAdult -- @isAttending isAttending</p>
             <p class="card-text">
                 <h4>Who:</h4>
                 <div class="row">
                     <div class="col-6">
-                        @Model.OrganiserFirstname @Model.OrganiserLastname <br />
+                        @Model.Item1.OrganiserFirstname @Model.Item1.OrganiserLastname <br />
                     </div>
                     <div class="col-6">
-                        @Model.Attendees.Count() / @Model.MaxPlayers
+                        @Model.Item1.Attendees.Count() / @Model.Item1.MaxPlayers
                     </div>
                 </div>
                 <hr />
                 <div class="row">
                     <div class="col-6">
                         <h4>When:</h4>
-                        Date: @Model.Date.ToShortDateString() <br />
-                        Time: @Model.Time.ToString(@"hh\:mm") <br />
+                        Date: @Model.Item1.Date.ToShortDateString() <br />
+                        Time: @Model.Item1.Time.ToString(@"hh\:mm") <br />
                     </div>
                     <div class="col-6">
                         <h4>Where:</h4>
-                        @Model.Street @Model.HouseNr
+                        @Model.Item1.Street @Model.Item1.HouseNr
                         <br />
-                        @Model.City
+                        @Model.Item1.City
                     </div>
                 </div>
                 <hr />
@@ -50,7 +50,7 @@
                     <h4>What:</h4>
                     <div class="col-6">
                         <ul>
-                            @foreach (var game in Model.Games)
+                                @foreach (var game in Model.Item1.Games)
                             {
                                 <li>@game.Name</li>
                             }
@@ -58,7 +58,7 @@
                     </div>
                     <div class="col-6">
                         <ul>
-                            @foreach (var option in Model.FoodOptions)
+                                @foreach (var option in Model.Item1.FoodOptions)
                             {
                                 var isPreferred = preferences.Any(pref => pref.Id == option.Id);
                                 var badgeClass = isPreferred ? "bg-success" : "bg-secondary";
@@ -75,18 +75,18 @@
             <!-- Details button on the bottom, always bottom-->
             <div class="row mt-auto">
                 <div class="col-6 col-sm-6">
-                    <a asp-controller="GameNight" asp-action="GameNightDetails" asp-route-gameNightId="@Model.Id" class="btn btn-primary w-100">Details</a>
+                    <a asp-controller="GameNight" asp-action="GameNightDetails" asp-route-gameNightId="@Model.Item1.Id" class="btn btn-primary w-100">Details</a>
                 </div>
                 @if (isAttending)
                 {
                     <div class="col-4 col-sm-6">
-                        <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.Id" class="btn btn-danger w-100">Leave</a>
+                        <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.Item1.Id" class="btn btn-danger w-100">Leave</a>
                     </div>
                 }
                 else
                 {
                     <div class="col-4 col-sm-6">
-                        <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.Id" class="btn btn-success w-100 @joinButtonClassAttribute">Join Now!</a>
+                        <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.Item1.Id" class="btn btn-success w-100 @joinButtonClassAttribute">Join Now!</a>
                     </div>
                 }
             </div>
