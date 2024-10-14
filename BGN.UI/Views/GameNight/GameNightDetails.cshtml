@@ -30,6 +30,21 @@
 
 
     <div class="row">
+        
+        @if (TempData["JoinGameNightError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["JoinGameNightError"]
+            </div>
+        }
+
+        @if (TempData["LeaveGameNightError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["LeaveGameNightError"]
+            </div>
+        }
+
         <div class="col-12 col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
