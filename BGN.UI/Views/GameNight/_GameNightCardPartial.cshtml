@@ -13,7 +13,7 @@
     }
 }
 
-<div class="col-12 col-sm-6 col-md-6 col-lg-6 @Model.Item2">
+<div class="col-12 col-sm-6 col-md-6 col-lg-6 @Model.Item2"> 
     <div class="card h-100 border border-1">
         <img src='~/img/gamenight/BoardGameDefaultSmall.jpg' class="card-img-top img-fluid" alt="Random photo for GameNight">
         <div class="card-body d-flex flex-column">
@@ -54,16 +54,38 @@
                     {
                     <h4>What:</h4>
                     <div class="col-6">
-                        <ul>
+                            <ul>
+                                <!--Display a number of games from that gamenight-->
+                                @{
+                                    const int _maxGamesDisplayed = 3;
+                                    var count = 0;
+                                    var displayLeftOver = false;
+                                }
                                 @foreach (var game in Model.Item1.Games)
-                            {
-                                <li>@game.Name</li>
-                            }
-                        </ul>
+                                {
+                                    if (count >= _maxGamesDisplayed)
+                                    {
+                                        displayLeftOver = true;
+                                        break;
+                                    }
+
+                                    <li>@game.Name</li>
+                                    count++;
+                                }
+                                <!--If more then _maxGamesDiplayed present, give the user a tip on how many extra-->
+                                @if (displayLeftOver)
+                                {
+                                    <li>
+                                        +
+                                        @(Model.Item1.Games.Count()-count)
+                                    </li>
+                                }
+                            </ul>
                     </div>
                     <div class="col-6">
                         <ul>
-                                @foreach (var option in Model.Item1.FoodOptions)
+                            <!--Display foodoptions from gamenight, in green if also in user.preference, else grey.-->
+                            @foreach (var option in Model.Item1.FoodOptions)
                             {
                                 var isPreferred = preferences.Any(pref => pref.Id == option.Id);
                                 var badgeClass = isPreferred ? "bg-success" : "bg-secondary";
@@ -72,6 +94,8 @@
                                     <span class="badge @badgeClass">@option.Name</span>
                                 </li>
                             }
+
+                            <!--Display leftover preferences of user in RED-->
                             @foreach(var prefId in preferencesIdList)
                             {
                                 var missingOption = preferences.FirstOrDefault(opt => opt.Id == prefId);
