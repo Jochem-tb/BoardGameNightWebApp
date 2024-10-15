@@ -25,6 +25,13 @@ namespace BGN.UI.Controllers
         {
             var gameNightDetails = await _gameNightService.GetByIdAsync(gameNightId);
             var currentUser = await _userService.GetLoggedInUserAsync();
+            var preferenceMisMatch =
+                gameNightDetails.FoodOptions.All(f => currentUser.Preferences.All(fp => fp.Id != f.Id));
+            if (preferenceMisMatch)
+            {
+                TempData["PreferenceError"] = "One or more of your preferences is not present.";
+            }
+            
             return View(new GameNightDetailsModel() { GameNight = gameNightDetails, CurrentUser = currentUser});
         }
 

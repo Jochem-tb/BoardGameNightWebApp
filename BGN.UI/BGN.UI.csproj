@@ -30,6 +30,7 @@
     <Folder Include="Areas\Identity\Data\" />
     <Folder Include="wwwroot\img\carousel\" />
     <Folder Include="wwwroot\img\gamenight\" />
+    <Folder Include="wwwroot\img\uploads\" />
   </ItemGroup>
 
   

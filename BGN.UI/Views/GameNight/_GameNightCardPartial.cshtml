@@ -6,6 +6,11 @@
     var joinButtonClassAttribute = ViewData["JoinButtonClassAttribute"]?.ToString() ?? "";
     var preferences = (List<BGN.Shared.FoodOptionDto>)ViewData["Preferences"] ?? new List<BGN.Shared.FoodOptionDto>();
     var includeWhatSection = (bool)ViewData["IncludeWhatSection"];
+    var preferencesIdList = new List<int>();
+    foreach(var pref in preferences)
+    {
+        preferencesIdList.Add(pref.Id);
+    }
 }
 
 <div class="col-12 col-sm-6 col-md-6 col-lg-6 @Model.Item2">
@@ -62,9 +67,20 @@
                             {
                                 var isPreferred = preferences.Any(pref => pref.Id == option.Id);
                                 var badgeClass = isPreferred ? "bg-success" : "bg-secondary";
+                                preferencesIdList.Remove(option.Id);
                                 <li>
                                     <span class="badge @badgeClass">@option.Name</span>
                                 </li>
+                            }
+                            @foreach(var prefId in preferencesIdList)
+                            {
+                                var missingOption = preferences.FirstOrDefault(opt => opt.Id == prefId);
+                                if (missingOption != null)
+                                {
+                                    <li>
+                                        <span class="badge bg-danger opacity-75">@missingOption.Name</span>
+                                    </li>
+                                }
                             }
                         </ul>
                     </div>

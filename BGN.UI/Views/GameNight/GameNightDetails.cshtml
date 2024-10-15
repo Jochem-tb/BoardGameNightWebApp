@@ -45,6 +45,13 @@
             </div>
         }
 
+        @if (TempData["PreferenceError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["PreferenceError"]
+            </div>
+        }
+
         <div class="col-12 col-md-4">
             <div class="card shadow-sm">
                 <div class="card-body">
