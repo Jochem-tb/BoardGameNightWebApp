@@ -60,6 +60,8 @@ namespace BGN.Infrastructure.Repositories
         public async Task<Game?> GetByIdAsync(int id)
         {
             return await _dbContext.Games.Where(x => x.Id == id)
+                .Include(x => x.Category)
+                .Include(x => x.Genre)
                 .FirstOrDefaultAsync();
         }
 

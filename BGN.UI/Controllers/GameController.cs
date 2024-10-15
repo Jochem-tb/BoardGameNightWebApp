@@ -1,5 +1,8 @@
-﻿using BGN.Services.Abstractions;
+﻿using BGN.Domain.Entities;
+using BGN.Services;
+using BGN.Services.Abstractions;
 using BGN.UI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BGN.UI.Controllers
@@ -7,10 +10,12 @@ namespace BGN.UI.Controllers
     public class GameController : Controller
     {
         private readonly IGameService _gameService;
+        private readonly IUserService _userService;
 
-        public GameController(IServiceManager serviceManager)
+        public GameController(IServiceManager serviceManager, IUserService userService)
         {
             _gameService = serviceManager.GameService;
+            _userService = userService;
         }
         public IActionResult Index()
         {
@@ -21,17 +26,29 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> List()
         {
             var games = await _gameService.GetAllAsync();
+            var currentUser = await _userService.GetLoggedInUserAsync();
 
-            //We dont specify the slectedCategories, because no filtering has been done
-            return View(new GameListModel() { DisplayGames = games});
+            if(currentUser != null)
+            {
+                //If user is logged in pass it throug 
+                return View(new GameListModel() { DisplayGames = games, CurrentUser = currentUser});
+            }
+            else
+            {
+                //We dont specify currentUser because it is null
+                return View(new GameListModel() { DisplayGames = games });
+            }
+            
         }
 
-        public IActionResult Details()
+        [Authorize]
+        public async Task<IActionResult> GameDetails(int gameId)
         {
             //TODO: Implement GameDetails Method
+            var gameDetails = await _gameService.GetByIdAsync(gameId);
+            var currentUser = await _userService.GetLoggedInUserAsync();
 
-            //Should get all Details of a game, and display them on New Detail View
-            return View();
+            return View(new GameDetailsModel() { Game = gameDetails, CurrentUser = currentUser });
         }
 
         public async Task<IActionResult> CategoryId(int catId)

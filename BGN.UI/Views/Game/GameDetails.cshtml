@@ -1,0 +1,89 @@
+﻿@using BGN.Shared
+@model BGN.UI.Models.GameDetailsModel
+
+<div class="container mt-5">
+
+    <div>
+        <h1 class="fw-bold pb-4">
+            Game Details:
+            <br />
+        </h1>
+    </div>
+
+
+    <div class="row justify-content-between">
+        <div class="col-md-6 col-sm-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <p>
+                                <strong>Name:</strong> @Model.Game.Name
+                                @if(Model.Game.IsAdult)
+                                {
+                                    <span class="badge bg-danger float-end ps-3 pe-3 p-2">Adult Only</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-success float-end ps-3 pe-3 p-2">Family Friendly</span>
+                                }
+                            </p>
+                            
+                            <p><strong>Description:</strong> <br />@Model.Game.Description </p>
+                            <p><strong>Tags:</strong></p>
+                            <ul>
+                                <li>@Model.Game.Category.Name</li>
+                                <li>@Model.Game.Genre.Name</li>
+                                
+                                @if(Model.Game.IsAdult)
+                                {
+                                    <li>Adult Only</li>
+                                }
+                                else
+                                {
+                                    <li>Family Friendly</li>
+                                }
+                            </ul>
+                            <p><strong>Playable with:</strong>
+                                <br />
+                                Min: 
+                                <!-- nice icon-->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                </svg>
+                                @Model.Game.MinPlayers 
+                                
+                                <br />
+                                Max:
+                                <!-- nice icon-->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                </svg>
+                                @Model.Game.MaxPlayers </p>
+                            <p><strong>Estimated playtime:</strong>
+                                <br />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-hourglass" viewBox="0 0 16 16">
+                                    <path d="M2 1.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-1v1a4.5 4.5 0 0 1-2.557 4.06c-.29.139-.443.377-.443.59v.7c0 .213.154.451.443.59A4.5 4.5 0 0 1 12.5 13v1h1a.5.5 0 0 1 0 1h-11a.5.5 0 1 1 0-1h1v-1a4.5 4.5 0 0 1 2.557-4.06c.29-.139.443-.377.443-.59v-.7c0-.213-.154-.451-.443-.59A4.5 4.5 0 0 1 3.5 3V2h-1a.5.5 0 0 1-.5-.5m2.5.5v1a3.5 3.5 0 0 0 1.989 3.158c.533.256 1.011.791 1.011 1.491v.702c0 .7-.478 1.235-1.011 1.491A3.5 3.5 0 0 0 4.5 13v1h7v-1a3.5 3.5 0 0 0-1.989-3.158C8.978 9.586 8.5 9.052 8.5 8.351v-.702c0-.7.478-1.235 1.011-1.491A3.5 3.5 0 0 0 11.5 3V2z" />
+                                </svg>
+                                : @Model.Game.EstimatedTime min
+                            </p>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-sm-12">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <img src=@Model.Game.ImgUrl class="card-img-top img-fluid w-100" alt="Photo of Boardgame">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
