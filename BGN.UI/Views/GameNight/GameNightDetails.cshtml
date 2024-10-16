@@ -3,26 +3,26 @@
 
 <div class="container mt-5">
 
-    <div>
-        <h1 class="fw-bold pb-4">
+    <div class="row mb-2">
+        <h1 class="col-6 fw-bold pb-2">
             Gamenight Details:
             <br />
         </h1>
-        <div>
+        <div class="col-6">
             @if (@Model.CurrentUser != null)
             {
-                if (@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
-                {
-                    <a asp-controller="GameNight" asp-action="Edit" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-primary">Edit</a>
-                }
-
                 if (@Model.GameNight.Attendees.Any(a => a.Id == @Model.CurrentUser.Id))
                 {
-                    <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-danger">Leave</a>
+                    <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-danger p-2 ps-5 pe-5 ms-2 float-end">Leave</a>
                 }
                 else
                 {
-                    <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success">Join</a>
+                    <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
+                }
+
+                if (@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
+                {
+                    <a asp-controller="GameNight" asp-action="Edit" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-primary p-2 ps-5 pe-5 me-2 float-end">Edit</a>
                 }
             }
         </div>

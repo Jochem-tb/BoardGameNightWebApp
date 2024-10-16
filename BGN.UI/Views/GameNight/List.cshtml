@@ -120,19 +120,12 @@
                     //Reset variables to default value each iteration
                     var isAttending = false;
                     var isGameNightAdult = false;
+                    joinButtonClassAttribute = "";
 
 
 
                     //Check if game night contains 18+ games
-                    foreach (var game in gameNight.Games)
-                    {
-                        if (game.IsAdult)
-                        {
-                            //Set variable to true and break the loop
-                            isGameNightAdult = true;
-                            break;
-                        }
-                    }
+                    isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
 
                     // if user is not 18+ and game night contains 18+ games, set the join button on disabled
                     if (isGameNightAdult && !isUserAdult)
@@ -141,15 +134,8 @@
                     }
 
                     //if user is already attending set join button to leave button
-                    var currentUserId = Model.CurrentUser.Id;
-                    foreach (var person in gameNight.Attendees)
-                    {
-                        if (person.Id == currentUserId)
-                        {
-                            isAttending = true;
-                            break;
-                        }
-                    }
+                    isAttending = gameNight.Attendees.Any(p => p.Id == Model.CurrentUser.Id);
+                    
 
                     ViewData["IsUserAdult"] = isUserAdult;
                     ViewData["IsAttending"] = isAttending;
