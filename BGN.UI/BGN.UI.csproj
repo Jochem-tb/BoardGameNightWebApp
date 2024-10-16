@@ -33,6 +33,13 @@
     <Folder Include="wwwroot\img\uploads\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Views\Shared\_GameNightCardPartial.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
   
 
 </Project>

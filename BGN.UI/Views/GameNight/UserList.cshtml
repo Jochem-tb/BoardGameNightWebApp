@@ -2,11 +2,6 @@
 @model BGN.UI.Models.GameNightListModel
 
 @{
-    var moreThenZeroAttending = false;
-    var moreThenZeroOrganising = false;
-    var moreThenZeroGameNights = false;
-
-
     const int _minAgeOrganise = 16;
     var isUserAbleToOrganize = false;
     var isUserAdult = false;
@@ -62,7 +57,6 @@
                         var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
                         if (isAttending)
                         {
-                            moreThenZeroAttending = true;
                             var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
                             var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 
@@ -92,10 +86,8 @@
                 <div class="game-night-slider">
                     @foreach (var gameNight in Model.DisplayGameNights)
                     {
-                        var isOrganiser = gameNight.OrganiserId == Model.CurrentUser.Id;
-                        if (isOrganiser)
-                        {
-                            moreThenZeroOrganising = true;
+                        if (gameNight.OrganiserId == Model.CurrentUser.Id)
+                            {
                             var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
                             var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
                             var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
@@ -125,7 +117,6 @@
                 <div class="game-night-slider">
                     @foreach (var gameNight in Model.DisplayGameNights.OrderByDescending(x => x.Date))
                     {
-                        moreThenZeroGameNights = true;
                         var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
                         var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
                         var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";

@@ -10,11 +10,13 @@ namespace BGN.UI.Controllers
     public class GameController : Controller
     {
         private readonly IGameService _gameService;
+        private readonly IGameNightService _gameNightService;
         private readonly IUserService _userService;
 
         public GameController(IServiceManager serviceManager, IUserService userService)
         {
             _gameService = serviceManager.GameService;
+            _gameNightService = serviceManager.GameNightService;
             _userService = userService;
         }
         public IActionResult Index()
@@ -27,18 +29,10 @@ namespace BGN.UI.Controllers
         {
             var games = await _gameService.GetAllAsync();
             var currentUser = await _userService.GetLoggedInUserAsync();
+            return View(new GameListModel() { DisplayGames = games, CurrentUser = currentUser });
 
-            if(currentUser != null)
-            {
-                //If user is logged in pass it throug 
-                return View(new GameListModel() { DisplayGames = games, CurrentUser = currentUser});
-            }
-            else
-            {
-                //We dont specify currentUser because it is null
-                return View(new GameListModel() { DisplayGames = games });
-            }
-            
+
+
         }
 
         [Authorize]
@@ -47,26 +41,35 @@ namespace BGN.UI.Controllers
             //TODO: Implement GameDetails Method
             var gameDetails = await _gameService.GetByIdAsync(gameId);
             var currentUser = await _userService.GetLoggedInUserAsync();
-
-            return View(new GameDetailsModel() { Game = gameDetails, CurrentUser = currentUser });
+            var gameNightWithGame = await _gameNightService.GetAllWithGameIdAsync(gameId);
+            if(gameDetails == null)
+            {
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return View(new GameDetailsModel() { Game = gameDetails, CurrentUser = currentUser, GameNightsWithThisGame = gameNightWithGame });
+            }
         }
 
         public async Task<IActionResult> CategoryId(int catId)
         {
             var games = await _gameService.GetAllGameByCategoryIdAsync(catId);
+            var currentUser = await _userService.GetLoggedInUserAsync();
 
             //Return GameListModel with the games, so they will be displayed. 
             //Return also SelectedCategories, so the ViewComponents know to set the checkbox to checked
-            return View("List", new GameListModel() { DisplayGames = games, SelectedCategories = new List<int>() { catId } });
+            return View("List", new GameListModel() { DisplayGames = games, SelectedCategories = new List<int>() { catId }, CurrentUser = currentUser });
         }
 
         public async Task<IActionResult> GenreId(int genId)
         {
             var games = await _gameService.GetAllGameByGenreIdAsync(genId);
+            var currentUser = await _userService.GetLoggedInUserAsync();
 
             //Return GameListModel with the games, so they will be displayed. 
             //Return also SelectedGenres, so the ViewComponents know to set the checkbox to checked
-            return View("List", new GameListModel() { DisplayGames = games, SelectedGenres = new List<int>() { genId } });
+            return View("List", new GameListModel() { DisplayGames = games, SelectedGenres = new List<int>() { genId }, CurrentUser = currentUser });
         }
 
 

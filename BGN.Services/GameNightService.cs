@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BGN.Domain.Entities;
 using BGN.Domain.Repositories;
 using BGN.Services.Abstractions;
 using BGN.Services.Abstractions.FilterModels;
@@ -150,6 +151,16 @@ namespace BGN.Services
         public Task<IEnumerable<FoodOptionDto>> GetFoodOptionsAsync(int gameNightId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IEnumerable<GameNightDto>> GetAllWithGameIdAsync(int gameId)
+        {
+            var query= await _repositoryManager.GameNightRepository.GetAllGameNightsAsQueryableAsync();
+            query = query.Where(x => x.Games.Any(y => y.Id == gameId));
+
+            var gameNightList = query.ToList();
+            return _mapper.Map<IEnumerable<GameNightDto>>(gameNightList);
+           
         }
     }
 }
