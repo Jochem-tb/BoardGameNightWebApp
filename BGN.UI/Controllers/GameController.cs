@@ -6,6 +6,14 @@ using BGN.Shared;
 using BGN.UI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol;
+using static NuGet.Packaging.PackagingConstants;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Processing;
+using System.IO;
+
 
 namespace BGN.UI.Controllers
 {
@@ -15,13 +23,15 @@ namespace BGN.UI.Controllers
         private readonly IGameNightService _gameNightService;
         private readonly IUserService _userService;
         private readonly IMapper _mapper;
+        private readonly IWebHostEnvironment _hostEnvironment;
 
-        public GameController(IServiceManager serviceManager, IUserService userService, IMapper mapper)
+        public GameController(IServiceManager serviceManager, IUserService userService, IMapper mapper, IWebHostEnvironment webHostEnvironment)
         {
             _gameService = serviceManager.GameService;
             _gameNightService = serviceManager.GameNightService;
             _userService = userService;
             _mapper = mapper;
+            _hostEnvironment = webHostEnvironment;
         }
         public IActionResult Index()
         {
@@ -128,12 +138,62 @@ namespace BGN.UI.Controllers
             }
             else
             {
+                var imgUrl = await UploadPhotoToServerAsync(model.CoverPhoto);
+                
+                //if (model.CoverPhoto != null)
+                //{
+                //    // Save the cover photo to the wwwroot/img/game folder
+                //    var folder = "/img/game/";
+                //    folder += Guid.NewGuid().ToString() + "_" + model.CoverPhoto.FileName;
+                //    var serverFolder = Path.Combine(_hostEnvironment.WebRootPath, folder);
+                //    using (var fileStream = new FileStream(serverFolder, FileMode.Create))
+                //    {
+                //        await model.CoverPhoto.CopyToAsync(fileStream);
+                //    }
+                //    model.Game.ImgUrl = folder;
+                //}
+
+                if(!imgUrl.IsNullOrEmpty())
+                {
+                    model.Game.ImgUrl = imgUrl; // Save the URL in the database
+                }
+
+                
                 // Insert the game into the database
                 _gameService.Insert(model.Game!);
                 TempData["CreateGameMessage"] = "Game created successfully!";
                 return RedirectToAction("List");
             }
 
+        }
+
+        private async Task<string?> UploadPhotoToServerAsync(IFormFile toBeUploadedImage)
+        {
+            if (toBeUploadedImage != null)
+            {
+                var fileName = toBeUploadedImage.FileName.Trim().ToLower().Replace(" ","");
+                var folder = "img/game/";
+                folder += Guid.NewGuid().ToString() + "_" + fileName;
+                //TODO Fix problem with serverfOLDER
+                var serverFolder = Path.Combine(_hostEnvironment.WebRootPath, folder);
+
+                using (var image = await Image.LoadAsync(toBeUploadedImage.OpenReadStream()))
+                {
+                    // Resize the image, maintaining aspect ratio
+                    int maxWidth = 800; // Set your desired maximum width here
+                    int maxHeight = 400; // Set your desired maximum height here
+                    image.Mutate(x => x.Resize(new ResizeOptions
+                    {
+                        Mode = ResizeMode.Max, // Ensures it won't stretch
+                        Size = new Size(maxWidth, maxHeight)
+                    }));
+
+                    // Save the resized image to the server folder
+                    await image.SaveAsync(serverFolder);
+                }
+                return "/"+folder;
+            }
+            return null;
         }
     }
 }

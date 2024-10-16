@@ -7,5 +7,6 @@ namespace BGN.UI.Models
     {
 
         public Game? Game { get; set; }
+        public IFormFile? CoverPhoto { get; set; }
     }
 }

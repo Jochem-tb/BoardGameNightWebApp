@@ -4,7 +4,7 @@
 }
 @model BGN.UI.Models.CrudGameModel
 
-<form id="createGameForm" method="post" asp-action="Create">
+<form id="createGameForm" enctype="multipart/form-data" method="post" asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
     <div asp-validation-summary="All"></div>
 <div class="row">
@@ -14,6 +14,13 @@
                 <input asp-for="Game.Name" class="form-control" autocomplete="gameName" aria-required="true" placeholder="Game name" />
                 <label asp-for="Game.Name">Game name</label>
                 <span asp-validation-for="Game.Name" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-5">
+            <div class="form-floating align-items-center justify-content-center mb-3">
+                <input asp-for="CoverPhoto" class="form-control" id="formFile" placeholder="Coverphoto">
+                <label asp-for="CoverPhoto">Coverphoto</label>
             </div>
         </div>
     </div>
