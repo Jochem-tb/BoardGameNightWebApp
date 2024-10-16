@@ -31,6 +31,10 @@ namespace BGN.Shared
 
         public IEnumerable<FoodOptionDto> Preferences { get; set; } = new List<FoodOptionDto>();
 
+        public bool IsAdult()
+        {
+            return DateOfBirth.AddYears(18) <= DateTime.Now;
+        }
     }
 }
 

@@ -11,13 +11,19 @@
         <div class="col-6">
             @if (@Model.CurrentUser != null)
             {
-                if (@Model.GameNight.Attendees.Any(a => a.Id == @Model.CurrentUser.Id))
+                //If user is adult show Join/Leave button 
+                //OR
+                //there are NO 18+ games and user is NOT 18+
+                if (Model.CurrentUser.IsAdult() || (!Model.GameNight.Games.Any(g => g.IsAdult) && !Model.CurrentUser.IsAdult()))
                 {
-                    <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-danger p-2 ps-5 pe-5 ms-2 float-end">Leave</a>
-                }
-                else
-                {
-                    <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
+                    if (@Model.GameNight.Attendees.Any(a => a.Id == @Model.CurrentUser.Id))
+                    {
+                        <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-danger p-2 ps-5 pe-5 ms-2 float-end">Leave</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
+                    }
                 }
 
                 if (@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
@@ -30,7 +36,7 @@
 
 
     <div class="row">
-        
+
         @if (TempData["JoinGameNightError"] != null)
         {
             <div class="alert alert-danger" role="alert">
@@ -125,15 +131,15 @@
                             {
 
                                 if (checkIfNotComplete.Contains(option.Id))
-                                    {
+                                {
                                     checkIfNotComplete.Remove(option.Id);
-                                        <li class="list-group-item bg-success bg-opacity-50">@option.Name</li>
-                                    }
-                                    else
-                                    {
-                                        <li class="list-group-item">@option.Name</li>
-                                    }
-                                
+                                    <li class="list-group-item bg-success bg-opacity-50">@option.Name</li>
+                                }
+                                else
+                                {
+                                    <li class="list-group-item">@option.Name</li>
+                                }
+
                             }
 
                             // Display any remaining preferences that were not matched, and are not present in this gamenight
