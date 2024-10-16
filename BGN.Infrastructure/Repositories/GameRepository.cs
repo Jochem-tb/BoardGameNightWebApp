@@ -86,11 +86,13 @@ namespace BGN.Infrastructure.Repositories
         public void Insert(Game game)
         {
             _dbContext.Games.Add(game);
+            _dbContext.SaveChanges();
         }
 
         public void Remove(Game game)
         {
             _dbContext.Games.Remove(game);
+            _dbContext.SaveChanges();
         }
     }
 }

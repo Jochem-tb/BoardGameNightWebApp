@@ -1,0 +1,6 @@
+﻿@model IEnumerable<BGN.Shared.GenreDto>
+
+@foreach (var genre in Model)
+{
+    <option value="@genre.Id">@genre.Name</option>
+}

@@ -1,4 +1,5 @@
-﻿using BGN.Services.Abstractions.FilterModels;
+﻿using BGN.Domain.Entities;
+using BGN.Services.Abstractions.FilterModels;
 using BGN.Shared;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,9 @@ namespace BGN.Services.Abstractions
         Task<IEnumerable<GameDto>> GetAllAsync();
         Task<GameDto?> GetByIdAsync(int id);
         void Insert(GameDto gameDto);
+        void Insert(Game game);
         void Remove(GameDto gameDto);
+        void Remove(Game game);
 
 
         Task<IEnumerable<GameDto>> GetAllGameByGenreIdAsync(int genId);

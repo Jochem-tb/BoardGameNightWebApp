@@ -24,9 +24,16 @@
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Game's List</h2>
-        <a asp-area="" asp-controller="Home" asp-action="Create" class="btn btn-primary">Add New Game</a>
+        <a asp-area="" asp-controller="Game" asp-action="Create" class="btn btn-primary">Add New Game</a>
     </div>
 </div>
+
+@if (TempData["CreateGameMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["CreateGameMessage"]
+    </div>
+}
 
 <!-- Row for sidebar and game list -->
 <div class="row">

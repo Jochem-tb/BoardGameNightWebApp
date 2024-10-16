@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -20,33 +21,36 @@ namespace BGN.Domain.Entities
         [MaxLength(255)]
         public string? Description { get; set; }
 
-
+        [Required]
         [Range(1, 100)]
-        public int? MinPlayers { get; set; }
+        public required int MinPlayers { get; set; }
 
-
+        [Required]
         [Range(1, 255)]
-        public int? MaxPlayers { get; set; }
+        public required int MaxPlayers { get; set; }
 
 
         public bool IsAdult { get; set; } = false;
 
-        [Required]
+        [ValidateNever]
         public required Genre Genre { get; set; }
 
-        public int? GenreId { get; set; }
-
         [Required]
+        public required int GenreId { get; set; }
+
+        [ValidateNever]
         public required Category Category { get; set; }
 
-        public int? CategoryId { get; set; }
+        [Required]
+        public required int CategoryId { get; set; }
 
+        [Required]
         [Range(1, 720)] // Maximum playtime = 12 hours
         public int? EstimatedTime { get; set; }
 
         [Required]
         [MaxLength(255)]
-        public required string ImgUrl { get; set; } = "~/img/gamenight/BoardGameDefaultSmall.jpg";
+        public required string ImgUrl { get; set; } = "/img/gamenight/BoardGameDefaultSmall.jpg";
 
         public ICollection<GameNight> GameNights { get; set; } = new List<GameNight>();
     }

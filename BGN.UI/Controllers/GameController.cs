@@ -1,6 +1,8 @@
-﻿using BGN.Domain.Entities;
+﻿using AutoMapper;
+using BGN.Domain.Entities;
 using BGN.Services;
 using BGN.Services.Abstractions;
+using BGN.Shared;
 using BGN.UI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,12 +14,14 @@ namespace BGN.UI.Controllers
         private readonly IGameService _gameService;
         private readonly IGameNightService _gameNightService;
         private readonly IUserService _userService;
+        private readonly IMapper _mapper;
 
-        public GameController(IServiceManager serviceManager, IUserService userService)
+        public GameController(IServiceManager serviceManager, IUserService userService, IMapper mapper)
         {
             _gameService = serviceManager.GameService;
             _gameNightService = serviceManager.GameNightService;
             _userService = userService;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -42,7 +46,7 @@ namespace BGN.UI.Controllers
             var gameDetails = await _gameService.GetByIdAsync(gameId);
             var currentUser = await _userService.GetLoggedInUserAsync();
             var gameNightWithGame = await _gameNightService.GetAllWithGameIdAsync(gameId);
-            if(gameDetails == null)
+            if (gameDetails == null)
             {
                 return RedirectToAction("List");
             }
@@ -89,6 +93,47 @@ namespace BGN.UI.Controllers
 
             // Return the filtered games to the view
             return View("List", gameListModel);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Create()
+        {
+            var currentUser = await _userService.GetLoggedInUserAsync();
+            if (currentUser == null)
+            {
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return View(new CrudGameModel() { CurrentUser = currentUser });
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(CrudGameModel model)
+        {
+            //var genre = await _gameService.GetGenreByIdAsync(model.Game.GenreId);
+            //var category = await _gameService.GetCategoryByIdAsync(model.Game.CategoryId);
+
+            //model.Game.Category = _mapper.Map<Category>(category);
+            //model.Game.Genre = _mapper.Map<Genre>(genre);
+
+
+            // Try to validate the Game object separately
+            if (!ModelState.IsValid)
+            {
+                // Return the view with validation errors for the Game object
+                return View();
+            }
+            else
+            {
+                // Insert the game into the database
+                _gameService.Insert(model.Game!);
+                TempData["CreateGameMessage"] = "Game created successfully!";
+                return RedirectToAction("List");
+            }
+
         }
     }
 }

@@ -82,12 +82,12 @@ namespace BGN.Services
 
             if (filterObject.SelectedGenres.Any())
             {
-                gamesQueryable = gamesQueryable.Where(g => g.GenreId != null && filterObject.SelectedGenres.Contains(g.GenreId.Value));
+                gamesQueryable = gamesQueryable.Where(g => g.GenreId != null && filterObject.SelectedGenres.Contains(g.GenreId));
             }
 
             if (filterObject.SelectedCategories.Any())
             {
-                gamesQueryable = gamesQueryable.Where(g => g.CategoryId != null && filterObject.SelectedCategories.Contains(g.CategoryId.Value));
+                gamesQueryable = gamesQueryable.Where(g => g.CategoryId != null && filterObject.SelectedCategories.Contains(g.CategoryId));
             }
 
             if (filterObject.SearchEstimatedTimeLower.HasValue)
@@ -144,6 +144,16 @@ namespace BGN.Services
         public void Remove(GameDto gameDto)
         {
             var game = _mapper.Map<Game>(gameDto);
+            _repositoryManager.GameRepository.Remove(game);
+        }
+
+        public void Insert(Game game)
+        {
+            _repositoryManager.GameRepository.Insert(game);
+        }
+
+        public void Remove(Game game)
+        {
             _repositoryManager.GameRepository.Remove(game);
         }
     }

@@ -1,0 +1,6 @@
+﻿@model IEnumerable<BGN.Shared.CategoryDto>
+
+@foreach (var category in Model)
+{
+    <option value="@category.Id">@category.Name</option>
+}
