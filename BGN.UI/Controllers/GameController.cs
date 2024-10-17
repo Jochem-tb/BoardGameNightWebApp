@@ -83,7 +83,12 @@ namespace BGN.UI.Controllers
 
             //Return GameListModel with the games, so they will be displayed. 
             //Return also SelectedGenres, so the ViewComponents know to set the checkbox to checked
-            return View("List", new GameListModel() { DisplayGames = games, SelectedGenres = new List<int>() { genId }, CurrentUser = currentUser });
+            return View("List", new GameListModel()
+            {
+                DisplayGames = games, 
+                SelectedGenres = new List<int>() { genId },
+                CurrentUser = currentUser
+            });
         }
 
 
@@ -99,7 +104,9 @@ namespace BGN.UI.Controllers
             // If the model state is valid, fetch games based on the filter criteria
             //GetAllAsync is overloaded, so we can pass the GameListModel to it
             var filteredGames = await _gameService.GetAllAsync(gameListModel);
+            var currentUser = await _userService.GetLoggedInUserAsync();
             gameListModel.DisplayGames = filteredGames;
+            gameListModel.CurrentUser = currentUser;
 
             // Return the filtered games to the view
             return View("List", gameListModel);
@@ -139,6 +146,7 @@ namespace BGN.UI.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Create(CrudGameModel model)
         {
@@ -151,18 +159,33 @@ namespace BGN.UI.Controllers
             else
             {
                 var imgUrl = await UploadPhotoToServerAsync(model.CoverPhoto);
-
-                if(!imgUrl.IsNullOrEmpty())
+                try
                 {
-                    model.Game.ImgUrl = imgUrl; // Save the URL in the database
+                    if (!imgUrl.IsNullOrEmpty())
+                    {
+                        model.Game.ImgUrl = imgUrl; // Save the URL in the database
+                    }
+
+                    if (model.CurrentUser == null)
+                    {
+                        model.CurrentUser = await _userService.GetLoggedInUserAsync();
+                        model.Game.OwnerId = model.CurrentUser.Id;
+                    }
+
+
+
+                    // Insert the game into the database
+                    _gameService.Insert(model.Game!);
+                    TempData["CreateGameMessage"] = "Game created successfully!";
+                    return RedirectToAction("List");
                 }
-
-                model.Game.OwnerId = model.CurrentUser.Id;
-
-                // Insert the game into the database
-                _gameService.Insert(model.Game!);
-                TempData["CreateGameMessage"] = "Game created successfully!";
-                return RedirectToAction("List");
+                catch (Exception ex)
+                {
+                    DeleteOldImage(imgUrl);
+                    TempData["UpdateGameError"] = "Something went wrong, while updating this game";
+                    return RedirectToAction("List");
+                }
+                
             }
 
         }

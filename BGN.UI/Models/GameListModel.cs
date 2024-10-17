@@ -17,6 +17,7 @@ namespace BGN.UI.Models
 
         public IEnumerable<GameDto> DisplayGames { get; set; } = new List<GameDto>();
 
+
         //User can be null in List, only Autorize when going to Details
         public required PersonDto? CurrentUser { get; set; }
 

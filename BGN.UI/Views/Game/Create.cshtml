@@ -7,6 +7,9 @@
 <form id="createGameForm" enctype="multipart/form-data" method="post" asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
     <div asp-validation-summary="All"></div>
+
+    <input type="hidden" asp-for="CurrentUser" />
+
 <div class="row d-flex  justify-content-start align-items-center">
         <!-- Game Name -->
         <div class="col-6">

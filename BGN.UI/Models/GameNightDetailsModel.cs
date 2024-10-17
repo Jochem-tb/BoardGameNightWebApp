@@ -7,5 +7,15 @@ namespace BGN.UI.Models
         public required GameNightDto GameNight { get; set; } 
         public required PersonDto CurrentUser { get; set; }
 
+        public GameListModel GameListModel;
+        public GameListModel GetGameListModel()
+        {
+            return new()
+            {
+                DisplayGames = GameNight.Games,
+                CurrentUser = this.CurrentUser
+            };
+        }
+
     }
 }

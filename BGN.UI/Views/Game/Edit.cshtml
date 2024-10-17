@@ -1,5 +1,8 @@
 ﻿@{
     ViewData["Title"] = "Edit game";
+    ViewData["SelectedCategoryId"] = Model.Game.CategoryId;
+    ViewData["SelectedGenreId"] = Model.Game.GenreId;
+    ViewData["Title"] = "Edit game";
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
 }
 @model BGN.UI.Models.CrudGameModel
@@ -12,6 +15,7 @@
 
     <input type="hidden" asp-for="Game.Id" />
     <input type="hidden" asp-for="Game.OwnerId" />
+    <input type="hidden" asp-for="Game.ImgUrl" />
 
     <!--Actual changeable fields!-->
     <div class="row d-flex  justify-content-start align-items-center">

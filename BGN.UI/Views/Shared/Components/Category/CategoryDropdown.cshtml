@@ -1,6 +1,15 @@
 ﻿@model IEnumerable<BGN.Shared.CategoryDto>
-
+@{
+    var isSelected = (int)ViewData["SelectedCategoryId"];
+}
 @foreach (var category in Model)
 {
-    <option value="@category.Id">@category.Name</option>
+    if(category.Id == isSelected)
+    {
+        <option value="@category.Id" selected>@category.Name</option>
+    }
+    else
+    {
+        <option value="@category.Id">@category.Name</option>
+    }
 }
