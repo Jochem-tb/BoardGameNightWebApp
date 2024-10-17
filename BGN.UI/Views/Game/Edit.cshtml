@@ -1,13 +1,29 @@
 ﻿@{
-    ViewData["Title"] = "Create new Game";
+    ViewData["Title"] = "Edit game";
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
 }
 @model BGN.UI.Models.CrudGameModel
 
-<form id="createGameForm" enctype="multipart/form-data" method="post" asp-action="Create">
+<link rel="stylesheet" href="~/css/gameList.css" />
+
+<form id="editGameFormSubmit" enctype="multipart/form-data" method="post" asp-action="Edit">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
     <div asp-validation-summary="All"></div>
-<div class="row d-flex  justify-content-start align-items-center">
+
+    <input type="hidden" asp-for="Game.Id" />
+    <input type="hidden" asp-for="Game.OwnerId" />
+
+    <!--Actual changeable fields!-->
+    <div class="row d-flex  justify-content-start align-items-center">
+
+        <!--Display presenet img if not null-->
+        @if(!Model.Game.ImgUrl.Equals("") || Model.Game.ImgUrl != null)
+        {
+            <div class="col-12 justify-content-center p-3">
+                <img src=@Model.Game.ImgUrl class="card-img-top img-fluid w-100 imageFixedDetail border border-4 border-dark" alt="Photo of Boardgame">
+            </div>
+        }
+        
         <!-- Game Name -->
         <div class="col-6">
             <div class="form-floating mb-3">
@@ -80,8 +96,8 @@
         <div class="col-6">
             <div class="form-floating mb-3">
                 <select asp-for="Game.GenreId" class="form-select">
-                    <option value=""disabled>Select a Genre</option>
-                        @await Component.InvokeAsync("GenreDropdown")
+                    <option value="" disabled>Select a Genre</option>
+                    @await Component.InvokeAsync("GenreDropdown")
                 </select>
                 <label asp-for="Game.GenreId">Genre</label>
                 <span asp-validation-for="Game.GenreId" class="text-danger"></span>
@@ -93,7 +109,7 @@
             <div class="form-floating mb-3">
                 <select asp-for="Game.CategoryId" class="form-select">
                     <option value="" disabled>Select a Category</option>
-                        @await Component.InvokeAsync("CategoryDropdown")
+                    @await Component.InvokeAsync("CategoryDropdown")
                 </select>
                 <label asp-for="Game.CategoryId">Category</label>
                 <span asp-validation-for="Game.CategoryId" class="text-danger"></span>
@@ -101,7 +117,6 @@
         </div>
     </div>
 
-    <button id="createGameFormSubmit" type="submit" class="mt-3 w-100 btn btn-lg btn-primary">Create</button>
+    <button id="editGameFormSubmit" type="submit" class="mt-3 w-100 btn btn-lg btn-primary">Save</button>
 </form>
 
-   

@@ -13,6 +13,7 @@ namespace BGN.Domain.Repositories
         Task<Game?> GetByIdAsync(int id);
         void Insert(Game game);
         void Remove(Game game);
+        void Update(Game game);
 
 
         Task<IEnumerable<Game>> GetAllGameByGenreIdAsync(int genId);

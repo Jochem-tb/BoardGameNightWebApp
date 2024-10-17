@@ -36,6 +36,12 @@
         @TempData["CreateGameMessage"]
     </div>
 }
+@if (TempData["UpdateGameMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["UpdateGameMessage"]
+    </div>
+}
 
 <!-- Row for sidebar and game list -->
 <div class="row">

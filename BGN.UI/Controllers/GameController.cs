@@ -120,17 +120,29 @@ namespace BGN.UI.Controllers
             }
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Edit(int gameId)
+        {
+            var currentUser = await _userService.GetLoggedInUserAsync();
+            var gameDto = await _gameService.GetByIdAsync(gameId);
+            var game = _mapper.Map<Game>(gameDto);
+
+            //Ensure both objects not null
+            if (currentUser == null || game == null)
+            {
+                return RedirectToAction("List");
+            }
+            else
+            {
+                return View(new CrudGameModel() { CurrentUser = currentUser, Game = game });
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create(CrudGameModel model)
         {
-            //var genre = await _gameService.GetGenreByIdAsync(model.Game.GenreId);
-            //var category = await _gameService.GetCategoryByIdAsync(model.Game.CategoryId);
-
-            //model.Game.Category = _mapper.Map<Category>(category);
-            //model.Game.Genre = _mapper.Map<Genre>(genre);
-
-
-            // Try to validate the Game object separately
+            // Try to validate the Game object
             if (!ModelState.IsValid)
             {
                 // Return the view with validation errors for the Game object
@@ -139,32 +151,54 @@ namespace BGN.UI.Controllers
             else
             {
                 var imgUrl = await UploadPhotoToServerAsync(model.CoverPhoto);
-                
-                //if (model.CoverPhoto != null)
-                //{
-                //    // Save the cover photo to the wwwroot/img/game folder
-                //    var folder = "/img/game/";
-                //    folder += Guid.NewGuid().ToString() + "_" + model.CoverPhoto.FileName;
-                //    var serverFolder = Path.Combine(_hostEnvironment.WebRootPath, folder);
-                //    using (var fileStream = new FileStream(serverFolder, FileMode.Create))
-                //    {
-                //        await model.CoverPhoto.CopyToAsync(fileStream);
-                //    }
-                //    model.Game.ImgUrl = folder;
-                //}
 
                 if(!imgUrl.IsNullOrEmpty())
                 {
                     model.Game.ImgUrl = imgUrl; // Save the URL in the database
                 }
 
-                
+                model.Game.OwnerId = model.CurrentUser.Id;
+
                 // Insert the game into the database
                 _gameService.Insert(model.Game!);
                 TempData["CreateGameMessage"] = "Game created successfully!";
                 return RedirectToAction("List");
             }
 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CrudGameModel model)
+        {
+            // Try to validate the Game object
+            if (!ModelState.IsValid)
+            {
+                // Return the view with validation errors for the Game object
+                return View();
+            }
+            else
+            {
+                // Check if a new cover photo is uploaded
+                if (model.CoverPhoto != null && model.CoverPhoto.Length > 0)
+                {
+                    // Upload new photo and get the new URL
+                    var newImageUrl = await UploadPhotoToServerAsync(model.CoverPhoto);
+
+                    if (!string.IsNullOrEmpty(newImageUrl))
+                    {
+                        // Delete the old image if it exists
+                        DeleteOldImage(model.Game.ImgUrl);
+
+                        // Set the new URL in the model
+                        model.Game.ImgUrl = newImageUrl;
+                    }
+                }
+
+                //Update game in the DB
+                await _gameService.Update(model.Game!);
+                TempData["UpdateGameMessage"] = "Game successfully updated!";
+                return RedirectToAction("List");
+            }
         }
 
         private async Task<string?> UploadPhotoToServerAsync(IFormFile toBeUploadedImage)
@@ -174,7 +208,7 @@ namespace BGN.UI.Controllers
                 var fileName = toBeUploadedImage.FileName.Trim().ToLower().Replace(" ","");
                 var folder = "img/game/";
                 folder += Guid.NewGuid().ToString() + "_" + fileName;
-                //TODO Fix problem with serverfOLDER
+                //PathCombine considers the first argument as the root, if we add  / in front of the folder, it will be considered as the root!!! 
                 var serverFolder = Path.Combine(_hostEnvironment.WebRootPath, folder);
 
                 using (var image = await Image.LoadAsync(toBeUploadedImage.OpenReadStream()))
@@ -191,9 +225,24 @@ namespace BGN.UI.Controllers
                     // Save the resized image to the server folder
                     await image.SaveAsync(serverFolder);
                 }
-                return "/"+folder;
+                //Add / to the folder, for the DB
+                return "/" +folder;
             }
             return null;
+        }
+
+        private void DeleteOldImage(string imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl))
+            {
+                return; // Nothing to delete if the URL is empty
+            }
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", imageUrl.TrimStart('/'));
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
         }
     }
 }

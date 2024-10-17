@@ -94,5 +94,13 @@ namespace BGN.Infrastructure.Repositories
             _dbContext.Games.Remove(game);
             _dbContext.SaveChanges();
         }
+
+        public void Update(Game game)
+        {
+            
+            _dbContext.Games.Update(game);
+            _dbContext.SaveChanges();
+
+        }
     }
 }

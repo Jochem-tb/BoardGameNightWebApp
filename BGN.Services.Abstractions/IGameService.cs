@@ -17,6 +17,8 @@ namespace BGN.Services.Abstractions
         void Insert(Game game);
         void Remove(GameDto gameDto);
         void Remove(Game game);
+        void Update(GameDto gameDto);
+        Task Update(Game game);
 
 
         Task<IEnumerable<GameDto>> GetAllGameByGenreIdAsync(int genId);

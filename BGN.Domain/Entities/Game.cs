@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +49,9 @@ namespace BGN.Domain.Entities
         [Required]
         [Range(1, 720)] // Maximum playtime = 12 hours
         public int? EstimatedTime { get; set; }
+
+        [ForeignKey("PersonId")]
+        public required int OwnerId { get; set; }
 
         [Required]
         [MaxLength(255)]

@@ -75,7 +75,7 @@ namespace BGN.Services
             }
 
             // Apply maximum players filter; if Unlimited is selected, skip max player filtering
-            if ( filterObject.SearchMaxPlayers.HasValue)
+            if (filterObject.SearchMaxPlayers.HasValue)
             {
                 gamesQueryable = gamesQueryable.Where(x => x.MaxPlayers <= filterObject.SearchMaxPlayers.Value);
             }
@@ -155,6 +155,33 @@ namespace BGN.Services
         public void Remove(Game game)
         {
             _repositoryManager.GameRepository.Remove(game);
+        }
+
+        public void Update(GameDto gameDto)
+        {
+            var game = _mapper.Map<Game>(gameDto);
+            _repositoryManager.GameRepository.Update(game);
+        }
+
+        public async Task Update(Game game)
+        {
+            var existingGame = await _repositoryManager.GameRepository.GetByIdAsync(game.Id);
+
+            if (existingGame != null)
+            {
+                existingGame.Name = game.Name;
+                existingGame.Description = game.Description;
+                existingGame.MinPlayers = game.MinPlayers;
+                existingGame.MaxPlayers = game.MaxPlayers;
+                existingGame.IsAdult = game.IsAdult;
+                existingGame.GenreId = game.GenreId;
+                existingGame.CategoryId = game.CategoryId;
+                existingGame.EstimatedTime = game.EstimatedTime;
+                existingGame.ImgUrl = game.ImgUrl;
+                
+                _repositoryManager.GameRepository.Update(existingGame);
+            }
+
         }
     }
 }
