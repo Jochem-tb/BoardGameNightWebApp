@@ -13,6 +13,7 @@ namespace BGN.Domain.Repositories
         Task<IQueryable<GameNight>> GetAllGameNightsAsQueryableAsync();
         Task<GameNight> GetByIdAsync(int id);
         void Insert(GameNight gameNight);
+        void Update(GameNight gameNight);
         void Remove(GameNight gameNight);
 
         Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey);

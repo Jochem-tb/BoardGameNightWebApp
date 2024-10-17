@@ -9,6 +9,7 @@ using BGN.Services.Mapping;
 using Microsoft.AspNetCore.Identity;
 using BGN.UI.Areas.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.Extensions.Options;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,11 +28,24 @@ builder.Services.AddTransient<IEmailSender, EmailSenderConsole>();
 
 builder.Services.AddHttpContextAccessor();
 
+// Add session services
+builder.Services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Set session timeout
+    options.Cookie.HttpOnly = true;                // Set the cookie to be HTTP only
+    options.Cookie.IsEssential = true;              // Ensure the session cookie is sent even when the user hasn't consented to non-essential cookies
+});
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//Database for Entities
 builder.Services.AddDbContext<RepositoryDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BGN_Database")));
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("BGN_Database"));
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+});
 
 
 //Database for Login.
@@ -84,6 +98,9 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+// Add session middleware here
+app.UseSession(); // Make sure to add this before UseEndpoints
 
 
 app.MapControllerRoute(

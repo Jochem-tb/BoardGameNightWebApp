@@ -1,5 +1,10 @@
 ﻿@{
-    var includeFilter = (bool)ViewData["IncludeFilterSection"];
+    var includeFilter = false;
+    if (ViewData["IncludeFilterSection"] != null)
+    {
+        includeFilter = (bool)ViewData["IncludeFilterSection"];
+    }
+    
 }
 @model BGN.UI.Models.GameListModel
 

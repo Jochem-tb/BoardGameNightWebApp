@@ -26,6 +26,12 @@ namespace BGN.Infrastructure
 
         public RepositoryDbContext(DbContextOptions<RepositoryDbContext> options) : base(options) { }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.EnableSensitiveDataLogging();
+        }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,6 +59,11 @@ namespace BGN.Infrastructure
                     {
                         j.HasKey("GameNightId", "AttendeesId");
                     });
+
+            modelBuilder.Entity<GameNight>()
+                .HasMany(n => n.Games)
+                .WithMany(g => g.GameNights)
+                .UsingEntity(j => j.ToTable("GameGameNight"));
 
             //Configuring the one-to-many relationship between Review and Person --> Reviewer
             modelBuilder.Entity<Review>()

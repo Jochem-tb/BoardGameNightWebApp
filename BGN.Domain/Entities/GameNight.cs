@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -24,8 +25,11 @@ namespace BGN.Domain.Entities
         [DataType(DataType.Time)]
         public required TimeSpan Time { get; set; }
 
-        [Required]
+        [ValidateNever]
         public required Person Organiser { get; set; }
+
+        [Required]
+        public required int OrganiserId { get; set; }
 
         [Required]
         [MaxLength(80)]
@@ -42,6 +46,10 @@ namespace BGN.Domain.Entities
         [Required]
         [Range(1, 255)] // You can have a maximum of 255 players. --> Trivia games have > 100 players.
         public required int MaxPlayers { get; set; }
+
+        [Required]
+        [MaxLength(255)]
+        public required string ImgUrl { get; set; } = "/img/gamenight/BoardGameDefaultSmall.jpg";
 
         public ICollection<Person> Attendees { get; set; } = new List<Person>();
         public ICollection<Game> Games { get; set; } = new List<Game>();

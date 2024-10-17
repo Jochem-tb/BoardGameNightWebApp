@@ -19,6 +19,7 @@ namespace BGN.Shared
         public required string HouseNr { get; set; }
         public required string City { get; set; }
         public int MaxPlayers { get; set; }
+        public required string ImgUrl { get; set; }
 
         public IEnumerable<GameDto> Games { get; set; } = new List<GameDto>();
         public IEnumerable<PersonDto> Attendees { get; set; } = new List<PersonDto>();

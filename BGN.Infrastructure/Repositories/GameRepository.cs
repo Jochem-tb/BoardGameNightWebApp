@@ -20,13 +20,13 @@ namespace BGN.Infrastructure.Repositories
 
         public async Task<IEnumerable<Game>> GetAllAsync()
         {
-            return await _dbContext.Games.ToListAsync();
+            return await _dbContext.Games.AsNoTracking().ToListAsync();
         }
 
 
         public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
         {
-            return await _dbContext.Categories.ToListAsync();
+            return await _dbContext.Categories.AsNoTracking().ToListAsync();
         }
 
 
@@ -35,31 +35,32 @@ namespace BGN.Infrastructure.Repositories
             return await _dbContext.Games.Where(x => x.CategoryId == catId)
                 .Include(x => x.Category)
                 .Include(x => x.Genre)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<Game>> GetAllGameByGenreIdAsync(int genId)
         {
-            return await _dbContext.Games.Where(x => x.GenreId == genId)
+            return await _dbContext.Games.AsNoTracking().Where(x => x.GenreId == genId)
                 .ToListAsync();
         }
 
         public async Task<IQueryable<Game>> GetAllGamesAsQueryableAsync()
         {
-            return await Task.FromResult(_dbContext.Games.AsQueryable()
-                .Include(x => x.Category)
-                .Include(x => x.Genre)
+            return await Task.FromResult(_dbContext.Games.AsNoTracking().AsQueryable()
+                .Include(x => x.Category).AsNoTracking()
+                .Include(x => x.Genre).AsNoTracking()
                 );
         }
 
         public async Task<IEnumerable<Genre>> GetAllGenresAsync()
         {
-            return await _dbContext.Genres.ToListAsync();
+            return await _dbContext.Genres.AsNoTracking().ToListAsync();
         }
 
         public async Task<Game?> GetByIdAsync(int id)
         {
-            return await _dbContext.Games.Where(x => x.Id == id)
+            return await _dbContext.Games.AsNoTracking().Where(x => x.Id == id)
                 .Include(x => x.Category)
                 .Include(x => x.Genre)
                 .FirstOrDefaultAsync();
@@ -67,19 +68,20 @@ namespace BGN.Infrastructure.Repositories
 
         public async Task<Category?> GetCategoryByIdAsync(int id)
         {
-            return await _dbContext.Categories.Where(x => x.Id == id)
+            return await _dbContext.Categories.AsNoTracking().Where(x => x.Id == id)
+                .AsNoTracking()
                 .FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Game>> GetEighteenPlusAsync(bool isAdult)
         {
-            return await _dbContext.Games.Where(x => x.IsAdult == isAdult)
+            return await _dbContext.Games.AsNoTracking().Where(x => x.IsAdult == isAdult)
                 .ToListAsync();
         }
 
         public async Task<Genre?> GetGenreByIdAsync(int id)
         {
-            return await _dbContext.Genres.Where(x => x.Id == id)
+            return await _dbContext.Genres.AsNoTracking().Where(x => x.Id == id).AsNoTracking()
                 .FirstOrDefaultAsync();
         }
 

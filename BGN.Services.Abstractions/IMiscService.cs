@@ -10,5 +10,6 @@ namespace BGN.Services.Abstractions
     public interface IMiscService
     {
         public Task<IEnumerable<FoodOptionDto>> GetAllFoodOptionsAsync();
+        public Task<IEnumerable<FoodOptionDto>> GetAllFoodOptionDtoByIdAsync(int[] array);
     }
 }

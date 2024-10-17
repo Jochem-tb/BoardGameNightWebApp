@@ -162,5 +162,61 @@ namespace BGN.Services
             return _mapper.Map<IEnumerable<GameNightDto>>(gameNightList);
            
         }
+
+        public void Insert(GameNightDto gameNightDto)
+        {
+            var gameNight = _mapper.Map<GameNight>(gameNightDto);
+            Insert(gameNight);
+        }
+
+        public void Insert(GameNight gameNight)
+        {
+            _repositoryManager.GameNightRepository.Insert(gameNight);
+        }
+
+        public async Task UpdateAsync(GameNightDto gameNightDto)
+        {
+            var gameNight = _mapper.Map<GameNight>(gameNightDto);
+            await UpdateAsync(gameNight);
+        }
+
+        public async Task UpdateAsync(GameNight gameNight)
+        {
+            var existingGameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNight.Id);
+            if (existingGameNight != null)
+            {
+                //Non-List information
+                existingGameNight.Name = gameNight.Name;
+                existingGameNight.Date = gameNight.Date;
+                existingGameNight.Time = gameNight.Time;
+                existingGameNight.Organiser.Id = gameNight.Organiser.Id;
+                existingGameNight.Street = gameNight.Street;
+                existingGameNight.HouseNr = gameNight.HouseNr;
+                existingGameNight.City = gameNight.City;
+                existingGameNight.MaxPlayers = gameNight.MaxPlayers;
+                existingGameNight.ImgUrl = gameNight.ImgUrl;
+
+                //List information
+                //existingGameNight.Attendees = gameNight.Attendees;
+                //existingGameNight.Games = gameNight.Games;
+                //existingGameNight.FoodOptions = gameNight.FoodOptions;
+
+                _repositoryManager.GameNightRepository.Update(existingGameNight);
+            }
+        }
+
+        public async Task DeleteByIdAsync(int id)
+        {
+            var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(id);
+            if(gameNight != null)
+            {
+                _repositoryManager.GameNightRepository.Remove(gameNight);
+            }
+        }
+
+        public void Delete(GameNight gameNight)
+        {
+            _repositoryManager.GameNightRepository.Remove(gameNight);
+        }
     }
 }

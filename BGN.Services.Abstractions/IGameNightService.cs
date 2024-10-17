@@ -1,4 +1,5 @@
-﻿using BGN.Services.Abstractions.FilterModels;
+﻿using BGN.Domain.Entities;
+using BGN.Services.Abstractions.FilterModels;
 using BGN.Shared;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,14 @@ namespace BGN.Services.Abstractions
         Task<IEnumerable<GameNightDto>> GetAllAsync();
         Task<IEnumerable<GameNightDto>> GetAllAsync(AbstractGameNightFilterObject filterObject);
         Task<IEnumerable<GameNightDto>> GetAllWithGameIdAsync(int gameId);
-
         Task<GameNightDto> GetByIdAsync(int id);
-        Task<GameNightDto> CreateAsync(GameNightDto gameNight);
-        Task<GameNightDto> UpdateAsync(int id, GameNightDto gameNight);
-        Task DeleteAsync(int id);
+
+        void Insert(GameNightDto gameNight);
+        void Insert(GameNight gameNight);
+        Task UpdateAsync(GameNightDto gameNight);
+        Task UpdateAsync(GameNight gameNight);
+        Task DeleteByIdAsync(int id);
+        void Delete(GameNight gameNight);
 
         Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey);
         Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey);

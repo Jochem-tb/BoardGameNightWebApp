@@ -1,6 +1,10 @@
 ﻿@model IEnumerable<BGN.Shared.CategoryDto>
 @{
-    var isSelected = (int)ViewData["SelectedCategoryId"];
+    var isSelected = 0;
+    if(ViewData["SelectedCategoryId"] != null)
+    {
+        isSelected = (int)ViewData["SelectedCategoryId"];
+    }
 }
 @foreach (var category in Model)
 {

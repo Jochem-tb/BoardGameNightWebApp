@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Add Foodoptions";
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+    var isChecked = "";
+}
+@model BGN.UI.Models.CrudGameNightModel
+
+<form method="post" asp-controller="GameNight" asp-action="AddFoodOptions">
+    <div class="mb-3">
+        <button id="addFoodOptions" type="submit" class="mb-3 w-100 btn btn-lg btn-primary">Finish</button>
+
+        @foreach (var option in Model.FoodOptions)
+        {
+            if(Model.GameNight.FoodOptions.Any(x => x.Id == option.Id))
+            {
+                isChecked = "checked";
+            }
+            else
+            {
+                isChecked = "";
+            }
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" @isChecked id="foodOption_@option.Id" name="SelectedFoodOptionsIds" value="@option.Id">
+                <label class="form-check-label" for="foodOption_@option.Id">
+                    @option.Name
+                </label>
+            </div>
+        }
+    </div>
+</form>

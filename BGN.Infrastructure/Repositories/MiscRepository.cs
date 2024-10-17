@@ -1,5 +1,6 @@
 ﻿using BGN.Domain.Entities;
 using BGN.Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace BGN.Infrastructure.Repositories
 
         public async Task<IEnumerable<FoodOptions>> GetAllFoodOptionsAsync()
         {
-            return await Task.FromResult(_dbContext.FoodOptions.ToList());
+            return await Task.FromResult(_dbContext.FoodOptions.AsNoTracking().ToList());
         }
     }
 }

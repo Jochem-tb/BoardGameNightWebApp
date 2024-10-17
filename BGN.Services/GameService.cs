@@ -7,6 +7,7 @@ using BGN.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -102,6 +103,10 @@ namespace BGN.Services
 
             // Materialize the query and map to DTOs
             var gamesList = gamesQueryable.ToList(); //Calls the database when the Query is done
+            foreach(var game in gamesList)
+            {
+               //Set all the games at not tracked!
+            }
             return _mapper.Map<IEnumerable<GameDto>>(gamesList);
         }
 
@@ -157,13 +162,13 @@ namespace BGN.Services
             _repositoryManager.GameRepository.Remove(game);
         }
 
-        public void Update(GameDto gameDto)
+        public async Task UpdateAsync(GameDto gameDto)
         {
             var game = _mapper.Map<Game>(gameDto);
-            _repositoryManager.GameRepository.Update(game);
+            await UpdateAsync(game);
         }
 
-        public async Task Update(Game game)
+        public async Task UpdateAsync(Game game)
         {
             var existingGame = await _repositoryManager.GameRepository.GetByIdAsync(game.Id);
 
@@ -182,6 +187,19 @@ namespace BGN.Services
                 _repositoryManager.GameRepository.Update(existingGame);
             }
 
+        }
+
+        public async Task<IEnumerable<GameDto>> GetAllByIdAsync(int[] array)
+        {
+            var query = await _repositoryManager.GameRepository.GetAllGamesAsQueryableAsync();
+            query = query.Where(x => array.Contains(x.Id));
+            var gameList = query.ToList();
+            return _mapper.Map<IEnumerable<GameDto>>(gameList);
+        }
+
+        public async Task<IEnumerable<Game>> GetAllEntityAsync()
+        {
+            return await _repositoryManager.GameRepository.GetAllAsync();
         }
     }
 }

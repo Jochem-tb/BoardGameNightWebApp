@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BGN.Domain.Entities;
 using BGN.Domain.Repositories;
 using BGN.Services.Abstractions;
 using BGN.Shared;
@@ -20,6 +21,15 @@ namespace BGN.Services
             _repositoryManager = repositoryManager;
             _mapper = mapper;
         }
+
+        public async Task<IEnumerable<FoodOptionDto>> GetAllFoodOptionDtoByIdAsync(int[] array)
+        {
+            var foodOptions = await _repositoryManager.MiscRepository.GetAllFoodOptionsAsync();
+            foodOptions = foodOptions.Where(x => array.Contains(x.Id)).ToList();
+            return await Task.FromResult(_mapper.Map<IEnumerable<FoodOptionDto>>(foodOptions));
+
+        }
+
         public async Task<IEnumerable<FoodOptionDto>> GetAllFoodOptionsAsync()
         {
             var foodOptions = await _repositoryManager.MiscRepository.GetAllFoodOptionsAsync();

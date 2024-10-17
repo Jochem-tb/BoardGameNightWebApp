@@ -3,9 +3,11 @@ using BGN.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BGN.Infrastructure.Repositories
 {
@@ -37,15 +39,6 @@ namespace BGN.Infrastructure.Repositories
                 );
         }
 
-        public void Insert(GameNight gameNight)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(GameNight gameNight)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<IQueryable<GameNight>> GetAllGameNightsAsQueryableAsync()
         {
@@ -119,6 +112,30 @@ namespace BGN.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        
+
+        public async void Insert(GameNight gameNight)
+        {
+            _dbContext.Games.AttachRange(gameNight.Games);
+            _dbContext.GameNights.Add(gameNight);
+            _dbContext.SaveChanges();
+        }
+
+        public void Remove(GameNight gameNight)
+        {
+            _dbContext.GameNights.Remove(gameNight);
+            _dbContext.SaveChanges();
+        }
+        public void Update(GameNight gameNight)
+        {
+            _dbContext.Update(gameNight);
+            _dbContext.SaveChanges();
+        }
+        private void LogTrackedEntities()
+        {
+            foreach (var entry in _dbContext.ChangeTracker.Entries())
+            {
+                Debug.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}, Key: {entry.Property("Id").CurrentValue}");
+            }
+        }
     }
 }

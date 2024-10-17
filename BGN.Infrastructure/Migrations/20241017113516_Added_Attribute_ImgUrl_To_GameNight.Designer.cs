@@ -4,6 +4,7 @@ using BGN.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BGN.Infrastructure.Migrations
 {
     [DbContext(typeof(RepositoryDbContext))]
-    partial class RepositoryDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241017113516_Added_Attribute_ImgUrl_To_GameNight")]
+    partial class Added_Attribute_ImgUrl_To_GameNight
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -446,7 +449,7 @@ namespace BGN.Infrastructure.Migrations
 
                     b.HasIndex("GamesId");
 
-                    b.ToTable("GameGameNight", (string)null);
+                    b.ToTable("GameGameNight");
                 });
 
             modelBuilder.Entity("GameNightAttendees", b =>

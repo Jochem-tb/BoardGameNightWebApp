@@ -218,7 +218,7 @@ namespace BGN.UI.Controllers
                 }
 
                 //Update game in the DB
-                await _gameService.Update(model.Game!);
+                await _gameService.UpdateAsync(model.Game!);
                 TempData["UpdateGameMessage"] = "Game successfully updated!";
                 return RedirectToAction("List");
             }
