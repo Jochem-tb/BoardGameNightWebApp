@@ -18,6 +18,7 @@ using BGN.Domain.Entities;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BGN.UI.Controllers
 {
@@ -55,9 +56,9 @@ namespace BGN.UI.Controllers
         {
             var gameNightDetails = await _gameNightService.GetByIdAsync(gameNightId);
             var currentUser = await _userService.GetLoggedInUserAsync();
-            var preferenceMisMatch =
-                gameNightDetails.FoodOptions.All(f => currentUser.Preferences.All(fp => fp.Id != f.Id));
-            if (preferenceMisMatch)
+            var preferenceMisMatch = currentUser.Preferences.All(preference =>
+                    gameNightDetails.FoodOptions.Any(option => option.Id == preference.Id));
+            if (!preferenceMisMatch)
             {
                 TempData["PreferenceError"] = "One or more of your preferences is not present.";
             }
@@ -71,6 +72,22 @@ namespace BGN.UI.Controllers
             var currentUser = await _userService.GetLoggedInUserAsync();
 
             return View("UserList", new GameNightListModel() { DisplayGameNights = gameNightList, CurrentUser = currentUser });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> FilterList(GameNightListModel model)
+        {
+            var currentUser = await _userService.GetLoggedInUserAsync();
+            model.CurrentUser = currentUser;
+
+            model.SelectedFoodOptions = model.SelectedFoodOptions ?? new List<int>();
+
+            var filteredGameNights = await _gameNightService.GetAllAsync(model);
+            model.DisplayGameNights = filteredGameNights;
+
+            // Return the filtered games to the view
+            return View("List", model);
+
         }
 
         [Authorize]
@@ -155,7 +172,13 @@ namespace BGN.UI.Controllers
         ------------------------------------------------------------------------
         */
 
-        //Step 1 of the GameNight Creation Process
+
+        
+        /*
+        ----------------------------------------
+        Step 1 of the GameNight Creation Process
+        ----------------------------------------
+        */
 
         [Authorize]
         [HttpGet]
@@ -177,26 +200,96 @@ namespace BGN.UI.Controllers
         }
 
         [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Edit(int gameNightId)
+        {
+            var currentUser = await _userService.GetLoggedInUserAsync();
+            if (currentUser == null) return RedirectToAction("List");
+
+            var existingGameNight = await _gameNightService.GetByIdAsync(gameNightId);
+            var model = new CrudGameNightModel()
+            {
+                CurrentUser = currentUser,
+                GameNight = new GameNight()
+                {
+                    Id = existingGameNight.Id,
+                    Name = existingGameNight.Name,
+                    Date = existingGameNight.Date,
+                    Time = existingGameNight.Time,
+                    Street = existingGameNight.Street,
+                    HouseNr = existingGameNight.HouseNr,
+                    City = existingGameNight.City,
+                    MaxPlayers = existingGameNight.MaxPlayers,
+                    OrganiserId = existingGameNight.OrganiserId,
+                    Organiser = null,
+                    ImgUrl = existingGameNight.ImgUrl,
+                    Games = _mapper.Map<ICollection<Game>>(existingGameNight.Games),
+                    FoodOptions = _mapper.Map<ICollection<FoodOptions>>(existingGameNight.FoodOptions)
+                }
+            };
+            model.isEditMode=true;
+
+            // Store initial model in Session
+            HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(model));
+            return View("Create", model);
+
+        }
+
+        [Authorize]
         [HttpPost]
-        public IActionResult Create(CrudGameNightModel model)
+        public async Task<IActionResult> Create(CrudGameNightModel model)
         {
             if (ModelState.IsValid)
             {
                 //Save data in Session:
                 var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY));
-                exModel.GameNight = new GameNight()
+                if(exModel.isEditMode)
                 {
-                    Name = model.GameNight.Name,
-                    Date = model.GameNight.Date,
-                    Time = model.GameNight.Time,
-                    Organiser = null,
-                    OrganiserId = exModel.CurrentUser.Id,
-                    Street = model.GameNight.Street,
-                    HouseNr = model.GameNight.HouseNr,
-                    City = model.GameNight.City,
-                    MaxPlayers = model.GameNight.MaxPlayers,
-                    ImgUrl = model.GameNight.ImgUrl
-                };
+                    exModel.GameNight.Name = model.GameNight.Name;
+                    exModel.GameNight.Date = model.GameNight.Date;
+                    exModel.GameNight.Time = model.GameNight.Time;
+                    exModel.GameNight.Organiser = null;
+                    exModel.GameNight.OrganiserId = exModel.CurrentUser.Id;
+                    exModel.GameNight.Street = model.GameNight.Street;
+                    exModel.GameNight.HouseNr = model.GameNight.HouseNr;
+                    exModel.GameNight.City = model.GameNight.City;
+                    exModel.GameNight.MaxPlayers = model.GameNight.MaxPlayers;
+                    //Not assigning the ImgUrl, we keep the old
+                    //Possible change hereunder
+                }
+                else
+                {
+                    exModel.GameNight = new GameNight()
+                    {
+                        Name = model.GameNight.Name,
+                        Date = model.GameNight.Date,
+                        Time = model.GameNight.Time,
+                        Organiser = null,
+                        OrganiserId = exModel.CurrentUser.Id,
+                        Street = model.GameNight.Street,
+                        HouseNr = model.GameNight.HouseNr,
+                        City = model.GameNight.City,
+                        MaxPlayers = model.GameNight.MaxPlayers,
+                        ImgUrl = exModel.GameNight.ImgUrl
+                    };
+                }
+                
+
+                // Check if a new cover photo is uploaded
+                if (model.CoverPhoto != null && model.CoverPhoto.Length > 0)
+                {
+                    // Upload new photo and get the new URL
+                    var newImageUrl = await UploadPhotoToServerAsync(model.CoverPhoto);
+
+                    if (!string.IsNullOrEmpty(newImageUrl))
+                    {
+                        // Delete the old image if it exists
+                        DeleteOldImage(model.GameNight.ImgUrl);
+
+                        // Set the new URL in the model
+                        model.GameNight.ImgUrl = newImageUrl;
+                    }
+                }
 
                 HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(exModel));
 
@@ -206,7 +299,12 @@ namespace BGN.UI.Controllers
             return View(model);
         }
 
-        //Step 2 of the GameNight Creation Process
+       
+        /*
+        ----------------------------------------
+        Step 2 of the GameNight Creation Process
+        ----------------------------------------
+        */
 
         [Authorize]
         [HttpGet]
@@ -277,7 +375,11 @@ namespace BGN.UI.Controllers
             return RedirectToAction("AddFoodOptions");
         }
 
+        /*
+        ----------------------------------------
         //Step 3 of the GameNight Creation Process
+        ----------------------------------------
+        */
 
         [Authorize]
         [HttpGet]
@@ -314,9 +416,18 @@ namespace BGN.UI.Controllers
                 exModel.GameNight.FoodOptions = selectedFoodOptions;
             }
 
-            _gameNightService.Insert(exModel.GameNight);
-
-            TempData["GameNightCreateSuccess"] = "Game Night created successfully!";
+            //Make distiction about putting new GameNight in DB or Update
+            if(exModel.isEditMode)
+            {
+                await _gameNightService.UpdateAsync(exModel.GameNight);
+                TempData["GameNightUpdateSuccess"] = "Game Night successfully updated!";
+            }
+            else
+            {
+                _gameNightService.Insert(exModel.GameNight);
+                TempData["GameNightCreateSuccess"] = "Game Night created successfully!";
+            }
+            
             return RedirectToAction("List");
         }
 

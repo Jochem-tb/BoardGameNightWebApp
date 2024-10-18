@@ -12,6 +12,7 @@ namespace BGN.UI.Models
         public int[] SelectedGameIds { get; set; } = new int[] { };
         public int[] SelectedFoodOptionIds { get; set; } = new int[] { };
         public IEnumerable<FoodOptionDto> FoodOptions { get; set; } = new List<FoodOptionDto>();
+        public bool isEditMode { get; set; } = false;
 
     }
 }

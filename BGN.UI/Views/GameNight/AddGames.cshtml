@@ -79,9 +79,20 @@
             <div class="row g-4">
                 @{
                     var isUserAdult = Model.CurrentUser != null && Model.CurrentUser.IsAdult();
+
+                    var gameIdList = new List<int>();
+                    if(Model.GameNight.Games.Count() > 0)
+                    {
+                        foreach (var g in Model.GameNight.Games)
+                        {
+                            gameIdList.Add(g.Id);
+                        }
+                        Model.SelectedGameIds = gameIdList.ToArray();
+                    }
+
                     foreach (var game in Model.GameListModel.DisplayGames)
                     {
-                        var isSelected = Model.SelectedGameIds.Any(x => x == game.Id);
+                        var isSelected = Model.SelectedGameIds.Any(x => x == game.Id) ? "checked" : "";
                         var gameCardClass = game.IsAdult && !isUserAdult ? "bg-danger bg-opacity-50" : "bg-white";
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="card h-100 @gameCardClass">

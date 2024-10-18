@@ -26,6 +26,9 @@
         isUserAdult = true;
     }
 }
+
+<link rel="stylesheet" href="~/css/gameNightList.css" />
+
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold">Gamenights</h2>
@@ -60,6 +63,14 @@
     </div>
 }
 
+<!-- Error message box -->
+@if (TempData["GameNightUpdateSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["GameNightUpdateSuccess"]
+    </div>
+}
+
 
 <!-- Row for sidebar and game list -->
 <div class="row">
@@ -68,7 +79,7 @@
         <div class="bg-light p-3 rounded">
             <h5 class="fw-bold mb-3">Filters</h5>
 
-            <form method="get" asp-controller="GameNight" asp-action="Filter">
+            <form method="get" asp-controller="GameNight" asp-action="FilterList">
 
                 <!-- Example filter: Search by name -->
                 <div class="mb-3">

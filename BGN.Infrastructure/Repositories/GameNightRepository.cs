@@ -117,7 +117,7 @@ namespace BGN.Infrastructure.Repositories
         public void Insert(GameNight gameNight)
         {
             var foodIds = new List<int>();
-            foreach(var option in gameNight.FoodOptions)
+            foreach (var option in gameNight.FoodOptions)
             {
                 foodIds.Add(option.Id);
             }
@@ -136,6 +136,26 @@ namespace BGN.Infrastructure.Repositories
         }
         public void Update(GameNight gameNight)
         {
+
+            var foodIds = new List<int>();
+            foreach (var option in gameNight.FoodOptions)
+            {
+                foodIds.Add(option.Id);
+            }
+            var foodOptionFromDb = _dbContext.FoodOptions.Where(x => foodIds.Contains(x.Id)).ToList();
+            gameNight.FoodOptions = foodOptionFromDb;
+
+            var gameIds = new List<int>();
+            foreach (var game in gameNight.Games)
+            {
+                gameIds.Add(game.Id);
+            }
+            var gamesFromDb = _dbContext.Games.Where(x => gameIds.Contains(x.Id)).ToList();
+            gameNight.Games = gamesFromDb;
+
+            _dbContext.AttachRange(gameNight.Games);
+            _dbContext.AttachRange(gameNight.FoodOptions);
+            _dbContext.Attach(gameNight);
             _dbContext.Update(gameNight);
             _dbContext.SaveChanges();
         }

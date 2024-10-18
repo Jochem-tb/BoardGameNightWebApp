@@ -60,8 +60,8 @@ namespace BGN.Services
             {
                 // Use the correct filtering logic based on the isAdult search value
                 gameNightQuery = filterObject.SearchIsAdult.Value
-                    ? gameNightQuery.Where(x => x.Games.Any(g => g.IsAdult)) 
-                    : gameNightQuery.Where(x => !x.Games.Any(g => g.IsAdult)); 
+                    ? gameNightQuery.Where(x => x.Games.Any(g => g.IsAdult))
+                    : gameNightQuery.Where(x => !x.Games.Any(g => g.IsAdult));
             }
 
             // Search by organizer name
@@ -85,7 +85,7 @@ namespace BGN.Services
             }
 
             // Execute the query and convert it to a list
-            var gameNightList = gameNightQuery.ToList(); 
+            var gameNightList = gameNightQuery.ToList();
 
             // Map the results to GameNightDto
             return _mapper.Map<List<GameNightDto>>(gameNightList);
@@ -93,7 +93,7 @@ namespace BGN.Services
 
         public async Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey)
         {
-            
+
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
 
             //Check if Attending == MaxPlayers
@@ -190,7 +190,7 @@ namespace BGN.Services
                 existingGameNight.Name = gameNight.Name;
                 existingGameNight.Date = gameNight.Date;
                 existingGameNight.Time = gameNight.Time;
-                existingGameNight.Organiser.Id = gameNight.Organiser.Id;
+                existingGameNight.Organiser.Id = gameNight.OrganiserId;
                 existingGameNight.Street = gameNight.Street;
                 existingGameNight.HouseNr = gameNight.HouseNr;
                 existingGameNight.City = gameNight.City;
@@ -199,17 +199,18 @@ namespace BGN.Services
 
                 //List information
                 //existingGameNight.Attendees = gameNight.Attendees;
-                //existingGameNight.Games = gameNight.Games;
-                //existingGameNight.FoodOptions = gameNight.FoodOptions;
+                existingGameNight.Games = gameNight.Games;
+                existingGameNight.FoodOptions = gameNight.FoodOptions;
 
                 _repositoryManager.GameNightRepository.Update(existingGameNight);
             }
         }
 
+
         public async Task DeleteByIdAsync(int id)
         {
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(id);
-            if(gameNight != null)
+            if (gameNight != null)
             {
                 _repositoryManager.GameNightRepository.Remove(gameNight);
             }
@@ -218,6 +219,11 @@ namespace BGN.Services
         public void Delete(GameNight gameNight)
         {
             _repositoryManager.GameNightRepository.Remove(gameNight);
+        }
+
+        public async Task<GameNight> GetByIdEntityAsync(int id)
+        {
+            return await _repositoryManager.GameNightRepository.GetByIdAsync(id);
         }
     }
 }

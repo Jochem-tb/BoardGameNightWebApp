@@ -15,4 +15,15 @@
         margin-right: 0; /* Remove right margin for the last card */
  }
 
+.imageFixedList {
+    width: 100%; /* Ensures the image takes up the full width of the card */
+    max-height: 300px; /* Set your preferred fixed height */
+    object-fit: cover; /* Maintains aspect ratio, cropping if necessary */
+}
+
+.imageFixedListSmall {
+    width: 100%; /* Ensures the image takes up the full width of the card */
+    max-height: 200px; /* Set your preferred fixed height */
+    object-fit: cover; /* Maintains aspect ratio, cropping if necessary */
+}
 
