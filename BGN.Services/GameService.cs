@@ -180,7 +180,9 @@ namespace BGN.Services
                 existingGame.MaxPlayers = game.MaxPlayers;
                 existingGame.IsAdult = game.IsAdult;
                 existingGame.GenreId = game.GenreId;
+                existingGame.Genre = game.Genre;
                 existingGame.CategoryId = game.CategoryId;
+                existingGame.Category = game.Category;
                 existingGame.EstimatedTime = game.EstimatedTime;
                 existingGame.ImgUrl = game.ImgUrl;
                 
