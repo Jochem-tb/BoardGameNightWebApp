@@ -20,7 +20,7 @@ namespace BGN.Infrastructure.Repositories
 
         public async Task<IEnumerable<FoodOptions>> GetAllFoodOptionsAsync()
         {
-            return await Task.FromResult(_dbContext.FoodOptions.AsNoTracking().ToList());
+            return await _dbContext.FoodOptions.AsNoTracking().ToListAsync();
         }
     }
 }

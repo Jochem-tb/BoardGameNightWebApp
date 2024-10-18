@@ -15,8 +15,6 @@ namespace BGN.Services.Abstractions
         Task<IEnumerable<GameNightDto>> GetAllAsync(AbstractGameNightFilterObject filterObject);
         Task<IEnumerable<GameNightDto>> GetAllWithGameIdAsync(int gameId);
         Task<GameNightDto> GetByIdAsync(int id);
-
-        void Insert(GameNightDto gameNight);
         void Insert(GameNight gameNight);
         Task UpdateAsync(GameNightDto gameNight);
         Task UpdateAsync(GameNight gameNight);

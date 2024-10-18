@@ -52,6 +52,15 @@
     </div>
 }
 
+<!-- Error message box -->
+@if (TempData["GameNightCreateSuccess"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["GameNightCreateSuccess"]
+    </div>
+}
+
+
 <!-- Row for sidebar and game list -->
 <div class="row">
     <!-- Sidebar for filters -->

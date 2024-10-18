@@ -35,5 +35,10 @@ namespace BGN.Services
             var foodOptions = await _repositoryManager.MiscRepository.GetAllFoodOptionsAsync();
             return await Task.FromResult(_mapper.Map<IEnumerable<FoodOptionDto>>(foodOptions));
         }
+
+        public async Task<IEnumerable<FoodOptions>> GetAllFoodOptionsEntityAsync()
+        {
+            return await _repositoryManager.MiscRepository.GetAllFoodOptionsAsync();
+        }
     }
 }

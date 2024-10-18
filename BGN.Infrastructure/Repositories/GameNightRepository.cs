@@ -113,9 +113,11 @@ namespace BGN.Infrastructure.Repositories
         }
 
 
-        public async void Insert(GameNight gameNight)
+        public void Insert(GameNight gameNight)
         {
+            //_dbContext.Persons.Attach(gameNight.Organiser);
             _dbContext.Games.AttachRange(gameNight.Games);
+            _dbContext.FoodOptions.AttachRange(gameNight.FoodOptions);
             _dbContext.GameNights.Add(gameNight);
             _dbContext.SaveChanges();
         }

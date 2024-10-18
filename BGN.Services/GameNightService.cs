@@ -35,9 +35,6 @@ namespace BGN.Services
         public async Task<IEnumerable<GameNightDto>> GetAllAsync()
         {
             var gameNightList = await _repositoryManager.GameNightRepository.GetAllAsync();
-
-            //TODO: Apply filters
-
             return _mapper.Map<List<GameNightDto>>(gameNightList);
         }
 
@@ -155,18 +152,12 @@ namespace BGN.Services
 
         public async Task<IEnumerable<GameNightDto>> GetAllWithGameIdAsync(int gameId)
         {
-            var query= await _repositoryManager.GameNightRepository.GetAllGameNightsAsQueryableAsync();
+            var query = await _repositoryManager.GameNightRepository.GetAllGameNightsAsQueryableAsync();
             query = query.Where(x => x.Games.Any(y => y.Id == gameId));
 
             var gameNightList = query.ToList();
             return _mapper.Map<IEnumerable<GameNightDto>>(gameNightList);
-           
-        }
 
-        public void Insert(GameNightDto gameNightDto)
-        {
-            var gameNight = _mapper.Map<GameNight>(gameNightDto);
-            Insert(gameNight);
         }
 
         public void Insert(GameNight gameNight)
