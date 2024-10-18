@@ -25,7 +25,10 @@
                     }
                     else
                     {
-                        <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
+                        if(Model.GameNight.Attendees.Count() < Model.GameNight.MaxPlayers)
+                        {
+                            <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
+                        }
                     }
                 }
 

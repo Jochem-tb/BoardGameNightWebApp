@@ -80,8 +80,10 @@ namespace BGN.Services
             // Check if any food options were selected
             if (filterObject.SelectedFoodOptions != null && filterObject.SelectedFoodOptions.Any())
             {
+                //Gamenight must have ALL the selected options:
                 gameNightQuery = gameNightQuery.Where(gameNight =>
-                    gameNight.FoodOptions.Any(fo => filterObject.SelectedFoodOptions.Contains(fo.Id)));
+                    filterObject.SelectedFoodOptions.All(selectedFoodOptionId =>
+                        gameNight.FoodOptions.Any(fo => fo.Id == selectedFoodOptionId)));
             }
 
             // Execute the query and convert it to a list

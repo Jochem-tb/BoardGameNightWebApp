@@ -332,8 +332,6 @@ namespace BGN.UI.Controllers
             gameListModel.SelectedGenres = gameListModel.SelectedGenres ?? new List<int>();
             gameListModel.SelectedCategories = gameListModel.SelectedCategories ?? new List<int>();
 
-            model.SelectedGameIds = model.SelectedGameIds;
-
             // If the model state is valid, fetch games based on the filter criteria
             //GetAllAsync is overloaded, so we can pass the GameListModel to it
             var filteredGames = await _gameService.GetAllAsync(gameListModel);
