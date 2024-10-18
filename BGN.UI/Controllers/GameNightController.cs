@@ -284,10 +284,10 @@ namespace BGN.UI.Controllers
                     if (!string.IsNullOrEmpty(newImageUrl))
                     {
                         // Delete the old image if it exists
-                        DeleteOldImage(model.GameNight.ImgUrl);
+                        DeleteOldImage(exModel.GameNight.ImgUrl);
 
                         // Set the new URL in the model
-                        model.GameNight.ImgUrl = newImageUrl;
+                        exModel.GameNight.ImgUrl = newImageUrl;
                     }
                 }
 
@@ -327,14 +327,13 @@ namespace BGN.UI.Controllers
         [HttpGet]
         public async Task<IActionResult> Filter(CrudGameNightModel model)
         {
-            var gameListModel = model.GameListModel;
             // Ensure selected genres and categories are also set
-            gameListModel.SelectedGenres = gameListModel.SelectedGenres ?? new List<int>();
-            gameListModel.SelectedCategories = gameListModel.SelectedCategories ?? new List<int>();
+            model.GameListModel.SelectedGenres = model.GameListModel.SelectedGenres ?? new List<int>();
+            model.GameListModel.SelectedCategories = model.GameListModel.SelectedCategories ?? new List<int>();
 
             // If the model state is valid, fetch games based on the filter criteria
             //GetAllAsync is overloaded, so we can pass the GameListModel to it
-            var filteredGames = await _gameService.GetAllAsync(gameListModel);
+            var filteredGames = await _gameService.GetAllAsync(model.GameListModel);
             var currentUser = await _userService.GetLoggedInUserAsync();
             model.GameListModel.DisplayGames = filteredGames;
             model.GameListModel.CurrentUser = currentUser;
