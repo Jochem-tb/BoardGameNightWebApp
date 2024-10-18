@@ -60,15 +60,15 @@ namespace BGN.Infrastructure
                         j.HasKey("GameNightId", "AttendeesId");
                     });
 
-            modelBuilder.Entity<GameNight>()
-                .HasMany(n => n.Games)
-                .WithMany(g => g.GameNights)
-                .UsingEntity(j => j.ToTable("GameGameNight"));
+            //modelBuilder.Entity<GameNight>()
+            //    .HasMany(n => n.Games)
+            //    .WithMany(g => g.GameNights)
+            //    .UsingEntity(j => j.ToTable("GameGameNight"));
 
-            modelBuilder.Entity<GameNight>()
-                .HasMany(n => n.FoodOptions)
-                .WithMany(f => f.GameNights)
-                .UsingEntity(j => j.ToTable("FoodOptionsGameNight"));
+            //modelBuilder.Entity<GameNight>()
+            //    .HasMany(n => n.FoodOptions)
+            //    .WithMany(f => f.GameNights)
+            //    .UsingEntity(j => j.ToTable("FoodOptionsGameNight"));
 
             //Configuring the one-to-many relationship between Review and Person --> Reviewer
             modelBuilder.Entity<Review>()

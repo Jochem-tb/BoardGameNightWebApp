@@ -88,12 +88,13 @@ namespace BGN.Infrastructure.Repositories
             }
             else
             {
-                //Remove the person from the game night
-                gameNight.Attendees.Remove(person);
+                //Remove the person from the game 
+                var isRemoved = gameNight.Attendees.Remove(person);
 
+                _dbContext.Entry(gameNight).State = EntityState.Modified;
                 //Save changes
                 await _dbContext.SaveChangesAsync();
-                return true;
+                return isRemoved;
             }
         }
 
@@ -115,9 +116,15 @@ namespace BGN.Infrastructure.Repositories
 
         public void Insert(GameNight gameNight)
         {
-            //_dbContext.Persons.Attach(gameNight.Organiser);
-            _dbContext.Games.AttachRange(gameNight.Games);
-            _dbContext.FoodOptions.AttachRange(gameNight.FoodOptions);
+            var foodIds = new List<int>();
+            foreach(var option in gameNight.FoodOptions)
+            {
+                foodIds.Add(option.Id);
+            }
+            var foodOptionFromDb = _dbContext.FoodOptions.Where(x => foodIds.Contains(x.Id)).ToList();
+            gameNight.FoodOptions = foodOptionFromDb;
+            _dbContext.AttachRange(gameNight.Games);
+            _dbContext.AttachRange(gameNight.FoodOptions);
             _dbContext.GameNights.Add(gameNight);
             _dbContext.SaveChanges();
         }

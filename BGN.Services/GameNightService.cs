@@ -6,6 +6,7 @@ using BGN.Services.Abstractions.FilterModels;
 using BGN.Shared;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -114,9 +115,17 @@ namespace BGN.Services
 
             //Organiser can join his own game, only once as per check above
 
-            var isSuccess = await _repositoryManager.GameNightRepository.JoinGameNightAsync(gameNightId, identityUserKey);
-
-            return isSuccess;
+            try
+            {
+                var isSuccess = await _repositoryManager.GameNightRepository.JoinGameNightAsync(gameNightId, identityUserKey);
+                return isSuccess;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (consider using a logging framework)
+                Debug.WriteLine($"Error joining Game Night: {ex.Message}");
+                return false;
+            }
         }
 
         public async Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey)
@@ -129,6 +138,7 @@ namespace BGN.Services
             {
                 return false;
             }
+            gameNight = null;
 
             //Organiser can leave his own game
             var isSuccess = await _repositoryManager.GameNightRepository.LeaveGameNightAsync(gameNightId, identityUserKey);

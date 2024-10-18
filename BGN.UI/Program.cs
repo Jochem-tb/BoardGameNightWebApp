@@ -44,7 +44,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<RepositoryDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("BGN_Database"));
-    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 });
 
 

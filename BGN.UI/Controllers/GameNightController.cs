@@ -313,8 +313,6 @@ namespace BGN.UI.Controllers
                 var selectedFoodOptions = allFoodOptionEntity.Where(f => SelectedFoodOptionsIds.Contains(f.Id)).ToList();
                 exModel.GameNight.FoodOptions = selectedFoodOptions;
             }
-            exModel.FoodOptions = null;
-            model = null;
 
             _gameNightService.Insert(exModel.GameNight);
 
