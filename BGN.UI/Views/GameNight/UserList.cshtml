@@ -58,6 +58,8 @@
                         if (isAttending)
                         {
                             var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                            if(gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
+
                             var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 
                             ViewData["IsUserAdult"] = isUserAdult;
@@ -90,6 +92,7 @@
                             {
                             var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
                             var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                            if (gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
                             var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 
                             ViewData["IsUserAdult"] = isUserAdult;
@@ -119,6 +122,7 @@
                     {
                         var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
                         var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                        if (gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
                         var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 
                         ViewData["IsUserAdult"] = isUserAdult;

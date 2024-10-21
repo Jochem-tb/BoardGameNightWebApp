@@ -27,3 +27,19 @@
     object-fit: cover; /* Maintains aspect ratio, cropping if necessary */
 }
 
+#OnlyAdultWelcomeCheckbox {
+    width: 25px;
+    height: 25px;
+}
+
+#OnlyAdultWelcomeCheckboxLabel {
+/*    font-weight: bold;*/
+    font-size: 1.1rem;
+}
+
+#OnlyAdultWelcomeDiv {
+    align-content: center;
+    padding: 15px;
+}
+
+

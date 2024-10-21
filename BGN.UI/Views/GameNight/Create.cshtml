@@ -4,6 +4,8 @@
 }
 @model BGN.UI.Models.CrudGameNightModel
 
+<link rel="stylesheet" href="~/css/gameNightList.css" />
+
 <form id="createGameNightForm" enctype="multipart/form-data" method="post" asp-controller="GameNight" asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
     <div asp-validation-summary="All"></div>
@@ -84,6 +86,20 @@
                 <input asp-for="GameNight.MaxPlayers" class="form-control" type="number" min="1" max="255" placeholder="Max Players" />
                 <label asp-for="GameNight.MaxPlayers">Max Players</label>
                 <span asp-validation-for="GameNight.MaxPlayers" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row ">
+        <!-- OnlyAdultWelcome -->
+        <div class="col-12">
+            <div class="form-floating mt-3 mb-3">
+                <div id="OnlyAdultWelcomeDiv" class="d-inline form-control ">
+                    <input asp-for="GameNight.OnlyAdultWelcome" id="OnlyAdultWelcomeCheckbox" class="form-check-input me-2" type="checkbox" />
+                    <label asp-for="GameNight.OnlyAdultWelcome" id="OnlyAdultWelcomeCheckboxLabel" class="form-check-label">Only adults</label>
+                </div>
+                
+                <span asp-validation-for="GameNight.OnlyAdultWelcome" class="text-danger"></span>
             </div>
         </div>
     </div>

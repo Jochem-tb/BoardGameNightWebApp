@@ -205,6 +205,7 @@ namespace BGN.Services
                 existingGameNight.HouseNr = gameNight.HouseNr;
                 existingGameNight.City = gameNight.City;
                 existingGameNight.MaxPlayers = gameNight.MaxPlayers;
+                existingGameNight.OnlyAdultWelcome = gameNight.OnlyAdultWelcome;
                 existingGameNight.ImgUrl = gameNight.ImgUrl;
 
                 //List information

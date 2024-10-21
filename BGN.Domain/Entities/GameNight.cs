@@ -47,6 +47,8 @@ namespace BGN.Domain.Entities
         [Range(1, 255)] // You can have a maximum of 255 players. --> Trivia games have > 100 players.
         public required int MaxPlayers { get; set; }
 
+        public bool OnlyAdultWelcome { get; set; } = false;
+
         [Required]
         [MaxLength(255)]
         public required string ImgUrl { get; set; } = "/img/gamenight/BoardGameDefaultSmall.jpg";

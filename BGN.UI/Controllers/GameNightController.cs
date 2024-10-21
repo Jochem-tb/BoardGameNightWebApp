@@ -251,6 +251,7 @@ namespace BGN.UI.Controllers
                     HouseNr = existingGameNight.HouseNr,
                     City = existingGameNight.City,
                     MaxPlayers = existingGameNight.MaxPlayers,
+                    OnlyAdultWelcome = existingGameNight.OnlyAdultWelcome,
                     OrganiserId = existingGameNight.OrganiserId,
                     Organiser = null,
                     ImgUrl = existingGameNight.ImgUrl,
@@ -285,6 +286,7 @@ namespace BGN.UI.Controllers
                     exModel.GameNight.HouseNr = model.GameNight.HouseNr;
                     exModel.GameNight.City = model.GameNight.City;
                     exModel.GameNight.MaxPlayers = model.GameNight.MaxPlayers;
+                    exModel.GameNight.OnlyAdultWelcome = model.GameNight.OnlyAdultWelcome;
                     //Not assigning the ImgUrl, we keep the old
                     //Possible change hereunder
                 }
@@ -301,6 +303,7 @@ namespace BGN.UI.Controllers
                         HouseNr = model.GameNight.HouseNr,
                         City = model.GameNight.City,
                         MaxPlayers = model.GameNight.MaxPlayers,
+                        OnlyAdultWelcome = model.GameNight.OnlyAdultWelcome,
                         ImgUrl = exModel.GameNight.ImgUrl
                     };
                 }

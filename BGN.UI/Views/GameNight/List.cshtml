@@ -146,6 +146,7 @@
 
                     //Check if game night contains 18+ games
                     isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                    if(gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
 
                     // if user is not 18+ and game night contains 18+ games, set the join button on disabled
                     if (isGameNightAdult && !isUserAdult)

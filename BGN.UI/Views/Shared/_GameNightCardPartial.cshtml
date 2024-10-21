@@ -21,7 +21,7 @@
         <div class="card-body d-flex flex-column">
             <h5 class="card-title fw-semibold">
                 @Model.Item1.Name
-                @if (Model.Item1.Games.Any(g => g.IsAdult))
+                @if (Model.Item1.Games.Any(g => g.IsAdult) || Model.Item1.OnlyAdultWelcome)
                 {
                     <span class="badge bg-danger ms-auto small float-end">18+</span>
                 }
