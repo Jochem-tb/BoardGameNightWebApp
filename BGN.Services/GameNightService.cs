@@ -114,8 +114,16 @@ namespace BGN.Services
                 return false;
             }
 
-
             //Organiser can join his own game, only once as per check above
+
+            //Check if user already has a game night on the same date
+            var isAlreadyAttendingAnotherGameNightSameDay = _repositoryManager.GameNightRepository.GetAllGameNightsAsQueryableAsync().Result
+                .Where(x => x.Attendees.Any(y => y.IdentityUserId == identityUserKey))
+                .Any(x => x.Date == gameNight.Date);
+            if(isAlreadyAttendingAnotherGameNightSameDay)
+            {
+                return false;
+            }
 
             try
             {

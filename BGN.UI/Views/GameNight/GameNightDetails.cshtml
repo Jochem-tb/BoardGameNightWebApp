@@ -17,7 +17,8 @@
                 //If user is adult show Join/Leave button 
                 //OR
                 //there are NO 18+ games and user is NOT 18+
-                if (Model.CurrentUser.IsAdult() || (!Model.GameNight.Games.Any(g => g.IsAdult) && !Model.CurrentUser.IsAdult()))
+                var canUserJoinAdultGameNight = Model.GameNight.Games.Any(g => g.IsAdult) && !Model.CurrentUser.IsAdult();
+                if (Model.CurrentUser.IsAdult() || canUserJoinAdultGameNight)
                 {
                     if (@Model.GameNight.Attendees.Any(a => a.Id == @Model.CurrentUser.Id))
                     {
