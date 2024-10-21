@@ -145,11 +145,25 @@ namespace BGN.Infrastructure.Repositories
             var foodOptionFromDb = _dbContext.FoodOptions.Where(x => foodIds.Contains(x.Id)).ToList();
             gameNight.FoodOptions = foodOptionFromDb;
 
-            var gameIds = new List<int>();
-            foreach (var game in gameNight.Games)
+            var gameIds = gameNight.Games.Select(x => x.Id).ToList();
+            var existingGameNight = _dbContext.GameNights
+                .Include(x => x.Games)
+                .Include(x => x.FoodOptions)
+                .FirstOrDefault(x => x.Id == gameNight.Id);
+
+            if (existingGameNight != null)
             {
-                gameIds.Add(game.Id);
+                // Remove games that are no longer in the updated list
+                var gamesToRemove = existingGameNight.Games
+                    .Where(existingGame => !gameIds.Contains(existingGame.Id))
+                    .ToList(); 
+
+                foreach (var game in gamesToRemove)
+                {
+                    existingGameNight.Games.Remove(game);
+                }
             }
+
             var gamesFromDb = _dbContext.Games.Where(x => gameIds.Contains(x.Id)).ToList();
             gameNight.Games = gamesFromDb;
 
