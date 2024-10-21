@@ -46,7 +46,11 @@
 
                 if (@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
                 {
-                    <a asp-controller="GameNight" asp-action="Edit" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-primary p-2 ps-5 pe-5 me-2 float-end">Edit</a>
+                    //Only show Edit button if there are no Attendees (except organiser)
+                    if(!Model.GameNight.Attendees.Any(x => x.Id != Model.CurrentUser.Id))
+                    {
+                        <a asp-controller="GameNight" asp-action="Edit" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-primary p-2 ps-5 pe-5 me-2 float-end">Edit</a>
+                    }
                 }
             }
         </div>
@@ -73,6 +77,13 @@
         {
             <div class="alert alert-danger" role="alert">
                 @TempData["PreferenceError"]
+            </div>
+        }
+
+        @if (TempData["EditError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["EditError"]
             </div>
         }
 

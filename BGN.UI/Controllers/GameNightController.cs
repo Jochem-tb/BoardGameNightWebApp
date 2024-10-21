@@ -34,7 +34,6 @@ namespace BGN.UI.Controllers
 
         private const string GAMENIGHT_SESSION_PERSISTENT_KEY = "GameNightModel";
 
-        private CrudGameNightModel? shareableCrudGameNightModel;
         public GameNightController(IServiceManager serviceManager, IUserService userService, IWebHostEnvironment hostEnvironment, IMapper mapper)
         {
             _gameNightService = serviceManager.GameNightService;
@@ -231,6 +230,14 @@ namespace BGN.UI.Controllers
             if (currentUser == null) return RedirectToAction("List");
 
             var existingGameNight = await _gameNightService.GetByIdAsync(gameNightId);
+
+            //If anyone is attending that is not the organiser, redirect to list
+            if(existingGameNight.Attendees.Any(a => a.Id != currentUser.Id))
+            {
+                TempData["EditError"] = "You can't edit while people are already attending";
+                return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+            }
+
             var model = new CrudGameNightModel()
             {
                 CurrentUser = currentUser,
