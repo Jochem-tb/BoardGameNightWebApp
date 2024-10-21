@@ -91,18 +91,42 @@ namespace BGN.UI.Controllers
         }
 
         [Authorize]
-        public async Task<IActionResult> Join(int gameNightId)
+        public async Task<IActionResult> Join(int gameNightId, bool CheckForMismatch = true)
         {
             //Get the current user's ID
             var identityUserKey = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             if (identityUserKey != null)
             {
+                //Check for mismatch in FoodOptions and Preferences
+
+                if (CheckForMismatch)
+                {
+                    var currentUser = await _userService.GetLoggedInUserAsync();
+                    var gameNightDetails = await _gameNightService.GetByIdAsync(gameNightId);
+
+                    var preferenceMisMatch = currentUser.Preferences.All(preference =>
+                        gameNightDetails.FoodOptions.Any(option => option.Id == preference.Id));
+
+                    if (!preferenceMisMatch)
+                    {
+                        TempData["PreferenceMisMatchError"] = "One or more of your preferences is not present.";
+                        return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                    }
+                }
+
                 //Call the service to join the game night
                 var result = await _gameNightService.JoinGameNightAsync(gameNightId, identityUserKey);
 
-                if (result)
+                if(result == null)
                 {
+                    //Handle case where user is already attending a gamenight on the same Date
+                    TempData["JoinGameNightError"] = "You are already attending a game night on this day.";
+                    return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                }
+                else if ((bool)result)
+                {
+                    //Success!
                     return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
                 }
                 else
@@ -173,7 +197,7 @@ namespace BGN.UI.Controllers
         */
 
 
-        
+
         /*
         ----------------------------------------
         Step 1 of the GameNight Creation Process
@@ -227,7 +251,7 @@ namespace BGN.UI.Controllers
                     FoodOptions = _mapper.Map<ICollection<FoodOptions>>(existingGameNight.FoodOptions)
                 }
             };
-            model.isEditMode=true;
+            model.isEditMode = true;
 
             // Store initial model in Session
             HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(model));
@@ -243,7 +267,7 @@ namespace BGN.UI.Controllers
             {
                 //Save data in Session:
                 var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY));
-                if(exModel.isEditMode)
+                if (exModel.isEditMode)
                 {
                     exModel.GameNight.Name = model.GameNight.Name;
                     exModel.GameNight.Date = model.GameNight.Date;
@@ -273,7 +297,7 @@ namespace BGN.UI.Controllers
                         ImgUrl = exModel.GameNight.ImgUrl
                     };
                 }
-                
+
 
                 // Check if a new cover photo is uploaded
                 if (model.CoverPhoto != null && model.CoverPhoto.Length > 0)
@@ -299,7 +323,7 @@ namespace BGN.UI.Controllers
             return View(model);
         }
 
-       
+
         /*
         ----------------------------------------
         Step 2 of the GameNight Creation Process
@@ -391,12 +415,12 @@ namespace BGN.UI.Controllers
             HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(exModel));
 
             return View(exModel);
-            
+
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddFoodOptions(CrudGameNightModel model ,int[] SelectedFoodOptionsIds)
+        public async Task<IActionResult> AddFoodOptions(CrudGameNightModel model, int[] SelectedFoodOptionsIds)
         {
             var currentUser = await _userService.GetLoggedInUserAsync();
             if (currentUser == null) return RedirectToAction("List");
@@ -414,7 +438,7 @@ namespace BGN.UI.Controllers
             }
 
             //Make distiction about putting new GameNight in DB or Update
-            if(exModel.isEditMode)
+            if (exModel.isEditMode)
             {
                 await _gameNightService.UpdateAsync(exModel.GameNight);
                 TempData["GameNightUpdateSuccess"] = "Game Night successfully updated!";
@@ -424,7 +448,7 @@ namespace BGN.UI.Controllers
                 _gameNightService.Insert(exModel.GameNight);
                 TempData["GameNightCreateSuccess"] = "Game Night created successfully!";
             }
-            
+
             return RedirectToAction("List");
         }
 

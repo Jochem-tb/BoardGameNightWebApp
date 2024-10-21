@@ -14,7 +14,7 @@
         <div class="col-6">
             @if (@Model.CurrentUser != null)
             {
-                //If user is adult show Join/Leave button 
+                //If user is adult show Join/Leave button
                 //OR
                 //there are NO 18+ games and user is NOT 18+
                 var canUserJoinAdultGameNight = Model.GameNight.Games.Any(g => g.IsAdult) && !Model.CurrentUser.IsAdult();
@@ -26,9 +26,20 @@
                     }
                     else
                     {
-                        if(Model.GameNight.Attendees.Count() < Model.GameNight.MaxPlayers)
+                        if (Model.GameNight.Attendees.Count() < Model.GameNight.MaxPlayers)
                         {
-                            <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
+                            //If there is an issue with the preferences, than show a popup on join
+                            if (TempData["PreferenceError"] != null)
+                            {
+                                <a href="javascript:void(0);" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end" onclick="confirmJoin('@Model.GameNight.Id')">Join</a>
+
+                            }
+                            else
+                            {
+                                <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
+
+                            }
+
                         }
                     }
                 }
@@ -178,5 +189,15 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    function confirmJoin(gameNightId) {
+        // Show confirmation dialog
+        if (confirm("One or more of your preferences is not present. Are you sure you want to join?")) {
+            // Redirect to Join action with CheckForMismatch set to false
+            window.location.href = `/GameNight/Join?gameNightId=${gameNightId}&CheckForMismatch=false`;
+        }
+    }
+</script>
 
 

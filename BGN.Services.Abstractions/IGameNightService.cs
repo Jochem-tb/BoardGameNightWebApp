@@ -22,7 +22,7 @@ namespace BGN.Services.Abstractions
         Task DeleteByIdAsync(int id);
         void Delete(GameNight gameNight);
 
-        Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey);
+        Task<bool?> JoinGameNightAsync(int gameNightId, string identityUserKey);
         Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey);
 
         Task<IEnumerable<PersonDto>> GetAttendeesAsync(int gameNightId);

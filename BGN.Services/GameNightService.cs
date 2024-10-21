@@ -93,7 +93,7 @@ namespace BGN.Services
             return _mapper.Map<List<GameNightDto>>(gameNightList);
         }
 
-        public async Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey)
+        public async Task<bool?> JoinGameNightAsync(int gameNightId, string identityUserKey)
         {
 
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
@@ -122,7 +122,7 @@ namespace BGN.Services
                 .Any(x => x.Date == gameNight.Date);
             if(isAlreadyAttendingAnotherGameNightSameDay)
             {
-                return false;
+                return null;
             }
 
             try
