@@ -19,7 +19,7 @@ namespace BGN.Services.Abstractions
         void Insert(GameNight gameNight);
         Task UpdateAsync(GameNightDto gameNight);
         Task UpdateAsync(GameNight gameNight);
-        Task DeleteByIdAsync(int id);
+        Task<bool> DeleteByIdAsync(int gameNightId, string identityUserKey);
         void Delete(GameNight gameNight);
 
         Task<bool?> JoinGameNightAsync(int gameNightId, string identityUserKey);

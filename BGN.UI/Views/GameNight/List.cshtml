@@ -71,6 +71,22 @@
     </div>
 }
 
+<!-- Error message box -->
+@if (TempData["GameNightDeleteSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["GameNightDeleteSuccess"]
+    </div>
+}
+
+<!-- Error message box -->
+@if (TempData["GameNightDeleteError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["GameNightDeleteError"]
+    </div>
+}
+
 
 <!-- Row for sidebar and game list -->
 <div class="row">

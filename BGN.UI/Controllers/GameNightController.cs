@@ -89,6 +89,12 @@ namespace BGN.UI.Controllers
 
         }
 
+        /*
+        ------------------------------------------------------------------------
+        From this point, you find the JOIN/LEAVE implemenentations for GameNight
+        ------------------------------------------------------------------------
+        */
+
         [Authorize]
         public async Task<IActionResult> Join(int gameNightId, bool CheckForMismatch = true)
         {
@@ -195,7 +201,11 @@ namespace BGN.UI.Controllers
         ------------------------------------------------------------------------
         */
 
-
+        /*
+        ------------------------------------------------------------------------
+        Here you find the CRUD operations for GameNight (Create, Edit, Delete)
+        ------------------------------------------------------------------------
+        */
 
         /*
         ----------------------------------------
@@ -213,13 +223,34 @@ namespace BGN.UI.Controllers
 
             var model = new CrudGameNightModel()
             {
-                CurrentUser = currentUser,
+                CurrentUser = currentUser
             };
 
             // Store initial model in Session
             HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(model));
+            ViewData["Title"] = "Organize new Gamenight";
             return View(model);
 
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> Delete(int gameNightId)
+        {
+            var currentUser = await _userService.GetLoggedInUserAsync();
+            if (currentUser == null) return RedirectToAction("List");
+
+            var result = await _gameNightService.DeleteByIdAsync(gameNightId, currentUser.IdentityUserId);
+            if(result)
+            {
+                TempData["GameNightDeleteSuccess"] = "Game Night successfully deleted!";
+                return RedirectToAction("List");
+            }
+            else
+            {
+                TempData["GameNightDeleteError"] = "Something went wrong when deleting the Game Night";
+                return RedirectToAction("List");
+            }
         }
 
         [Authorize]
@@ -263,6 +294,7 @@ namespace BGN.UI.Controllers
 
             // Store initial model in Session
             HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(model));
+            ViewData["Title"] = "Edit Gamenight";
             return View("Create", model);
 
         }
@@ -304,7 +336,7 @@ namespace BGN.UI.Controllers
                         City = model.GameNight.City,
                         MaxPlayers = model.GameNight.MaxPlayers,
                         OnlyAdultWelcome = model.GameNight.OnlyAdultWelcome,
-                        ImgUrl = exModel.GameNight.ImgUrl
+                        ImgUrl = null
                     };
                 }
 

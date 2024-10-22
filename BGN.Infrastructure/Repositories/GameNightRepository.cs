@@ -131,6 +131,28 @@ namespace BGN.Infrastructure.Repositories
 
         public void Remove(GameNight gameNight)
         {
+            // Create a copy of the attendees to avoid modifying the collection during iteration
+            var attendeesToRemove = gameNight.Attendees.ToList();
+            foreach (var attendee in attendeesToRemove)
+            {
+                gameNight.Attendees.Remove(attendee);
+            }
+
+            // Create a copy of the games to avoid modifying the collection during iteration
+            var gamesToRemove = gameNight.Games.ToList();
+            foreach (var game in gamesToRemove)
+            {
+                gameNight.Games.Remove(game);
+            }
+
+            // Create a copy of the food options to avoid modifying the collection during iteration
+            var foodOptionsToRemove = gameNight.FoodOptions.ToList();
+            foreach (var option in foodOptionsToRemove)
+            {
+                gameNight.FoodOptions.Remove(option);
+            }
+
+            // Remove the GameNight entity itself
             _dbContext.GameNights.Remove(gameNight);
             _dbContext.SaveChanges();
         }

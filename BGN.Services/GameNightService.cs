@@ -218,13 +218,21 @@ namespace BGN.Services
         }
 
 
-        public async Task DeleteByIdAsync(int id)
+        public async Task<bool> DeleteByIdAsync(int gameNightId, string identityUserKey)
         {
-            var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(id);
+            var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
+            //Check if gameNight exists
             if (gameNight != null)
             {
-                _repositoryManager.GameNightRepository.Remove(gameNight);
+                //Check if user is indeed the organiser
+                if (gameNight.Organiser.IdentityUserId == identityUserKey)
+                {
+                    _repositoryManager.GameNightRepository.Remove(gameNight);
+                    return true;
+                }
+                return false;
             }
+            return false;
         }
 
         public void Delete(GameNight gameNight)

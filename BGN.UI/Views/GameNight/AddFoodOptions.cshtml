@@ -1,5 +1,10 @@
 ﻿@{
     ViewData["Title"] = "Add Foodoptions";
+    if (Model.GameNight != null)
+    {
+        ViewData["ModelGameNightId"] = Model.GameNight.Id;
+    }
+    ViewData["isEditMode"] = @Model.isEditMode;
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
     var isChecked = "";
 }

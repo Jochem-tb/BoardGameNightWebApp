@@ -1,5 +1,9 @@
 ﻿@{
-    ViewData["Title"] = "Organize new Gamenight";
+    ViewData["isEditMode"] = Model.isEditMode;
+    if(Model.GameNight != null)
+    {
+        ViewData["ModelGameNightId"] = Model.GameNight.Id;
+    }
     Layout = "~/Views/Shared/_CrudLayout.cshtml";
 }
 @model BGN.UI.Models.CrudGameNightModel
