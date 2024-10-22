@@ -10,6 +10,6 @@ namespace BGN.Shared
     {
         public required PersonDto Attendee { get; set; }
         public required GameNightDto GameNight { get; set; }
-        public bool? AttendanceStatus { get; set; }
+        public bool? AttendanceStatus { get; set; } = null;
     }
 }
