@@ -31,6 +31,7 @@ namespace BGN.Infrastructure.Repositories
 
         public void Insert(Person person)
         {
+            _dbContext.AttachRange(person.Preferences);
             _dbContext.Persons.Add(person);
             _dbContext.SaveChanges();
         }

@@ -1,7 +1,17 @@
 ﻿@model BGN.UI.Models.GameNightListModel
+@{
+    var excludeLabel = false;
+    if (ViewData["ExcludeFoodOptionLabel"] != null)
+    {
+        excludeLabel = (bool)ViewData["ExcludeFoodOptionLabel"];
+    }
+}
 
 <div class="mb-3">
-    <label class="form-label">Food options</label>
+    @if (!excludeLabel)
+    {
+        <label class="form-label">Food options</label>
+    }
     @foreach (var foodOption in Model.AvailableFoodOptions)
     {
         <div class="form-check">

@@ -20,5 +20,6 @@ namespace BGN.UI.ViewComponents
 
             return View("~/Views/Shared/Components/FoodOption/FoodOptionsCheckboxFilter.cshtml", gameNightListModel);  // Pass the foodoptions to the view
         }
+
     }
 }

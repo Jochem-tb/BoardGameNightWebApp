@@ -33,6 +33,7 @@ namespace BGN.UI.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IPersonService _personService;
+        private readonly IMiscService _miscService;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -49,6 +50,7 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
             _personService = serviceManager.PersonService;
+            _miscService = serviceManager.MiscService;
         }
 
         /// <summary>
@@ -74,6 +76,10 @@ namespace BGN.UI.Areas.Identity.Pages.Account
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
+        /// 
+        //List of foodoptions
+        [BindProperty]
+        public IEnumerable<int> SelectedFoodOptions { get; set; } = new List<int>();
         public class InputModel
         {
             /// <summary>
@@ -150,6 +156,8 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             [Display(Name = "City")]
             public string City { get; set; }
 
+            
+
         }
 
 
@@ -178,7 +186,7 @@ namespace BGN.UI.Areas.Identity.Pages.Account
 
                     var userId = await _userManager.GetUserIdAsync(user);
 
-                    var person = CreatePersonEntity(userId);
+                    var person = await CreatePersonEntity(userId);
                     _personService.Insert(person);
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -212,15 +220,16 @@ namespace BGN.UI.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private Person CreatePersonEntity(string authId)
+        private async Task<Person> CreatePersonEntity(string authId)
         {
             try
             {
+                var allFoodOptions = await _miscService.GetAllFoodOptionsEntityAsync();
+                var userPreferences = allFoodOptions.Where(x => SelectedFoodOptions.Contains(x.Id)).ToList();
+
                 return new Person()
                 {
                     IdentityUserId = authId,
-
-
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     Email = Input.Email,
@@ -230,7 +239,8 @@ namespace BGN.UI.Areas.Identity.Pages.Account
                     Street = Input.Street,
                     HouseNr = Input.HouseNr,
                     PostalCode = Input.PostalCode,
-                    City = Input.City
+                    City = Input.City,
+                    Preferences = userPreferences
                 };
             } 
             catch
