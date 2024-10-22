@@ -7,6 +7,8 @@ namespace BGN.UI.Models
         public required GameNightDto GameNight { get; set; } 
         public required PersonDto CurrentUser { get; set; }
 
+        public Dictionary<int, float> ShowNoShowDictionary { get; set; } = new();
+
         public GameListModel GameListModel;
         public GameListModel GetGameListModel()
         {

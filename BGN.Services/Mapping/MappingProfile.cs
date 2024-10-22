@@ -18,6 +18,7 @@ namespace BGN.Services.Mapping
             CreateMap<BGN.Domain.Entities.Game, BGN.Shared.GameDto>().ReverseMap();
             CreateMap < BGN.Domain.Entities.Gender, BGN.Shared.GenderDto>().ReverseMap();
             CreateMap < BGN.Domain.Entities.FoodOptions, BGN.Shared.FoodOptionDto>().ReverseMap();
+            CreateMap < BGN.Domain.Entities.GameNightAttendee, BGN.Shared.GameNightAttendeeDto>().ReverseMap();
         }
     }
 }

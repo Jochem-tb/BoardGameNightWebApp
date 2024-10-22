@@ -15,6 +15,7 @@ namespace BGN.Domain.Repositories
         void Insert(GameNight gameNight);
         void Update(GameNight gameNight);
         void Remove(GameNight gameNight);
+        void UpdateAttendance(GameNight gameNight);
 
         Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey);
         Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey);

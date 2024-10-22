@@ -108,7 +108,7 @@ namespace BGN.Services
 
             //Check if person is already attending
             //var isAttending = gameNight.Where(x => x.Attendees.Any(y => y.IdentityUserId == identityUserKey)).Any();
-            var isAttending = gameNight.Attendees.Any(y => y.IdentityUserId == identityUserKey);
+            var isAttending = gameNight.Attendees.Any(y => y.Attendee.IdentityUserId == identityUserKey);
             if (isAttending)
             {
                 return false;
@@ -118,7 +118,7 @@ namespace BGN.Services
 
             //Check if user already has a game night on the same date
             var isAlreadyAttendingAnotherGameNightSameDay = _repositoryManager.GameNightRepository.GetAllGameNightsAsQueryableAsync().Result
-                .Where(x => x.Attendees.Any(y => y.IdentityUserId == identityUserKey))
+                .Where(x => x.Attendees.Any(y => y.Attendee.IdentityUserId == identityUserKey))
                 .Any(x => x.Date == gameNight.Date);
             if(isAlreadyAttendingAnotherGameNightSameDay)
             {
@@ -143,7 +143,7 @@ namespace BGN.Services
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
 
             //Check if person is attending
-            var isAttending = gameNight.Attendees.Any(y => y.IdentityUserId == identityUserKey);
+            var isAttending = gameNight.Attendees.Any(y => y.Attendee.IdentityUserId == identityUserKey);
             if (!isAttending)
             {
                 return false;
@@ -180,6 +180,11 @@ namespace BGN.Services
 
         }
 
+        public void UpdateAttendance(GameNight gameNight)
+        {
+            _repositoryManager.GameNightRepository.UpdateAttendance(gameNight);
+        }
+
         public void Insert(GameNight gameNight)
         {
             _repositoryManager.GameNightRepository.Insert(gameNight);
@@ -209,7 +214,6 @@ namespace BGN.Services
                 existingGameNight.ImgUrl = gameNight.ImgUrl;
 
                 //List information
-                //existingGameNight.Attendees = gameNight.Attendees;
                 existingGameNight.Games = gameNight.Games;
                 existingGameNight.FoodOptions = gameNight.FoodOptions;
 

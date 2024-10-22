@@ -21,6 +21,7 @@ namespace BGN.Services.Abstractions
         Task UpdateAsync(GameNight gameNight);
         Task<bool> DeleteByIdAsync(int gameNightId, string identityUserKey);
         void Delete(GameNight gameNight);
+        void UpdateAttendance(GameNight gameNight);
 
         Task<bool?> JoinGameNightAsync(int gameNightId, string identityUserKey);
         Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey);

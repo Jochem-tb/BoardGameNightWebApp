@@ -132,8 +132,8 @@
 
                         if (currentUserNotNull)
                         {
-                            
-                            var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
+
+                            var isAttending = gameNight.Attendees.Any(att => att.Attendee.Id == Model.CurrentUser.Id);
                             var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
                             var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
 

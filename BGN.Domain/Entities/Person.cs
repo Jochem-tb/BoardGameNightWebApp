@@ -59,9 +59,7 @@ namespace BGN.Domain.Entities
         [MaxLength(50)]
         public required string City { get; set; }
 
-        public ICollection<GameNight> GameNights { get; set; } = new List<GameNight>();
-
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+        public ICollection<GameNightAttendee> GameNights { get; set; } = new List<GameNightAttendee>();
 
         public ICollection<FoodOptions> Preferences { get; set; } = new List<FoodOptions>();
 

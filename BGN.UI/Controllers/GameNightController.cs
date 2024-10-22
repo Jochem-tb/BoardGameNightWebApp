@@ -57,6 +57,22 @@ namespace BGN.UI.Controllers
         {
             var gameNightDetails = await _gameNightService.GetByIdAsync(gameNightId);
             var currentUser = await _userService.GetLoggedInUserAsync();
+            var allGameNights = await _gameNightService.GetAllAsync();
+
+            var showNoShowDictionary = new Dictionary<int, float>();
+            foreach (var member in gameNightDetails.Attendees)
+            {
+                var attendee = member.Attendee;
+                var attendeeGameNights = allGameNights.Where(gn => gn.Attendees.Any(a => a.Attendee.Id == attendee.Id && a.AttendanceStatus != null));
+                var totalAttended = attendeeGameNights.Count();
+                var attendedWithShow = attendeeGameNights.Count(gn => gn.Attendees.Any(a => a.Attendee.Id == attendee.Id && a.AttendanceStatus == true));
+                // Calculate the percentage of shows
+                float percentageShow = totalAttended > 0 ? (attendedWithShow / (float)totalAttended) * 100 : 0;
+                percentageShow = (float)Math.Round(percentageShow, 1); // Round to 1 decimal place
+
+                showNoShowDictionary.Add(attendee.Id, percentageShow);
+            }
+
             var preferenceMisMatch = currentUser.Preferences.All(preference =>
                     gameNightDetails.FoodOptions.Any(option => option.Id == preference.Id));
             if (!preferenceMisMatch)
@@ -64,21 +80,22 @@ namespace BGN.UI.Controllers
                 TempData["PreferenceError"] = "One or more of your preferences is not present.";
             }
 
-            return View(new GameNightDetailsModel() { GameNight = gameNightDetails, CurrentUser = currentUser });
+            return View(new GameNightDetailsModel() { GameNight = gameNightDetails, CurrentUser = currentUser, ShowNoShowDictionary = showNoShowDictionary });
         }
 
         [HttpPost]
         public async Task<IActionResult> UpdateAttendance(GameNightDetailsModel model)
         {
-            var existingGameNight = await _gameNightService.GetByIdAsync(model.GameNight.Id);
-            foreach (var attendee in existingGameNight.Attendees)
+            var existingGameNight = await _gameNightService.GetByIdEntityAsync(model.GameNight.Id);
+            foreach (var member in existingGameNight.Attendees)
             {
-                var attendanceStatus = Request.Form[$"Attendees[{attendee.Id}].AttendanceStatus"];
-                bool isPresent = attendanceStatus.Equals("show");
+                var attendee = member.Attendee;
+                var attendanceStatus = Request.Form[$"attendance_{attendee.Id}"];
+                bool isPresent = attendanceStatus.ToString().Equals("show");
 
-                attendee.AttendanceStatus = isPresent; 
+                member.AttendanceStatus = isPresent; 
             }
-            _gameNightService.UpdateAsync(model.GameNight);
+            _gameNightService.UpdateAttendance(existingGameNight);
 
             return RedirectToAction("GameNightDetails", new { gameNightId = model.GameNight.Id });
         }
@@ -281,7 +298,7 @@ namespace BGN.UI.Controllers
             var existingGameNight = await _gameNightService.GetByIdAsync(gameNightId);
 
             //If anyone is attending that is not the organiser, redirect to list
-            if(existingGameNight.Attendees.Any(a => a.Id != currentUser.Id))
+            if(existingGameNight.Attendees.Any(a => a.Attendee.Id != currentUser.Id))
             {
                 TempData["EditError"] = "You can't edit while people are already attending";
                 return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });

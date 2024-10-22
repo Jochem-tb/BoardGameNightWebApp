@@ -224,6 +224,24 @@ namespace BGN.Infrastructure.Migrations
                     b.ToTable("GameNights");
                 });
 
+            modelBuilder.Entity("BGN.Domain.Entities.GameNightAttendee", b =>
+                {
+                    b.Property<int>("GameNightId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("AttendeeId")
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("AttendanceStatus")
+                        .HasColumnType("bit");
+
+                    b.HasKey("GameNightId", "AttendeeId");
+
+                    b.HasIndex("AttendeeId");
+
+                    b.ToTable("Attendees");
+                });
+
             modelBuilder.Entity("BGN.Domain.Entities.Gender", b =>
                 {
                     b.Property<int>("Id")
@@ -369,44 +387,6 @@ namespace BGN.Infrastructure.Migrations
                     b.ToTable("Persons");
                 });
 
-            modelBuilder.Entity("BGN.Domain.Entities.Review", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Details")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<int?>("GameNightId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int>("Rating")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ReviewerId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GameNightId");
-
-                    b.HasIndex("ReviewerId");
-
-                    b.ToTable("Reviews");
-                });
-
             modelBuilder.Entity("FoodOptionsGameNight", b =>
                 {
                     b.Property<int>("FoodOptionsId")
@@ -452,21 +432,6 @@ namespace BGN.Infrastructure.Migrations
                     b.ToTable("GameGameNight");
                 });
 
-            modelBuilder.Entity("GameNightAttendees", b =>
-                {
-                    b.Property<int>("GameNightId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("AttendeesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("GameNightId", "AttendeesId");
-
-                    b.HasIndex("AttendeesId");
-
-                    b.ToTable("GameNightAttendees");
-                });
-
             modelBuilder.Entity("BGN.Domain.Entities.Game", b =>
                 {
                     b.HasOne("BGN.Domain.Entities.Category", "Category")
@@ -497,6 +462,25 @@ namespace BGN.Infrastructure.Migrations
                     b.Navigation("Organiser");
                 });
 
+            modelBuilder.Entity("BGN.Domain.Entities.GameNightAttendee", b =>
+                {
+                    b.HasOne("BGN.Domain.Entities.Person", "Attendee")
+                        .WithMany("GameNights")
+                        .HasForeignKey("AttendeeId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("BGN.Domain.Entities.GameNight", "GameNight")
+                        .WithMany("Attendees")
+                        .HasForeignKey("GameNightId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Attendee");
+
+                    b.Navigation("GameNight");
+                });
+
             modelBuilder.Entity("BGN.Domain.Entities.Person", b =>
                 {
                     b.HasOne("BGN.Domain.Entities.Gender", "Gender")
@@ -506,25 +490,6 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Gender");
-                });
-
-            modelBuilder.Entity("BGN.Domain.Entities.Review", b =>
-                {
-                    b.HasOne("BGN.Domain.Entities.GameNight", "GameNight")
-                        .WithMany("Reviews")
-                        .HasForeignKey("GameNightId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BGN.Domain.Entities.Person", "Reviewer")
-                        .WithMany("Reviews")
-                        .HasForeignKey("ReviewerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("GameNight");
-
-                    b.Navigation("Reviewer");
                 });
 
             modelBuilder.Entity("FoodOptionsGameNight", b =>
@@ -572,21 +537,6 @@ namespace BGN.Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("GameNightAttendees", b =>
-                {
-                    b.HasOne("BGN.Domain.Entities.Person", null)
-                        .WithMany()
-                        .HasForeignKey("AttendeesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BGN.Domain.Entities.GameNight", null)
-                        .WithMany()
-                        .HasForeignKey("GameNightId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("BGN.Domain.Entities.Category", b =>
                 {
                     b.Navigation("Games");
@@ -594,7 +544,7 @@ namespace BGN.Infrastructure.Migrations
 
             modelBuilder.Entity("BGN.Domain.Entities.GameNight", b =>
                 {
-                    b.Navigation("Reviews");
+                    b.Navigation("Attendees");
                 });
 
             modelBuilder.Entity("BGN.Domain.Entities.Gender", b =>
@@ -609,7 +559,7 @@ namespace BGN.Infrastructure.Migrations
 
             modelBuilder.Entity("BGN.Domain.Entities.Person", b =>
                 {
-                    b.Navigation("Reviews");
+                    b.Navigation("GameNights");
                 });
 #pragma warning restore 612, 618
         }

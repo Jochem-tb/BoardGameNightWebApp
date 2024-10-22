@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BGN.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial_Setup_With_Seeding_And_EnumTables : Migration
+    public partial class Changed_Database_Layout : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -19,7 +19,7 @@ namespace BGN.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -32,7 +32,7 @@ namespace BGN.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,7 +45,7 @@ namespace BGN.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -58,7 +58,7 @@ namespace BGN.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -71,16 +71,17 @@ namespace BGN.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IdentityUserId = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(60)", maxLength: 60, nullable: false),
                     GenderId = table.Column<int>(type: "int", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    HouseNr = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PhoneNumber = table.Column<string>(type: "nvarchar(15)", maxLength: 15, nullable: true),
+                    Street = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    HouseNr = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,14 +100,16 @@ namespace BGN.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    MinPlayers = table.Column<int>(type: "int", nullable: true),
-                    MaxPlayers = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    MinPlayers = table.Column<int>(type: "int", nullable: false),
+                    MaxPlayers = table.Column<int>(type: "int", nullable: false),
                     IsAdult = table.Column<bool>(type: "bit", nullable: false),
                     GenreId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: true),
-                    EstimatedTime = table.Column<int>(type: "int", nullable: true)
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    EstimatedTime = table.Column<int>(type: "int", nullable: false),
+                    OwnerId = table.Column<int>(type: "int", nullable: false),
+                    ImgUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,7 +118,8 @@ namespace BGN.Infrastructure.Migrations
                         name: "FK_Games_Categories_CategoryId",
                         column: x => x.CategoryId,
                         principalTable: "Categories",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Games_Genres_GenreId",
                         column: x => x.GenreId,
@@ -154,14 +158,16 @@ namespace BGN.Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Time = table.Column<TimeSpan>(type: "time", nullable: false),
                     OrganiserId = table.Column<int>(type: "int", nullable: false),
-                    Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HouseNr = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MaxPlayers = table.Column<int>(type: "int", nullable: false)
+                    Street = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: false),
+                    HouseNr = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: false),
+                    City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    MaxPlayers = table.Column<int>(type: "int", nullable: false),
+                    OnlyAdultWelcome = table.Column<bool>(type: "bit", nullable: false),
+                    ImgUrl = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -172,6 +178,29 @@ namespace BGN.Infrastructure.Migrations
                         principalTable: "Persons",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Attendees",
+                columns: table => new
+                {
+                    GameNightId = table.Column<int>(type: "int", nullable: false),
+                    AttendeeId = table.Column<int>(type: "int", nullable: false),
+                    AttendanceStatus = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Attendees", x => new { x.GameNightId, x.AttendeeId });
+                    table.ForeignKey(
+                        name: "FK_Attendees_GameNights_GameNightId",
+                        column: x => x.GameNightId,
+                        principalTable: "GameNights",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Attendees_Persons_AttendeeId",
+                        column: x => x.AttendeeId,
+                        principalTable: "Persons",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -222,59 +251,6 @@ namespace BGN.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "GameNightAttendees",
-                columns: table => new
-                {
-                    GameNightId = table.Column<int>(type: "int", nullable: false),
-                    AttendeesId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GameNightAttendees", x => new { x.GameNightId, x.AttendeesId });
-                    table.ForeignKey(
-                        name: "FK_GameNightAttendees_GameNights_GameNightId",
-                        column: x => x.GameNightId,
-                        principalTable: "GameNights",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GameNightAttendees_Persons_AttendeesId",
-                        column: x => x.AttendeesId,
-                        principalTable: "Persons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Reviews",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Details = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Rating = table.Column<int>(type: "int", nullable: false),
-                    ReviewerId = table.Column<int>(type: "int", nullable: false),
-                    GameNightId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Reviews", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Reviews_GameNights_GameNightId",
-                        column: x => x.GameNightId,
-                        principalTable: "GameNights",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reviews_Persons_ReviewerId",
-                        column: x => x.ReviewerId,
-                        principalTable: "Persons",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
             migrationBuilder.InsertData(
                 table: "Categories",
                 columns: new[] { "Id", "Name" },
@@ -315,13 +291,17 @@ namespace BGN.Infrastructure.Migrations
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Geen" },
                     { 2, "Coöperatief" },
                     { 3, "Strategie" },
                     { 4, "Tactiek" },
                     { 5, "Abstract" },
                     { 6, "Familie" }
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Attendees_AttendeeId",
+                table: "Attendees",
+                column: "AttendeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FoodOptionsGameNight_GameNightsId",
@@ -337,11 +317,6 @@ namespace BGN.Infrastructure.Migrations
                 name: "IX_GameGameNight_GamesId",
                 table: "GameGameNight",
                 column: "GamesId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GameNightAttendees_AttendeesId",
-                table: "GameNightAttendees",
-                column: "AttendeesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GameNights_OrganiserId",
@@ -362,21 +337,14 @@ namespace BGN.Infrastructure.Migrations
                 name: "IX_Persons_GenderId",
                 table: "Persons",
                 column: "GenderId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_GameNightId",
-                table: "Reviews",
-                column: "GameNightId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reviews_ReviewerId",
-                table: "Reviews",
-                column: "ReviewerId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Attendees");
+
             migrationBuilder.DropTable(
                 name: "FoodOptionsGameNight");
 
@@ -387,28 +355,22 @@ namespace BGN.Infrastructure.Migrations
                 name: "GameGameNight");
 
             migrationBuilder.DropTable(
-                name: "GameNightAttendees");
-
-            migrationBuilder.DropTable(
-                name: "Reviews");
-
-            migrationBuilder.DropTable(
                 name: "FoodOptions");
+
+            migrationBuilder.DropTable(
+                name: "GameNights");
 
             migrationBuilder.DropTable(
                 name: "Games");
 
             migrationBuilder.DropTable(
-                name: "GameNights");
+                name: "Persons");
 
             migrationBuilder.DropTable(
                 name: "Categories");
 
             migrationBuilder.DropTable(
                 name: "Genres");
-
-            migrationBuilder.DropTable(
-                name: "Persons");
 
             migrationBuilder.DropTable(
                 name: "Genders");

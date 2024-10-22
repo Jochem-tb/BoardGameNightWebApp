@@ -54,7 +54,12 @@
                 <div class="game-night-slider">
                     @foreach (var gameNight in Model.DisplayGameNights.OrderBy(x => x.Date))
                     {
-                        var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
+                        var isAttending = false;
+                        if (gameNight.Attendees.Count() > 0)
+                        {
+                            isAttending = gameNight.Attendees.Any(att => att.Attendee.Id == Model.CurrentUser.Id);
+                        }
+                        
                         if (isAttending)
                         {
                             var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
@@ -90,7 +95,7 @@
                     {
                         if (gameNight.OrganiserId == Model.CurrentUser.Id)
                             {
-                            var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
+                            var isAttending = gameNight.Attendees.Any(att => att.Attendee.Id == Model.CurrentUser.Id);
                             var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
                             if (gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
                             var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
@@ -120,7 +125,7 @@
                 <div class="game-night-slider">
                     @foreach (var gameNight in Model.DisplayGameNights.OrderByDescending(x => x.Date))
                     {
-                        var isAttending = gameNight.Attendees.Any(person => person.Id == Model.CurrentUser.Id);
+                        var isAttending = gameNight.Attendees.Any(att => att.Attendee.Id == Model.CurrentUser.Id);
                         var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
                         if (gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
                         var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BGN.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace BGN.Shared
         public required string ImgUrl { get; set; }
 
         public IEnumerable<GameDto> Games { get; set; } = new List<GameDto>();
-        public IEnumerable<PersonDto> Attendees { get; set; } = new List<PersonDto>();
+        public IEnumerable<GameNightAttendeeDto> Attendees { get; set; } = new List<GameNightAttendeeDto>();
         public IEnumerable<FoodOptionDto> FoodOptions { get; set; } = new List<FoodOptionDto>();
 
     }

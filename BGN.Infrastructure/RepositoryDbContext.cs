@@ -14,7 +14,7 @@ namespace BGN.Infrastructure
         public DbSet<Person> Persons { get; set; } = null!;
         public DbSet<Game> Games { get; set; } = null!;
         public DbSet<GameNight> GameNights { get; set; } = null!;
-        public DbSet<Review> Reviews { get; set; } = null!;
+        public DbSet<GameNightAttendee> Attendees { get; set; } = null!;
 
 
         public DbSet<Category> Categories { get; set; } = null!;
@@ -40,32 +40,22 @@ namespace BGN.Infrastructure
             base.OnModelCreating(modelBuilder);
 
             //Configuring the many-to-many relationship between Game and GameNight
-            modelBuilder.Entity<Person>()
-                .HasMany(p => p.GameNights)
-                .WithMany(gn => gn.Attendees)
-                .UsingEntity<Dictionary<string, object>>(
-                    "GameNightAttendees",
-                    j => j
-                        .HasOne<GameNight>()
-                        .WithMany()
-                        .HasForeignKey("GameNightId")
-                        .OnDelete(DeleteBehavior.Restrict),
-                    j => j
-                        .HasOne<Person>()
-                        .WithMany()
-                        .HasForeignKey("AttendeesId")
-                        .OnDelete(DeleteBehavior.Cascade),
-                    j =>
-                    {
-                        j.HasKey("GameNightId", "AttendeesId");
-                    });
 
+            modelBuilder.Entity<GameNightAttendee>()
+                .HasKey(gna => new { gna.GameNightId, gna.AttendeeId });
 
+            modelBuilder.Entity<GameNightAttendee>()
+            .HasOne(ga => ga.GameNight) // Each GameNightAttendee has one GameNight
+            .WithMany(g => g.Attendees) // A GameNight can have many GameNightAttendees
+            .HasForeignKey(ga => ga.GameNightId) // Foreign key in GameNightAttendee
+            .OnDelete(DeleteBehavior.NoAction); // Specify delete behavior
 
-            //Configuring the one-to-many relationship between Review and Person --> Reviewer
-            modelBuilder.Entity<Review>()
-                .HasOne(r => r.Reviewer)
-                .WithMany(p => p.Reviews).OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<GameNightAttendee>()
+                .HasOne(ga => ga.Attendee) // Each GameNightAttendee has one Person
+                .WithMany(p => p.GameNights) // A Person can have many GameNightAttendees
+                .HasForeignKey(ga => ga.AttendeeId) // Foreign key in GameNightAttendee
+                .OnDelete(DeleteBehavior.NoAction); // Specify delete behavior
+
 
             //Configuring the one-to-one relationship between GameNight and Organiser --> Person
             modelBuilder.Entity<GameNight>()

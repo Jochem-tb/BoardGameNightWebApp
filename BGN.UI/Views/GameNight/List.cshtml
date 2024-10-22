@@ -171,7 +171,7 @@
                     }
 
                     //if user is already attending set join button to leave button
-                    isAttending = gameNight.Attendees.Any(p => p.Id == Model.CurrentUser.Id);
+                    isAttending = gameNight.Attendees.Any(p => p.Attendee.Id == Model.CurrentUser.Id);
                     
 
                     ViewData["IsUserAdult"] = isUserAdult;

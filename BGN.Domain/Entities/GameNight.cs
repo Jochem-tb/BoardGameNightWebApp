@@ -53,10 +53,9 @@ namespace BGN.Domain.Entities
         [MaxLength(255)]
         public required string ImgUrl { get; set; } = "/img/gamenight/BoardGameDefaultSmall.jpg";
 
-        public ICollection<Person> Attendees { get; set; } = new List<Person>();
+        public ICollection<GameNightAttendee> Attendees { get; set; } = new List<GameNightAttendee>();
         public ICollection<Game> Games { get; set; } = new List<Game>();
 
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
         public ICollection<FoodOptions> FoodOptions { get; set; } = new List<FoodOptions>();
 

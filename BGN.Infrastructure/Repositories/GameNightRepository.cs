@@ -23,7 +23,7 @@ namespace BGN.Infrastructure.Repositories
         {
             return await Task.FromResult(_dbContext.GameNights
                 .Include(x => x.Games)
-                .Include(x => x.Attendees)
+                .Include(x => x.Attendees).ThenInclude(y => y.Attendee)
                 .Include(x => x.FoodOptions)
                 .Include(x => x.Organiser));
         }
@@ -32,7 +32,7 @@ namespace BGN.Infrastructure.Repositories
         {
             return await Task.FromResult(_dbContext.GameNights
                 .Include(x => x.Games)
-                .Include(x => x.Attendees)
+                .Include(x => x.Attendees).ThenInclude(y => y.Attendee)
                 .Include(x => x.FoodOptions)
                 .Include(x => x.Organiser)
                 .FirstOrDefault(x => x.Id == id)
@@ -44,7 +44,7 @@ namespace BGN.Infrastructure.Repositories
         {
             return await Task.FromResult(_dbContext.GameNights.AsQueryable()
                 .Include(x => x.Games)
-                .Include(x => x.Attendees)
+                .Include(x => x.Attendees).ThenInclude(y => y.Attendee)
                 .Include(x => x.FoodOptions)
                 .Include(x => x.Organiser));
         }
@@ -65,7 +65,7 @@ namespace BGN.Infrastructure.Repositories
             else
             {
                 //Add the person to the game night
-                gameNight.Attendees.Add(person);
+                gameNight.Attendees.Add(new() { Attendee = person, GameNight = gameNight });
 
                 //Save changes
                 await _dbContext.SaveChangesAsync();
@@ -79,9 +79,9 @@ namespace BGN.Infrastructure.Repositories
                 .Include(x => x.Attendees)
                 .FirstOrDefaultAsync(x => x.Id == gameNightId);
 
-            var person = await _dbContext.Persons.FirstOrDefaultAsync(x => x.IdentityUserId == identityUserKey);
+            var gameNightAttendee = gameNight.Attendees.FirstOrDefault(x => x.Attendee.IdentityUserId == identityUserKey);
 
-            if (gameNight == null || person == null)
+            if (gameNight == null || gameNightAttendee == null)
             {
                 //Game night or person not found
                 return false;
@@ -89,7 +89,7 @@ namespace BGN.Infrastructure.Repositories
             else
             {
                 //Remove the person from the game 
-                var isRemoved = gameNight.Attendees.Remove(person);
+                var isRemoved = gameNight.Attendees.Remove(gameNightAttendee);
 
                 _dbContext.Entry(gameNight).State = EntityState.Modified;
                 //Save changes
@@ -113,6 +113,12 @@ namespace BGN.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
+        public void UpdateAttendance(GameNight gameNight)
+        {
+            _dbContext.Attendees.AttachRange(gameNight.Attendees);
+            _dbContext.GameNights.Update(gameNight);
+            _dbContext.SaveChanges();
+        }
 
         public void Insert(GameNight gameNight)
         {
