@@ -8,5 +8,6 @@ namespace BGN.UI.Models
 
         public Game? Game { get; set; }
         public IFormFile? CoverPhoto { get; set; }
+        public bool isEditMode { get; set; } = false;
     }
 }

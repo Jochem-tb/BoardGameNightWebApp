@@ -121,7 +121,7 @@ namespace BGN.UI.Areas.Identity.Pages.Account
 
             [Required]
             [DataType(DataType.Date)]
-            //Place attribute to test if user is at least 16 years old 
+            //Custom Attribute to check for minAge
             [MinAge(16)]
             [Display(Name = "Date of Birth")]
             public DateTime DateOfBirth { get; set; }
