@@ -37,7 +37,6 @@
                             else
                             {
                                 <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
-
                             }
 
                         }
@@ -47,7 +46,7 @@
                 if (@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
                 {
                     //Only show Edit button if there are no Attendees (except organiser)
-                    if(!Model.GameNight.Attendees.Any(x => x.Id != Model.CurrentUser.Id))
+                    if (!Model.GameNight.Attendees.Any(x => x.Id != Model.CurrentUser.Id))
                     {
                         <a asp-controller="GameNight" asp-action="Edit" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-primary p-2 ps-5 pe-5 me-2 float-end">Edit</a>
                     }
@@ -107,31 +106,99 @@
             </div>
         </div>
 
-        <div class="col-12 col-md-4">
+        <!--Create bigger div if person is organiser-->
+        <!--Make room for the attendingStatus options-->
+        @{
+            var attendeesDivSize = "";
+            var foodOptionsDivSize = "";
+            if (Model.CurrentUser.Id == Model.GameNight.OrganiserId)
+            {
+                attendeesDivSize = "col-12 col-md-5";
+                foodOptionsDivSize = "col-12 col-md-3";
+            }
+            else
+            {
+                attendeesDivSize = "col-12 col-md-4";
+                foodOptionsDivSize = "col-12 col-md-4";
+            }
+        }
+        <div class="@attendeesDivSize">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <div>
-                        <h5 class="fw-bold d-inline">@Model.GameNight.Attendees.Count() Attendees</h5>
-                        <h6 class="d-inline ms-2 fst-italic">
-                            @(Model.GameNight.MaxPlayers - @Model.GameNight.Attendees.Count())
-                            Places left
-                        </h6>
-                    </div>
-
-                    <ul class="list-group">
-                        @foreach (var person in Model.GameNight.Attendees)
+                    <form asp-controller="GameNight" asp-action="UpdateAttendance" method="post">
+                        <input type="hidden" asp-for="GameNight.Id" />
+                        @if (Model.CurrentUser.Id == Model.GameNight.OrganiserId)
                         {
-                            <li class="list-group-item">
-                                <!-- nice icon-->
-                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
-                                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
-                                </svg>
-                                @person.FirstName
-                                @person.LastName
-                            </li>
+                            <div class="mb-3">
+                                <h5 class="fw-bold d-inline">@Model.GameNight.Attendees.Count() Attendees</h5>
+                                <h6 class="d-inline ms-2 fst-italic">
+                                    @(Model.GameNight.MaxPlayers - @Model.GameNight.Attendees.Count())
+                                    Places left
+                                </h6>
+                                <button type="submit" class=" btn btn-success p-1 ps-4 pe-4 ms-2 float-end">Save</button>
+                            </div>
                         }
-                    </ul>
+                        else
+                        {
+                            <div>
+                                <h5 class="fw-bold d-inline">@Model.GameNight.Attendees.Count() Attendees</h5>
+                                <h6 class="d-inline ms-2 fst-italic">
+                                    @(Model.GameNight.MaxPlayers - @Model.GameNight.Attendees.Count())
+                                    Places left
+                                </h6>
+                            </div>
+                        }
+
+                        <ul class="list-group">
+                            @{
+                                if (Model.CurrentUser.Id == Model.GameNight.OrganiserId)
+                                {
+                                    //User IS organiser --> Show attendance options
+                                    @foreach (var person in Model.GameNight.Attendees)
+                                    {
+                                        <li class="list-group-item">
+                                            <span class="me-2">
+                                                33%
+                                            </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                            </svg>
+                                            @person.FirstName @person.LastName
+
+
+                                            <!-- Checkbox to mark attendance -->
+                                            <div class="form-check form-check-inline float-end">
+                                                <input class="form-check-input" type="radio" name="attendance_@person.Id" id="noShow_@person.Id" value="noShow" @(!person.AttendanceStatus ? "checked" : "") />
+                                                <label class="form-check-label" for="noShow_@person.Id">No-Show</label>
+                                            </div>
+                                            <div class="form-check form-check-inline ms-3 float-end">
+                                                <input class="form-check-input" type="radio" name="attendance_@person.Id" id="came_@person.Id" value="show" @(person.AttendanceStatus ? "checked" : "") />
+                                                <label class="form-check-label" for="came_@person.Id">Show</label>
+                                            </div>
+
+
+                                        </li>
+                                    }
+                                }
+                                //user is NOT organiser
+                                else
+                                {
+                                    @foreach (var person in Model.GameNight.Attendees)
+                                    {
+                                        <li class="list-group-item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                            </svg>
+                                            @person.FirstName @person.LastName
+                                        </li>
+                                    }
+                                }
+                            }
+
+                        </ul>
+                    </form>
                 </div>
             </div>
         </div>
@@ -146,7 +213,7 @@
             }
         }
 
-        <div class="col-12 col-md-4">
+        <div class="@foodOptionsDivSize">
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="fw-bold">Food Options</h5>

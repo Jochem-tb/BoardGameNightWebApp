@@ -28,6 +28,7 @@ namespace BGN.Shared
         public required string PostalCode { get; set; }
 
         public required string City { get; set; }
+        public required bool AttendanceStatus { get; set; } = false;
 
         public IEnumerable<FoodOptionDto> Preferences { get; set; } = new List<FoodOptionDto>();
 

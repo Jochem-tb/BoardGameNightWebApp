@@ -61,6 +61,7 @@ namespace BGN.Infrastructure
                     });
 
 
+
             //Configuring the one-to-many relationship between Review and Person --> Reviewer
             modelBuilder.Entity<Review>()
                 .HasOne(r => r.Reviewer)

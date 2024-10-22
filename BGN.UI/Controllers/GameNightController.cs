@@ -19,6 +19,8 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using Microsoft.EntityFrameworkCore;
+using BGN.Shared;
 
 namespace BGN.UI.Controllers
 {
@@ -63,6 +65,22 @@ namespace BGN.UI.Controllers
             }
 
             return View(new GameNightDetailsModel() { GameNight = gameNightDetails, CurrentUser = currentUser });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateAttendance(GameNightDetailsModel model)
+        {
+            var existingGameNight = await _gameNightService.GetByIdAsync(model.GameNight.Id);
+            foreach (var attendee in existingGameNight.Attendees)
+            {
+                var attendanceStatus = Request.Form[$"Attendees[{attendee.Id}].AttendanceStatus"];
+                bool isPresent = attendanceStatus.Equals("show");
+
+                attendee.AttendanceStatus = isPresent; 
+            }
+            _gameNightService.UpdateAsync(model.GameNight);
+
+            return RedirectToAction("GameNightDetails", new { gameNightId = model.GameNight.Id });
         }
 
         public async Task<IActionResult> Attending()
