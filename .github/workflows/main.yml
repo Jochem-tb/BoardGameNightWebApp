@@ -24,6 +24,14 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
+     # Install dotnet-ef tool
+    - name: Install Entity Framework CLI
+      run: dotnet tool install --global dotnet-ef
+
+    # Add .NET tools to PATH
+    - name: Add .NET Tools to PATH
+      run: echo "::add-path::${HOME}/.dotnet/tools"
+
     - name: Restore
       run: dotnet restore ./BoardGameNight.sln
 
