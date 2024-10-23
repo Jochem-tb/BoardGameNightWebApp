@@ -21,24 +21,24 @@
                 <!-- Example filter: Search by name -->
                 <div class="mb-3">
                     <label class="form-label">Search by Name</label>
-                    <input asp-for="GameListModel.SearchName" type="text" class="form-control" id="searchName" placeholder="Enter game name">
+                    <input asp-for="GameListModel!.SearchName" type="text" class="form-control" id="searchName" placeholder="Enter game name">
                 </div>
 
                 <!-- Example filter: Age restriction -->
                 <div class="mb-3">
                     <label class="form-label">Age Restriction</label>
                     <div class="form-check">
-                        <input asp-for="GameListModel.SearchIsAdult" class="form-check-input" type="radio" value="" id="ageFilterAll" checked>
+                        <input asp-for="GameListModel!.SearchIsAdult" class="form-check-input" type="radio" value="" id="ageFilterAll" checked>
                         <label class="form-check-label" for="ageFilterAll">All</label>
                     </div>
 
                     <div class="form-check">
-                        <input asp-for="GameListModel.SearchIsAdult" class="form-check-input" type="radio" value="false" id="ageFilterNo18">
+                        <input asp-for="GameListModel!.SearchIsAdult" class="form-check-input" type="radio" value="false" id="ageFilterNo18">
                         <label class="form-check-label" for="ageFilterNo18">No 18+</label>
                     </div>
 
                     <div class="form-check">
-                        <input asp-for="GameListModel.SearchIsAdult" class="form-check-input" type="radio" value="true" id="ageFilterOnly18">
+                        <input asp-for="GameListModel!.SearchIsAdult" class="form-check-input" type="radio" value="true" id="ageFilterOnly18">
                         <label class="form-check-label" for="ageFilterOnly18">Only 18+</label>
                     </div>
                 </div>
@@ -49,14 +49,14 @@
                     <div class="row">
                         <!-- Minimum Players input -->
                         <div class="col form-check">
-                            <input asp-for="GameListModel.SearchMinPlayers" type="number" class="form-control" id="SearchMinPlayers" placeholder="Min Players" min="1">
-                            <span asp-validation-for="GameListModel.SearchMinPlayers" class="text-danger"></span>
+                            <input asp-for="GameListModel!.SearchMinPlayers" type="number" class="form-control" id="SearchMinPlayers" placeholder="Min Players" min="1">
+                            <span asp-validation-for="GameListModel!.SearchMinPlayers" class="text-danger"></span>
                         </div>
 
                         <!-- Maximum Players input -->
                         <div class="col form-check">
-                            <input asp-for="GameListModel.SearchMaxPlayers" type="number" class="form-control" id="SearchMaxPlayers" placeholder="Max Players" min="1">
-                            <span asp-validation-for="GameListModel.SearchMaxPlayers" class="text-danger"></span>
+                            <input asp-for="GameListModel!.SearchMaxPlayers" type="number" class="form-control" id="SearchMaxPlayers" placeholder="Max Players" min="1">
+                            <span asp-validation-for="GameListModel!.SearchMaxPlayers" class="text-danger"></span>
                         </div>
                     </div>
                 </div>
@@ -86,7 +86,7 @@
                     var isUserAdult = Model.CurrentUser != null && Model.CurrentUser.IsAdult();
 
                     var gameIdList = new List<int>();
-                    if(Model.GameNight.Games.Count() > 0)
+                    if(Model.GameNight!.Games.Count() > 0)
                     {
                         foreach (var g in Model.GameNight.Games)
                         {
@@ -95,7 +95,7 @@
                         Model.SelectedGameIds = gameIdList.ToArray();
                     }
 
-                    foreach (var game in Model.GameListModel.DisplayGames)
+                    foreach (var game in Model.GameListModel!.DisplayGames)
                     {
                         var isSelected = Model.SelectedGameIds.Any(x => x == game.Id) ? "checked" : "";
                         var gameCardClass = game.IsAdult && !isUserAdult ? "bg-danger bg-opacity-50" : "bg-white";

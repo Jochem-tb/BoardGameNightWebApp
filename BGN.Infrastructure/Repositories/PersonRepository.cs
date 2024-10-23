@@ -9,15 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BGN.Infrastructure.Repositories
 {
-    internal sealed class PersonRepository : IPersonRepository
+    internal sealed class PersonRepository(RepositoryDbContext dbContext) : IPersonRepository
     {
-        private readonly RepositoryDbContext _dbContext;
-
-        public PersonRepository(RepositoryDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
+        private readonly RepositoryDbContext _dbContext = dbContext;
 
         public async Task<IEnumerable<Person>> GetAllAsync()
         {
@@ -46,25 +40,25 @@ namespace BGN.Infrastructure.Repositories
             return await _dbContext.Genders.ToListAsync();
         }
 
-        public async Task<Person>? GetPersonIdByUserKey(string userIdentityKey)
+        public async Task<Person?> GetPersonIdByUserKey(string userIdentityKey)
         {
 
             
             if (string.IsNullOrWhiteSpace(userIdentityKey))
             {
-                return null;
+                return null!;
                 
             }
             else
             {
-#pragma warning disable CS8603 // Possible null reference return. Already checked above.
+
 
                 return await _dbContext.Persons
                     .Include(x => x.Gender)
                     .Include(x => x.Preferences)
                     .FirstOrDefaultAsync(x => x.IdentityUserId == userIdentityKey);
 
-#pragma warning restore CS8603 // Possible null reference return. Already checked above.
+
             }
 
         }

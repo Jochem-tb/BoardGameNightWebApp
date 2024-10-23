@@ -111,7 +111,7 @@
         @{
             var attendeesDivSize = "";
             var foodOptionsDivSize = "";
-            if (Model.CurrentUser.Id == Model.GameNight.OrganiserId)
+            if (Model.CurrentUser!.Id == Model.GameNight.OrganiserId)
             {
                 attendeesDivSize = "col-12 col-md-5";
                 foodOptionsDivSize = "col-12 col-md-3";
@@ -151,7 +151,7 @@
 
                         <ul class="list-group">
                             @{
-                                PersonDto person = null;
+                                PersonDto person ;
                                 if (Model.CurrentUser.Id == Model.GameNight.OrganiserId)
                                 {
                                     //User IS organiser --> Show attendance options

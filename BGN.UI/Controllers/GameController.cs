@@ -97,9 +97,10 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> Filter(GameListModel gameListModel)
         {
 
-            // Ensure selected genres and categories are also set
-            gameListModel.SelectedGenres = gameListModel.SelectedGenres ?? new List<int>();
-            gameListModel.SelectedCategories = gameListModel.SelectedCategories ?? new List<int>();
+            // Ensure selected genres and categories are also set\
+            //Compound assignment operator, if the left operand is null, it will be assigned to the right operand
+            gameListModel.SelectedGenres ??= new List<int>();
+            gameListModel.SelectedCategories ??= new List<int>();
 
             // If the model state is valid, fetch games based on the filter criteria
             //GetAllAsync is overloaded, so we can pass the GameListModel to it
@@ -158,18 +159,24 @@ namespace BGN.UI.Controllers
             }
             else
             {
-                var imgUrl = await UploadPhotoToServerAsync(model.CoverPhoto);
+                var imgUrl = await UploadPhotoToServerAsync(model.CoverPhoto!);
                 try
                 {
                     if (!imgUrl.IsNullOrEmpty())
                     {
-                        model.Game.ImgUrl = imgUrl; // Save the URL in the database
+                        model.Game!.ImgUrl = imgUrl!; // Save the URL in the database
                     }
 
                     if (model.CurrentUser == null)
                     {
-                        model.CurrentUser = await _userService.GetLoggedInUserAsync();
-                        model.Game.OwnerId = model.CurrentUser.Id;
+                        var currentUser = await _userService.GetLoggedInUserAsync();
+                        if(model.CurrentUser == null)
+                        {
+                            TempData["CreateGameError"] = "Something went wrong, while creating this game";
+                            return RedirectToAction("List");
+                        }
+                        model.CurrentUser = currentUser!;
+                        model.Game!.OwnerId = model.CurrentUser!.Id;
                     }
 
 
@@ -179,9 +186,9 @@ namespace BGN.UI.Controllers
                     TempData["CreateGameMessage"] = "Game created successfully!";
                     return RedirectToAction("List");
                 }
-                catch (Exception ex)
+                catch 
                 {
-                    DeleteOldImage(imgUrl);
+                    DeleteOldImage(imgUrl!);
                     TempData["UpdateGameError"] = "Something went wrong, while updating this game";
                     return RedirectToAction("List");
                 }
@@ -210,7 +217,7 @@ namespace BGN.UI.Controllers
                     if (!string.IsNullOrEmpty(newImageUrl))
                     {
                         // Delete the old image if it exists
-                        DeleteOldImage(model.Game.ImgUrl);
+                        DeleteOldImage(model.Game!.ImgUrl);
 
                         // Set the new URL in the model
                         model.Game.ImgUrl = newImageUrl;
@@ -254,7 +261,7 @@ namespace BGN.UI.Controllers
             return null;
         }
 
-        private void DeleteOldImage(string imageUrl)
+        private static void DeleteOldImage(string imageUrl)
         {
             if (string.IsNullOrEmpty(imageUrl))
             {

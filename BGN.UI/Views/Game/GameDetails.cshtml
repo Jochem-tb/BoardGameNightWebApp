@@ -36,7 +36,7 @@
         </h1>
     </div>
     <div class="col-6">
-        @if (@Model.CurrentUser.Id == @Model.Game.OwnerId)
+        @if (@Model.CurrentUser!.Id == @Model.Game.OwnerId)
         {
         <a asp-controller="Game" asp-action="Edit" asp-route-gameId="@Model.Game.Id" class="btn btn-primary p-2 ps-5 pe-5 me-2 float-end">Edit</a>
         }

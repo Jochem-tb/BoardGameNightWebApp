@@ -9,7 +9,7 @@ namespace BGN.UI.Models
 
         public Dictionary<int, float> ShowNoShowDictionary { get; set; } = new();
 
-        public GameListModel GameListModel;
+        public GameListModel? GameListModel;
         public GameListModel GetGameListModel()
         {
             return new()

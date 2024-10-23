@@ -3,7 +3,7 @@
     var isSelected = 0;
     if(ViewData["SelectedCategoryId"] != null)
     {
-        isSelected = (int)ViewData["SelectedCategoryId"];
+        isSelected = ViewData["SelectedCategoryId"] as int? ?? 0;
     }
 }
 @foreach (var category in Model)

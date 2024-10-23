@@ -116,7 +116,7 @@
         <div class="col-md-5">
             <div class="form-floating">
                 @{ViewData["ExcludeFoodOptionLabel"] = true;}
-                @await Component.InvokeAsync("FoodOptionsCheckboxFilter", new BGN.UI.Models.GameNightListModel(){CurrentUser = null})
+                @await Component.InvokeAsync("FoodOptionsCheckboxFilter", new BGN.UI.Models.GameNightListModel(){CurrentUser = null!})
             </div>
         </div>
     </div>

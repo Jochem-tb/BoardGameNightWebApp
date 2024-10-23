@@ -50,7 +50,7 @@ namespace BGN.UI.Controllers
         {
             var gameNightList = await _gameNightService.GetAllAsync();
             var currentUser = await _userService.GetLoggedInUserAsync();
-            return View(new GameNightListModel() { DisplayGameNights = gameNightList, CurrentUser = currentUser });
+            return View(new GameNightListModel() { DisplayGameNights = gameNightList, CurrentUser = currentUser! });
         }
 
         public async Task<IActionResult> GameNightDetails(int gameNightId)
@@ -73,7 +73,7 @@ namespace BGN.UI.Controllers
                 showNoShowDictionary.Add(attendee.Id, percentageShow);
             }
 
-            var preferenceMisMatch = currentUser.Preferences.All(preference =>
+            var preferenceMisMatch = currentUser!.Preferences.All(preference =>
                     gameNightDetails.FoodOptions.Any(option => option.Id == preference.Id));
             if (!preferenceMisMatch)
             {
@@ -87,7 +87,7 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> UpdateAttendance(GameNightDetailsModel model)
         {
             var existingGameNight = await _gameNightService.GetByIdEntityAsync(model.GameNight.Id);
-            foreach (var member in existingGameNight.Attendees)
+            foreach (var member in existingGameNight!.Attendees)
             {
                 var attendee = member.Attendee;
                 var attendanceStatus = Request.Form[$"attendance_{attendee.Id}"];
@@ -105,16 +105,16 @@ namespace BGN.UI.Controllers
             var gameNightList = await _gameNightService.GetAllAsync();
             var currentUser = await _userService.GetLoggedInUserAsync();
 
-            return View("UserList", new GameNightListModel() { DisplayGameNights = gameNightList, CurrentUser = currentUser });
+            return View("UserList", new GameNightListModel() { DisplayGameNights = gameNightList, CurrentUser = currentUser! });
         }
 
         [HttpGet]
         public async Task<IActionResult> FilterList(GameNightListModel model)
         {
             var currentUser = await _userService.GetLoggedInUserAsync();
-            model.CurrentUser = currentUser;
+            model.CurrentUser = currentUser!;
 
-            model.SelectedFoodOptions = model.SelectedFoodOptions ?? new List<int>();
+            model.SelectedFoodOptions ??= new List<int>();
 
             var filteredGameNights = await _gameNightService.GetAllAsync(model);
             model.DisplayGameNights = filteredGameNights;
@@ -145,13 +145,13 @@ namespace BGN.UI.Controllers
                     var currentUser = await _userService.GetLoggedInUserAsync();
                     var gameNightDetails = await _gameNightService.GetByIdAsync(gameNightId);
 
-                    var preferenceMisMatch = currentUser.Preferences.All(preference =>
+                    var preferenceMisMatch = currentUser!.Preferences.All(preference =>
                         gameNightDetails.FoodOptions.Any(option => option.Id == preference.Id));
 
                     if (!preferenceMisMatch)
                     {
                         TempData["PreferenceMisMatchError"] = "One or more of your preferences is not present.";
-                        return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                        return RedirectToAction("GameNightDetails", new { gameNightId });
                     }
                 }
 
@@ -162,18 +162,18 @@ namespace BGN.UI.Controllers
                 {
                     //Handle case where user is already attending a gamenight on the same Date
                     TempData["JoinGameNightError"] = "You are already attending a game night on this day.";
-                    return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                    return RedirectToAction("GameNightDetails", new { gameNightId });
                 }
                 else if ((bool)result)
                 {
                     //Success!
-                    return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                    return RedirectToAction("GameNightDetails", new { gameNightId });
                 }
                 else
                 {
                     //Handle case where user is already attending or game night is full
                     TempData["JoinGameNightError"] = "You are already attending this game night or it is full.";
-                    return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                    return RedirectToAction("GameNightDetails", new { gameNightId });
                 }
             }
 
@@ -301,10 +301,10 @@ namespace BGN.UI.Controllers
             if(existingGameNight.Attendees.Any(a => a.Attendee.Id != currentUser.Id))
             {
                 TempData["EditError"] = "You can't edit while people are already attending";
-                return RedirectToAction("GameNightDetails", new { gameNightId = gameNightId });
+                return RedirectToAction("GameNightDetails", new { gameNightId });
             }
 
-            var model = new CrudGameNightModel()
+            var model = new CrudGameNightModel
             {
                 CurrentUser = currentUser,
                 GameNight = new GameNight()
@@ -319,13 +319,13 @@ namespace BGN.UI.Controllers
                     MaxPlayers = existingGameNight.MaxPlayers,
                     OnlyAdultWelcome = existingGameNight.OnlyAdultWelcome,
                     OrganiserId = existingGameNight.OrganiserId,
-                    Organiser = null,
+                    Organiser = null!,
                     ImgUrl = existingGameNight.ImgUrl,
                     Games = _mapper.Map<ICollection<Game>>(existingGameNight.Games),
                     FoodOptions = _mapper.Map<ICollection<FoodOptions>>(existingGameNight.FoodOptions)
-                }
+                },
+                isEditMode = true
             };
-            model.isEditMode = true;
 
             // Store initial model in Session
             HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(model));
@@ -341,13 +341,17 @@ namespace BGN.UI.Controllers
             if (ModelState.IsValid)
             {
                 //Save data in Session:
-                var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY));
+                var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY)!);
+                if(exModel == null)
+                {
+                    return RedirectToAction("List");
+                }
                 if (exModel.isEditMode)
                 {
-                    exModel.GameNight.Name = model.GameNight.Name;
+                    exModel.GameNight!.Name = model.GameNight!.Name;
                     exModel.GameNight.Date = model.GameNight.Date;
                     exModel.GameNight.Time = model.GameNight.Time;
-                    exModel.GameNight.Organiser = null;
+                    exModel.GameNight.Organiser = null!;
                     exModel.GameNight.OrganiserId = exModel.CurrentUser.Id;
                     exModel.GameNight.Street = model.GameNight.Street;
                     exModel.GameNight.HouseNr = model.GameNight.HouseNr;
@@ -361,17 +365,17 @@ namespace BGN.UI.Controllers
                 {
                     exModel.GameNight = new GameNight()
                     {
-                        Name = model.GameNight.Name,
+                        Name = model.GameNight!.Name,
                         Date = model.GameNight.Date,
                         Time = model.GameNight.Time,
-                        Organiser = null,
+                        Organiser = null!,
                         OrganiserId = exModel.CurrentUser.Id,
                         Street = model.GameNight.Street,
                         HouseNr = model.GameNight.HouseNr,
                         City = model.GameNight.City,
                         MaxPlayers = model.GameNight.MaxPlayers,
                         OnlyAdultWelcome = model.GameNight.OnlyAdultWelcome,
-                        ImgUrl = null
+                        ImgUrl = null!
                     };
                 }
 
@@ -385,7 +389,7 @@ namespace BGN.UI.Controllers
                     if (!string.IsNullOrEmpty(newImageUrl))
                     {
                         // Delete the old image if it exists
-                        DeleteOldImage(exModel.GameNight.ImgUrl);
+                        DeleteOldImage(exModel.GameNight.ImgUrl!);
 
                         // Set the new URL in the model
                         exModel.GameNight.ImgUrl = newImageUrl;
@@ -409,15 +413,15 @@ namespace BGN.UI.Controllers
 
         [Authorize]
         [HttpGet]
-        public async Task<IActionResult> AddGames(CrudGameNightModel model)
+        public async Task<IActionResult> AddGames()
         {
             var currentUser = await _userService.GetLoggedInUserAsync();
             if (currentUser == null) return RedirectToAction("List");
 
-            var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY));
+            var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY)!);
 
             var allGames = await _gameService.GetAllAsync();
-            exModel.GameListModel = new GameListModel() { CurrentUser = currentUser, DisplayGames = allGames };
+            exModel!.GameListModel = new GameListModel() { CurrentUser = currentUser, DisplayGames = allGames };
 
             HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(exModel));
 
@@ -429,8 +433,8 @@ namespace BGN.UI.Controllers
         public async Task<IActionResult> Filter(CrudGameNightModel model)
         {
             // Ensure selected genres and categories are also set
-            model.GameListModel.SelectedGenres = model.GameListModel.SelectedGenres ?? new List<int>();
-            model.GameListModel.SelectedCategories = model.GameListModel.SelectedCategories ?? new List<int>();
+            model.GameListModel!.SelectedGenres = model.GameListModel.SelectedGenres ?? new List<int>();
+            model.GameListModel!.SelectedCategories = model.GameListModel.SelectedCategories ?? new List<int>();
 
             // If the model state is valid, fetch games based on the filter criteria
             //GetAllAsync is overloaded, so we can pass the GameListModel to it
@@ -439,8 +443,8 @@ namespace BGN.UI.Controllers
             model.GameListModel.DisplayGames = filteredGames;
             model.GameListModel.CurrentUser = currentUser;
 
-            var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY));
-            exModel.GameListModel = model.GameListModel;
+            var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY)!);
+            exModel!.GameListModel = model.GameListModel;
             HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(exModel));
 
             // Return the filtered games to the view
@@ -462,10 +466,10 @@ namespace BGN.UI.Controllers
             if (SelectedGameIds != null && SelectedGameIds.Length > 0)
             {
                 //TODO Implement logic for getting list of IDs
-                var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY));
+                var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY)!);
                 var allGameEntity = await _gameService.GetAllEntityAsync();
                 var selectedGames = allGameEntity.Where(g => SelectedGameIds.Contains(g.Id)).ToList();
-                exModel.GameNight.Games = selectedGames;
+                exModel!.GameNight!.Games = selectedGames;
                 HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(exModel));
             }
 
@@ -486,9 +490,9 @@ namespace BGN.UI.Controllers
             var currentUser = await _userService.GetLoggedInUserAsync();
             if (currentUser == null) return RedirectToAction("List");
 
-            var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY));
+            var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY)!);
             var allFoodOptions = await _miscService.GetAllFoodOptionsAsync();
-            exModel.FoodOptions = allFoodOptions;
+            exModel!.FoodOptions = allFoodOptions;
             HttpContext.Session.SetString(GAMENIGHT_SESSION_PERSISTENT_KEY, JsonSerializer.Serialize(exModel));
 
             return View(exModel);
@@ -497,13 +501,13 @@ namespace BGN.UI.Controllers
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> AddFoodOptions(CrudGameNightModel model, int[] SelectedFoodOptionsIds)
+        public async Task<IActionResult> AddFoodOptions(int[] SelectedFoodOptionsIds)
         {
             var currentUser = await _userService.GetLoggedInUserAsync();
             if (currentUser == null) return RedirectToAction("List");
 
             //Retreive gameNight from session
-            var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY));
+            var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY)!);
 
             // Retrieve the selected foodoption from the database based on IDs
             if (SelectedFoodOptionsIds != null && SelectedFoodOptionsIds.Length > 0)
@@ -511,18 +515,18 @@ namespace BGN.UI.Controllers
                 //TODO Implement logic for getting list of IDs
                 var allFoodOptionEntity = await _miscService.GetAllFoodOptionsEntityAsync();
                 var selectedFoodOptions = allFoodOptionEntity.Where(f => SelectedFoodOptionsIds.Contains(f.Id)).ToList();
-                exModel.GameNight.FoodOptions = selectedFoodOptions;
+                exModel!.GameNight!.FoodOptions = selectedFoodOptions;
             }
 
             //Make distiction about putting new GameNight in DB or Update
-            if (exModel.isEditMode)
+            if (exModel!.isEditMode)
             {
-                await _gameNightService.UpdateAsync(exModel.GameNight);
+                await _gameNightService.UpdateAsync(exModel.GameNight!);
                 TempData["GameNightUpdateSuccess"] = "Game Night successfully updated!";
             }
             else
             {
-                _gameNightService.Insert(exModel.GameNight);
+                _gameNightService.Insert(exModel.GameNight!);
                 TempData["GameNightCreateSuccess"] = "Game Night created successfully!";
             }
 
@@ -559,7 +563,7 @@ namespace BGN.UI.Controllers
             return null;
         }
 
-        private void DeleteOldImage(string imageUrl)
+        private static void DeleteOldImage(string imageUrl)
         {
             if (string.IsNullOrEmpty(imageUrl))
             {

@@ -1,10 +1,10 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    bool isEditMode = (bool)ViewData["isEditMode"];
+    bool isEditMode = ViewData["isEditMode"] as bool? ?? false;
     var gameNightId = -1;
     if (ViewData["ModelGameNightId"] != null)
     {
-        gameNightId = (int)ViewData["ModelGameNightId"];
+        gameNightId = ViewData["ModelGameNightId"] as int? ?? 0; ;
     }
     
 }

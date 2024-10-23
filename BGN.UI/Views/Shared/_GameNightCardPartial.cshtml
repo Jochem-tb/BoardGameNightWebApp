@@ -1,11 +1,11 @@
 ﻿@model (BGN.Shared.GameNightDto, string)
 
 @{
-    var isUserAdult = (bool)ViewData["IsUserAdult"];
-    var isAttending = (bool)ViewData["IsAttending"];
+    var isUserAdult = ViewData["IsUserAdult"] as bool? ?? false; ;
+    var isAttending = ViewData["IsAttending"] as bool? ?? false; ;
     var joinButtonClassAttribute = ViewData["JoinButtonClassAttribute"]?.ToString() ?? "";
-    var preferences = (List<BGN.Shared.FoodOptionDto>)ViewData["Preferences"] ?? new List<BGN.Shared.FoodOptionDto>();
-    var includeWhatSection = (bool)ViewData["IncludeWhatSection"];
+    var preferences = ViewData["Preferences"] as List<BGN.Shared.FoodOptionDto> ?? new List<BGN.Shared.FoodOptionDto>();
+    var includeWhatSection = ViewData["IncludeWhatSection"] as bool? ?? false; ;
     var preferencesIdList = new List<int>();
     foreach(var pref in preferences)
     {

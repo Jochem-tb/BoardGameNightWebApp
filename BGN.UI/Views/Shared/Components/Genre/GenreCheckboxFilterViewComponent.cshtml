@@ -9,7 +9,7 @@
                    value="@genre.Id"
                    id="genre_@genre.Id"
                    name="SelectedGenres"
-            @(Model.SelectedGenres.Contains(genre.Id) ? "checked" : "") />
+            @(Model.SelectedGenres!.Contains(genre.Id) ? "checked" : "") />
             <label class="form-check-label" for="genre_@genre.Id">@genre.Name</label>
         </div>
     }

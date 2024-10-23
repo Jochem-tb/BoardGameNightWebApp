@@ -11,14 +11,10 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BGN.Infrastructure.Repositories
 {
-    internal sealed class GameNightRepository : IGameNightRepository
+    internal sealed class GameNightRepository(RepositoryDbContext dbContext) : IGameNightRepository
     {
-        private readonly RepositoryDbContext _dbContext;
+        private readonly RepositoryDbContext _dbContext = dbContext;
 
-        public GameNightRepository(RepositoryDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
         public async Task<IEnumerable<GameNight>> GetAllAsync()
         {
             return await Task.FromResult(_dbContext.GameNights
@@ -28,7 +24,7 @@ namespace BGN.Infrastructure.Repositories
                 .Include(x => x.Organiser));
         }
 
-        public async Task<GameNight> GetByIdAsync(int id)
+        public async Task<GameNight?> GetByIdAsync(int id)
         {
             return await Task.FromResult(_dbContext.GameNights
                 .Include(x => x.Games)
@@ -79,7 +75,7 @@ namespace BGN.Infrastructure.Repositories
                 .Include(x => x.Attendees)
                 .FirstOrDefaultAsync(x => x.Id == gameNightId);
 
-            var gameNightAttendee = gameNight.Attendees.FirstOrDefault(x => x.Attendee.IdentityUserId == identityUserKey);
+            var gameNightAttendee = gameNight!.Attendees.FirstOrDefault(x => x.Attendee.IdentityUserId == identityUserKey);
 
             if (gameNight == null || gameNightAttendee == null)
             {
@@ -200,13 +196,6 @@ namespace BGN.Infrastructure.Repositories
             _dbContext.Attach(gameNight);
             _dbContext.Update(gameNight);
             _dbContext.SaveChanges();
-        }
-        private void LogTrackedEntities()
-        {
-            foreach (var entry in _dbContext.ChangeTracker.Entries())
-            {
-                Debug.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}, Key: {entry.Property("Id").CurrentValue}");
-            }
         }
     }
 }

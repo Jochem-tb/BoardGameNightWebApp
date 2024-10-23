@@ -3,7 +3,7 @@
     var excludeLabel = false;
     if (ViewData["ExcludeFoodOptionLabel"] != null)
     {
-        excludeLabel = (bool)ViewData["ExcludeFoodOptionLabel"];
+        excludeLabel = ViewData["ExcludeFoodOptionLabel"] as bool? ?? false; ;
     }
 }
 
@@ -19,7 +19,7 @@
                    value="@foodOption.Id"
                    id="foodOption_@foodOption.Id"
                    name="SelectedFoodOptions"
-            @(Model.SelectedFoodOptions.Contains(foodOption.Id) ? "checked" : "") />
+            @(Model.SelectedFoodOptions!.Contains(foodOption.Id) ? "checked" : "") />
             <label class="form-check-label" for="foodOption_@foodOption.Id">@foodOption.Name</label>
         </div>
     }

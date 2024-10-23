@@ -13,16 +13,11 @@ using System.Threading.Tasks;
 
 namespace BGN.Services
 {
-    internal class GameNightService : IGameNightService
+    internal class GameNightService(IRepositoryManager repositoryManager, IMapper mapper) : IGameNightService
     {
-        private readonly IRepositoryManager _repositoryManager;
-        private readonly IMapper _mapper;
+        private readonly IRepositoryManager _repositoryManager = repositoryManager;
+        private readonly IMapper _mapper = mapper;
 
-        public GameNightService(IRepositoryManager repositoryManager, IMapper mapper)
-        {
-            _repositoryManager = repositoryManager;
-            _mapper = mapper;
-        }
         public Task<GameNightDto> CreateAsync(GameNightDto gameNight)
         {
             throw new NotImplementedException();
@@ -100,7 +95,7 @@ namespace BGN.Services
 
             //Check if Attending == MaxPlayers
             //var isPlaceAvailable = gameNight.Where(x => x.Attendees.Count() < x.MaxPlayers).Any();
-            var isPlaceAvailable = gameNight.Attendees.Count() < gameNight.MaxPlayers;
+            var isPlaceAvailable = gameNight!.Attendees.Count < gameNight.MaxPlayers;
             if (!isPlaceAvailable)
             {
                 return false;
@@ -143,7 +138,7 @@ namespace BGN.Services
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
 
             //Check if person is attending
-            var isAttending = gameNight.Attendees.Any(y => y.Attendee.IdentityUserId == identityUserKey);
+            var isAttending = gameNight!.Attendees.Any(y => y.Attendee.IdentityUserId == identityUserKey);
             if (!isAttending)
             {
                 return false;
@@ -244,7 +239,7 @@ namespace BGN.Services
             _repositoryManager.GameNightRepository.Remove(gameNight);
         }
 
-        public async Task<GameNight> GetByIdEntityAsync(int id)
+        public async Task<GameNight?> GetByIdEntityAsync(int id)
         {
             return await _repositoryManager.GameNightRepository.GetByIdAsync(id);
         }

@@ -2,7 +2,7 @@
     var includeFilter = false;
     if (ViewData["IncludeFilterSection"] != null)
     {
-        includeFilter = (bool)ViewData["IncludeFilterSection"];
+        includeFilter = ViewData["IncludeFilterSection"] as bool? ?? false; ;
     }
     
 }

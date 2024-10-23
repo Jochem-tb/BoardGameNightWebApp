@@ -9,7 +9,7 @@
                    value="@category.Id"
                    id="category_@category.Id"
                    name="SelectedCategories"
-            @(Model.SelectedCategories.Contains(category.Id) ? "checked" : "") />
+            @(Model.SelectedCategories!.Contains(category.Id) ? "checked" : "") />
             <label class="form-check-label" for="category_@category.Id">@category.Name</label>
         </div>
     }

@@ -16,7 +16,7 @@
 
         @foreach (var option in Model.FoodOptions)
         {
-            if(Model.GameNight.FoodOptions.Any(x => x.Id == option.Id))
+            if(Model.GameNight!.FoodOptions.Any(x => x.Id == option.Id))
             {
                 isChecked = "checked";
             }

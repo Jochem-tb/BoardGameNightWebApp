@@ -13,16 +13,11 @@ using System.Threading.Tasks;
 
 namespace BGN.Services
 {
-    internal class GameService : IGameService
+    internal class GameService(IRepositoryManager repositoryManager, IMapper mapper) : IGameService
     {
-        private readonly IRepositoryManager _repositoryManager;
-        private readonly IMapper _mapper;
+        private readonly IRepositoryManager _repositoryManager = repositoryManager;
+        private readonly IMapper _mapper = mapper;
 
-        public GameService(IRepositoryManager repositoryManager, IMapper mapper)
-        {
-            _repositoryManager = repositoryManager;
-            _mapper = mapper;
-        }
         public async Task<IEnumerable<GameDto>> GetAllAsync()
         {
             var games = await _repositoryManager.GameRepository.GetAllAsync();
@@ -81,14 +76,14 @@ namespace BGN.Services
                 gamesQueryable = gamesQueryable.Where(x => x.MaxPlayers <= filterObject.SearchMaxPlayers.Value);
             }
 
-            if (filterObject.SelectedGenres.Any())
+            if (filterObject.SelectedGenres!.Any())
             {
-                gamesQueryable = gamesQueryable.Where(g => g.GenreId != null && filterObject.SelectedGenres.Contains(g.GenreId));
+                gamesQueryable = gamesQueryable.Where(g =>  filterObject.SelectedGenres!.Contains(g.GenreId));
             }
 
-            if (filterObject.SelectedCategories.Any())
+            if (filterObject.SelectedCategories!.Any())
             {
-                gamesQueryable = gamesQueryable.Where(g => g.CategoryId != null && filterObject.SelectedCategories.Contains(g.CategoryId));
+                gamesQueryable = gamesQueryable.Where(g =>  filterObject.SelectedCategories!.Contains(g.CategoryId));
             }
 
             if (filterObject.SearchEstimatedTimeLower.HasValue)
@@ -116,13 +111,13 @@ namespace BGN.Services
             return _mapper.Map<IEnumerable<GenreDto>>(genres);
         }
 
-        public async Task<GameDto> GetByIdAsync(int id)
+        public async Task<GameDto?> GetByIdAsync(int id)
         {
             var game = await _repositoryManager.GameRepository.GetByIdAsync(id);
             return _mapper.Map<GameDto>(game);
         }
 
-        public async Task<CategoryDto> GetCategoryByIdAsync(int id)
+        public async Task<CategoryDto?> GetCategoryByIdAsync(int id)
         {
             var category = await _repositoryManager.GameRepository.GetCategoryByIdAsync(id);
             return _mapper.Map<CategoryDto>(category);
@@ -134,7 +129,7 @@ namespace BGN.Services
             return _mapper.Map<IEnumerable<GameDto>>(games);
         }
 
-        public async Task<GenreDto> GetGenreByIdAsync(int id)
+        public async Task<GenreDto?> GetGenreByIdAsync(int id)
         {
             var genre = await _repositoryManager.GameRepository.GetGenreByIdAsync(id);
             return _mapper.Map<GenreDto>(genre);

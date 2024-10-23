@@ -2,16 +2,11 @@
 
 namespace BGN.UI.Models.Attributes
 {
-    public class MinAgeAttribute : ValidationAttribute
+    public class MinAgeAttribute(int minAge) : ValidationAttribute
     {
-        private readonly int _minAge;
+        private readonly int _minAge = minAge;
 
-        public MinAgeAttribute(int minAge)
-        {
-            _minAge = minAge;
-        }
-
-        protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+        protected override ValidationResult IsValid(object? value, ValidationContext validationContext)
         {
             if (value is DateTime dateOfBirth)
             {
@@ -29,7 +24,7 @@ namespace BGN.UI.Models.Attributes
                 // If the calculated age is greater than or equal to the minimum required age
                 if (age >= _minAge)
                 {
-                    return ValidationResult.Success;
+                    return ValidationResult.Success!;
                 }
                 else
                 {
