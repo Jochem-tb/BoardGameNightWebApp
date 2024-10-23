@@ -18,12 +18,9 @@ namespace BGN.Domain.Repositories
 
         Task<IEnumerable<Game>> GetAllGameByGenreIdAsync(int genId);
         Task<IEnumerable<Game>> GetAllGameByCategoryIdAsync(int catId);
-        Task<IEnumerable<Game>> GetEighteenPlusAsync(bool isAdult);
 
         Task<IEnumerable<Genre>> GetAllGenresAsync();
-        Task<Genre?> GetGenreByIdAsync(int id);
         Task<IEnumerable<Category>> GetAllCategoriesAsync();
-        Task<Category?> GetCategoryByIdAsync(int id);
 
 
         Task<IQueryable<Game>> GetAllGamesAsQueryableAsync();

@@ -66,25 +66,6 @@ namespace BGN.Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Category?> GetCategoryByIdAsync(int id)
-        {
-            return await _dbContext.Categories.AsNoTracking().Where(x => x.Id == id)
-                .AsNoTracking()
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<IEnumerable<Game>> GetEighteenPlusAsync(bool isAdult)
-        {
-            return await _dbContext.Games.AsNoTracking().Where(x => x.IsAdult == isAdult)
-                .ToListAsync();
-        }
-
-        public async Task<Genre?> GetGenreByIdAsync(int id)
-        {
-            return await _dbContext.Genres.AsNoTracking().Where(x => x.Id == id).AsNoTracking()
-                .FirstOrDefaultAsync();
-        }
-
         public void Insert(Game game)
         {
             _dbContext.Games.Add(game);
