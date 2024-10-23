@@ -113,36 +113,6 @@ namespace BGN.Services
             return _mapper.Map<GameDto>(game);
         }
 
-        public async Task<CategoryDto?> GetCategoryByIdAsync(int id)
-        {
-            var category = await _repositoryManager.GameRepository.GetCategoryByIdAsync(id);
-            return _mapper.Map<CategoryDto>(category);
-        }
-
-        public async Task<IEnumerable<GameDto>> GetEighteenPlusAsync(bool isAdult)
-        {
-            var games = await _repositoryManager.GameRepository.GetEighteenPlusAsync(isAdult);
-            return _mapper.Map<IEnumerable<GameDto>>(games);
-        }
-
-        public async Task<GenreDto?> GetGenreByIdAsync(int id)
-        {
-            var genre = await _repositoryManager.GameRepository.GetGenreByIdAsync(id);
-            return _mapper.Map<GenreDto>(genre);
-        }
-
-        public void Insert(GameDto gameDto)
-        {
-            var game = _mapper.Map<Game>(gameDto);
-            _repositoryManager.GameRepository.Insert(game);
-        }
-
-        public void Remove(GameDto gameDto)
-        {
-            var game = _mapper.Map<Game>(gameDto);
-            _repositoryManager.GameRepository.Remove(game);
-        }
-
         public void Insert(Game game)
         {
             _repositoryManager.GameRepository.Insert(game);
@@ -151,12 +121,6 @@ namespace BGN.Services
         public void Remove(Game game)
         {
             _repositoryManager.GameRepository.Remove(game);
-        }
-
-        public async Task UpdateAsync(GameDto gameDto)
-        {
-            var game = _mapper.Map<Game>(gameDto);
-            await UpdateAsync(game);
         }
 
         public async Task UpdateAsync(Game game)
@@ -179,15 +143,6 @@ namespace BGN.Services
                 
                 _repositoryManager.GameRepository.Update(existingGame);
             }
-
-        }
-
-        public async Task<IEnumerable<GameDto>> GetAllByIdAsync(int[] array)
-        {
-            var query = await _repositoryManager.GameRepository.GetAllGamesAsQueryableAsync();
-            query = query.Where(x => array.Contains(x.Id));
-            var gameList = query.ToList();
-            return _mapper.Map<IEnumerable<GameDto>>(gameList);
         }
 
         public async Task<IEnumerable<Game>> GetAllEntityAsync()
