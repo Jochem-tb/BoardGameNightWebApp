@@ -21,36 +21,9 @@ namespace BGN.Services
             _mapper = mapper;
         }
 
-        public Task<PersonDto> CreateAsync(PersonDto person)
-        {
-            throw new NotImplementedException();
-        }
-
         public void Insert(Person person)
         {
             _repositoryManager.PersonRepository.Insert(person);
-        }
-
-        public Task DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<PersonDto>> GetAllAsync()
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<PersonDto> GetByIdAsync(int id)
-        {
-            var dbPerson = await _repositoryManager.PersonRepository.GetByIdAsync(id);
-            return _mapper.Map<PersonDto>(dbPerson);
-
-        }
-
-        public Task<PersonDto> UpdateAsync(int id, PersonDto person)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<GenderDto>> GetAllGendersAsync()
