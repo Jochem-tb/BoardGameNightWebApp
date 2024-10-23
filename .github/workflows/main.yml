@@ -41,7 +41,7 @@ jobs:
     
     # Run xUnit tests
     - name: Run Unit Tests
-      run: dotnet test ./BGN.Tests/BGN.Tests.csproj --configuration Release
+      run: dotnet test ./BGN.UnitTests/BGN.UnitTests.csproj --configuration Release
 
     - name: Publish
       run: dotnet publish ./BoardGameNight.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
