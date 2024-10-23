@@ -40,17 +40,29 @@ builder.Services.AddSession(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// Fetch the connection strings from environment variables if available
+var azureSqlConnectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTION_STRING");
+
+// Use the GitHub variable if available; otherwise, fallback to appsettings.json
+string bgnDatabaseConnection = string.IsNullOrEmpty(azureSqlConnectionString)
+    ? builder.Configuration.GetConnectionString("BGN_Database")
+    : azureSqlConnectionString;
+
+string bgnAccountsConnection = string.IsNullOrEmpty(azureSqlConnectionString)
+    ? builder.Configuration.GetConnectionString("BGN_Accounts")
+    : azureSqlConnectionString;
+
 //Database for Entities
 builder.Services.AddDbContext<RepositoryDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BGN_Database"));
-    //options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+    options.UseSqlServer(bgnDatabaseConnection);
+
 });
 
 
 //Database for Login.
 builder.Services.AddDbContext<AuthDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BGN_Accounts")));
+    options.UseSqlServer(bgnAccountsConnection));
 
 
 //Add Identity Services
