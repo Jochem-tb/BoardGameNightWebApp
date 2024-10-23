@@ -18,15 +18,6 @@ namespace BGN.Services
         private readonly IRepositoryManager _repositoryManager = repositoryManager;
         private readonly IMapper _mapper = mapper;
 
-        public Task<GameNightDto> CreateAsync(GameNightDto gameNight)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task DeleteAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<IEnumerable<GameNightDto>> GetAllAsync()
         {
@@ -38,11 +29,6 @@ namespace BGN.Services
         {
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(id);
             return _mapper.Map<GameNightDto>(gameNight);
-        }
-
-        public Task<GameNightDto> UpdateAsync(int id, GameNightDto gameNight)
-        {
-            throw new NotImplementedException();
         }
 
         public async Task<IEnumerable<GameNightDto>> GetAllAsync(AbstractGameNightFilterObject filterObject)
@@ -150,21 +136,6 @@ namespace BGN.Services
             return isSuccess;
         }
 
-        public Task<IEnumerable<PersonDto>> GetAttendeesAsync(int gameNightId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<GameDto>> GetGamesAsync(int gameNightId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<FoodOptionDto>> GetFoodOptionsAsync(int gameNightId)
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<GameNightDto>> GetAllWithGameIdAsync(int gameId)
         {
             var query = await _repositoryManager.GameNightRepository.GetAllGameNightsAsQueryableAsync();
@@ -183,12 +154,6 @@ namespace BGN.Services
         public void Insert(GameNight gameNight)
         {
             _repositoryManager.GameNightRepository.Insert(gameNight);
-        }
-
-        public async Task UpdateAsync(GameNightDto gameNightDto)
-        {
-            var gameNight = _mapper.Map<GameNight>(gameNightDto);
-            await UpdateAsync(gameNight);
         }
 
         public async Task UpdateAsync(GameNight gameNight)
@@ -215,8 +180,6 @@ namespace BGN.Services
                 _repositoryManager.GameNightRepository.Update(existingGameNight);
             }
         }
-
-
         public async Task<bool> DeleteByIdAsync(int gameNightId, string identityUserKey)
         {
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
@@ -232,11 +195,6 @@ namespace BGN.Services
                 return false;
             }
             return false;
-        }
-
-        public void Delete(GameNight gameNight)
-        {
-            _repositoryManager.GameNightRepository.Remove(gameNight);
         }
 
         public async Task<GameNight?> GetByIdEntityAsync(int id)
