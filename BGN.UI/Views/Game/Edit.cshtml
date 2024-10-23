@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Edit game";
+    ViewData["isEditMode"] = Model.isEditMode;
+    ViewData["SelectedCategoryId"] = Model.Game!.CategoryId;
+    ViewData["SelectedGenreId"] = Model.Game.GenreId;
+    ViewData["Title"] = "Edit game";
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+@model BGN.UI.Models.CrudGameModel
+
+<link rel="stylesheet" href="~/css/gameList.css" />
+
+<form id="editGameFormSubmit" enctype="multipart/form-data" method="post" asp-action="Edit">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div asp-validation-summary="All"></div>
+
+    <input type="hidden" asp-for="Game!.Id" />
+    <input type="hidden" asp-for="Game!.OwnerId" />
+    <input type="hidden" asp-for="Game!.ImgUrl" />
+
+    <!--Actual changeable fields!-->
+    <div class="row d-flex  justify-content-start align-items-center">
+
+        <!--Display presenet img if not null-->
+        @if(!Model.Game.ImgUrl.Equals("") || Model.Game.ImgUrl != null)
+        {
+            <div class="col-12 justify-content-center p-3">
+                <img src=@Model.Game.ImgUrl class="card-img-top img-fluid w-100 imageFixedDetail border border-4 border-dark" alt="Photo of Boardgame">
+            </div>
+        }
+        
+        <!-- Game Name -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="Game!.Name" class="form-control" autocomplete="gameName" aria-required="true" placeholder="Game name" />
+                <label asp-for="Game!.Name">Game name</label>
+                <span asp-validation-for="Game!.Name" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-5 d-flex  mb-3">
+            <div>
+                <input asp-for="CoverPhoto" class="form-control" id="formFile" placeholder="Coverphoto">
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <!-- Description -->
+        <div class="col-12">
+            <div class="form-floating mb-3">
+                <textarea asp-for="Game!.Description" class="form-control" placeholder="Enter game description" style="height: 100px"></textarea>
+                <label asp-for="Game!.Description">Description</label>
+                <span asp-validation-for="Game!.Description" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Min Players -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="Game!.MinPlayers" class="form-control" type="number" min="1" max="100" placeholder="Min players" />
+                <label asp-for="Game!.MinPlayers">Min Players</label>
+                <span asp-validation-for="Game!.MinPlayers" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Max Players -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="Game!.MaxPlayers" class="form-control" type="number" min="1" max="255" placeholder="Max players" />
+                <label asp-for="Game!.MaxPlayers">Max Players</label>
+                <span asp-validation-for="Game!.MaxPlayers" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Estimated Time -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="Game!.EstimatedTime" class="form-control" type="number" min="1" max="720" placeholder="Estimated Time (minutes)" />
+                <label asp-for="Game!.EstimatedTime">Estimated Time (minutes)</label>
+                <span asp-validation-for="Game!.EstimatedTime" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Is Adult -->
+        <div class="col-6">
+            <div class="form-check">
+                <input asp-for="Game!.IsAdult" class="form-check-input" type="checkbox" />
+                <label asp-for="Game!.IsAdult" class="form-check-label">For Adults Only</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Genre -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <select asp-for="Game!.GenreId" class="form-select">
+                    <option value="" disabled>Select a Genre</option>
+                    @await Component.InvokeAsync("GenreDropdown")
+                </select>
+                <label asp-for="Game!.GenreId">Genre</label>
+                <span asp-validation-for="Game!.GenreId" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Category -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <select asp-for="Game!.CategoryId" class="form-select">
+                    <option value="" disabled>Select a Category</option>
+                    @await Component.InvokeAsync("CategoryDropdown")
+                </select>
+                <label asp-for="Game!.CategoryId">Category</label>
+                <span asp-validation-for="Game!.CategoryId" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <button id="editGameFormSubmit" type="submit" class="mt-3 w-100 btn btn-lg btn-primary">Save</button>
+</form>
+

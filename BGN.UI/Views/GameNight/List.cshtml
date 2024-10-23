@@ -1,0 +1,191 @@
+﻿@using BGN.Shared
+@model BGN.UI.Models.GameNightListModel
+
+@{
+    const int _minAgeOrganise = 16;
+    var isUserAbleToOrganize = false;
+    var isUserAdult = false;
+
+    var today = DateTime.Today;
+    // Calculate the age
+    var age = today.Year - @Model.CurrentUser.DateOfBirth.Year;
+
+    // Check if the birthdate hasn't occurred yet this year
+    if (@Model.CurrentUser.DateOfBirth > today.AddYears(-age))
+    {
+        age--; // If the birthday hasn't occurred yet this year, subtract one year from age
+    }
+
+    // If the calculated age is greater than or equal to the minimum required age
+    if (age >= _minAgeOrganise)
+    {
+        isUserAbleToOrganize = true;
+    }
+    if (age >= 18)
+    {
+        isUserAdult = true;
+    }
+}
+
+<link rel="stylesheet" href="~/css/gameNightList.css" />
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Gamenights</h2>
+        @if (isUserAbleToOrganize)
+        {
+            <a asp-area="" asp-controller="GameNight" asp-action="Create" class="btn btn-primary">Organise GameNight</a>
+        }
+    </div>
+</div>
+
+<!-- Error message box -->
+@if (TempData["JoinGameNightError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["JoinGameNightError"]
+    </div>
+}
+
+<!-- Error message box -->
+@if (TempData["LeaveGameNightError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["LeaveGameNightError"]
+    </div>
+}
+
+<!-- Error message box -->
+@if (TempData["GameNightCreateSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["GameNightCreateSuccess"]
+    </div>
+}
+
+<!-- Error message box -->
+@if (TempData["GameNightUpdateSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["GameNightUpdateSuccess"]
+    </div>
+}
+
+<!-- Error message box -->
+@if (TempData["GameNightDeleteSuccess"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["GameNightDeleteSuccess"]
+    </div>
+}
+
+<!-- Error message box -->
+@if (TempData["GameNightDeleteError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["GameNightDeleteError"]
+    </div>
+}
+
+
+<!-- Row for sidebar and game list -->
+<div class="row">
+    <!-- Sidebar for filters -->
+    <div class="col-12 col-md-3 mb-4">
+        <div class="bg-light p-3 rounded">
+            <h5 class="fw-bold mb-3">Filters</h5>
+
+            <form method="get" asp-controller="GameNight" asp-action="FilterList">
+
+                <!-- Example filter: Search by name -->
+                <div class="mb-3">
+                    <label class="form-label">Search by Organizer Name</label>
+                    <input asp-for="SearchOrganizerName" type="text" class="form-control" id="searchName" placeholder="Enter organizer name">
+                </div>
+
+                <!-- Example filter: Age restriction -->
+                <div class="mb-3">
+                    <label class="form-label">Age Restriction</label>
+                    <div class="form-check">
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="" id="ageFilterAll" checked>
+                        <label class="form-check-label" for="ageFilterAll">All</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="false" id="ageFilterNo18">
+                        <label class="form-check-label" for="ageFilterNo18">No 18+</label>
+                    </div>
+
+                    <div class="form-check">
+                        <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="true" id="ageFilterOnly18">
+                        <label class="form-check-label" for="ageFilterOnly18">Only 18+</label>
+                    </div>
+                </div>
+
+                <!-- Example filter: Search by gameName -->
+                <div class="mb-3">
+                    <label class="form-label">Search by Game name</label>
+                    <input asp-for="SearchGameName" type="text" class="form-control" id="searchGameName" placeholder="Enter game name">
+                </div>
+
+                <!-- Generate Checkboxes for Foodoptions -->
+                <div class="mb-3">
+                    @await Component.InvokeAsync("FoodOptionsCheckboxFilter", Model)
+                </div>
+
+                <!-- Filter button -->
+                <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+
+            </form>
+        </div>
+    </div>
+
+
+
+
+
+    <div class="col-12 col-md-9">
+        <div class="row g-4">
+
+            @{
+                var joinButtonClassAttribute = "";
+
+                //Iterate over all gamenights and display them
+                foreach (var gameNight in Model.DisplayGameNights)
+                {
+                    //Reset variables to default value each iteration
+                    var isAttending = false;
+                    var isGameNightAdult = false;
+                    joinButtonClassAttribute = "";
+
+
+
+                    //Check if game night contains 18+ games
+                    isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                    if(gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
+
+                    // if user is not 18+ and game night contains 18+ games, set the join button on disabled
+                    if (isGameNightAdult && !isUserAdult)
+                    {
+                        joinButtonClassAttribute = "disabled text-warning text-decoration-underline";
+                    }
+
+                    //if user is already attending set join button to leave button
+                    isAttending = gameNight.Attendees.Any(p => p.Attendee.Id == Model.CurrentUser.Id);
+                    
+
+                    ViewData["IsUserAdult"] = isUserAdult;
+                    ViewData["IsAttending"] = isAttending;
+                    ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
+                    ViewData["CurrentUserId"] = Model.CurrentUser.Id;
+                    ViewData["Preferences"] = Model.CurrentUser.Preferences;
+                    ViewData["IncludeWhatSection"] = true;
+
+                    //Other class sends a string to same partial
+                    @await Html.PartialAsync("_GameNightCardPartial", (gameNight, ""))
+
+                }
+            }
+        </div>
+    </div>
+</div>

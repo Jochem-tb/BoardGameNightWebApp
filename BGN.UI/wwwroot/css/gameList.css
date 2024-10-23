@@ -1,0 +1,11 @@
+﻿.imageFixedList {
+    width: 100%; /* Ensures the image takes up the full width of the card */
+    height: 200px; /* Set your preferred fixed height */
+    object-fit: cover; /* Maintains aspect ratio, cropping if necessary */
+}
+
+.imageFixedDetail {
+    width: 100%; /* Ensures the image takes up the full width of the card */
+    height: 430px; /* Set your preferred fixed height */
+    object-fit: cover; /* Maintains aspect ratio, cropping if necessary */
+}

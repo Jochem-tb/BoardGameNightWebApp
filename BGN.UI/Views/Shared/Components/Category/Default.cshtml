@@ -1,0 +1,8 @@
+﻿@model IEnumerable<BGN.Shared.CategoryDto>
+
+<ul class="dropdown-menu">
+    @foreach (var cat in Model)
+    {
+        <li><a class="dropdown-item" asp-area="" asp-controller="Game" asp-action="CategoryId" asp-route-catId="@cat.Id">@cat.Name</a></li>
+    }
+</ul>

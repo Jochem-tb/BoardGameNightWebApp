@@ -1,0 +1,16 @@
+﻿@model IEnumerable<BGN.Shared.GenreDto>
+@{
+    var setSelected = ViewData["SelectedGenreId"] as int? ?? 0;
+}
+
+@foreach (var genre in Model)
+{
+    if(genre.Id == setSelected)
+    {
+        <option value="@genre.Id" selected>@genre.Name</option>
+    }
+    else
+    {
+        <option value="@genre.Id">@genre.Name</option>
+    }
+}

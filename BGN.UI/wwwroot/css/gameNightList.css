@@ -1,0 +1,45 @@
+﻿.game-night-slider {
+    display: flex;
+    overflow-x: auto; /* Allow horizontal scrolling */
+    padding: 10px 0; /* Add some padding */
+}
+
+.game-night-card {
+    flex: 0 0 auto; /* Prevent flex items from shrinking */
+    max-width: 330px; /* Set a fixed width for each card */
+    margin-right: 10px; /* Add some spacing between cards */
+    /* Add any additional styles for your card here */
+}
+
+.game-night-card:last-child {
+        margin-right: 0; /* Remove right margin for the last card */
+ }
+
+.imageFixedList {
+    width: 100%; /* Ensures the image takes up the full width of the card */
+    max-height: 300px; /* Set your preferred fixed height */
+    object-fit: cover; /* Maintains aspect ratio, cropping if necessary */
+}
+
+.imageFixedListSmall {
+    width: 100%; /* Ensures the image takes up the full width of the card */
+    max-height: 200px; /* Set your preferred fixed height */
+    object-fit: cover; /* Maintains aspect ratio, cropping if necessary */
+}
+
+#OnlyAdultWelcomeCheckbox {
+    width: 25px;
+    height: 25px;
+}
+
+#OnlyAdultWelcomeCheckboxLabel {
+/*    font-weight: bold;*/
+    font-size: 1.1rem;
+}
+
+#OnlyAdultWelcomeDiv {
+    align-content: center;
+    padding: 15px;
+}
+
+

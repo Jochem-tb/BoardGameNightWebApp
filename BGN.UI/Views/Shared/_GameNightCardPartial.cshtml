@@ -1,0 +1,137 @@
+﻿@model (BGN.Shared.GameNightDto, string)
+
+@{
+    var isUserAdult = ViewData["IsUserAdult"] as bool? ?? false; ;
+    var isAttending = ViewData["IsAttending"] as bool? ?? false; ;
+    var joinButtonClassAttribute = ViewData["JoinButtonClassAttribute"]?.ToString() ?? "";
+    var preferences = ViewData["Preferences"] as List<BGN.Shared.FoodOptionDto> ?? new List<BGN.Shared.FoodOptionDto>();
+    var includeWhatSection = ViewData["IncludeWhatSection"] as bool? ?? false; ;
+    var preferencesIdList = new List<int>();
+    foreach(var pref in preferences)
+    {
+        preferencesIdList.Add(pref.Id);
+    }
+}
+
+<link rel="stylesheet" href="~/css/gameNightList.css" />
+
+<div class="col-12 col-sm-6 col-md-6 col-lg-6 @Model.Item2"> 
+    <div class="card h-100 border border-1">
+        <img src='@Model.Item1.ImgUrl' class="card-img-top img-fluid imageFixedList" alt="Random photo for GameNight">
+        <div class="card-body d-flex flex-column">
+            <h5 class="card-title fw-semibold">
+                @Model.Item1.Name
+                @if (Model.Item1.Games.Any(g => g.IsAdult) || Model.Item1.OnlyAdultWelcome)
+                {
+                    <span class="badge bg-danger ms-auto small float-end">18+</span>
+                }
+            </h5>
+            <p class="card-text">
+                <h4>Who:</h4>
+                <div class="row">
+                    <div class="col-6">
+                        @Model.Item1.OrganiserFirstname @Model.Item1.OrganiserLastname <br />
+                    </div>
+                    <div class="col-6">
+                        @Model.Item1.Attendees.Count() / @Model.Item1.MaxPlayers
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    <div class="col-6">
+                        <h4>When:</h4>
+                        Date: @Model.Item1.Date.ToShortDateString() <br />
+                        Time: @Model.Item1.Time.ToString(@"hh\:mm") <br />
+                    </div>
+                    <div class="col-6">
+                        <h4>Where:</h4>
+                        @Model.Item1.Street @Model.Item1.HouseNr
+                        <br />
+                        @Model.Item1.City
+                    </div>
+                </div>
+                <hr />
+                <div class="row">
+                    @if (includeWhatSection)
+                    {
+                    <h4>What:</h4>
+                    <div class="col-6">
+                            <ul>
+                                <!--Display a number of games from that gamenight-->
+                                @{
+                                    const int _maxGamesDisplayed = 3;
+                                    var count = 0;
+                                    var displayLeftOver = false;
+                                }
+                                @foreach (var game in Model.Item1.Games)
+                                {
+                                    if (count >= _maxGamesDisplayed)
+                                    {
+                                        displayLeftOver = true;
+                                        break;
+                                    }
+
+                                    <li>@game.Name</li>
+                                    count++;
+                                }
+                                <!--If more then _maxGamesDiplayed present, give the user a tip on how many extra-->
+                                @if (displayLeftOver)
+                                {
+                                    <li>
+                                        +
+                                        @(Model.Item1.Games.Count()-count)
+                                    </li>
+                                }
+                            </ul>
+                    </div>
+                    <div class="col-6">
+                        <ul>
+                            <!--Display foodoptions from gamenight, in green if also in user.preference, else grey.-->
+                            @foreach (var option in Model.Item1.FoodOptions)
+                            {
+                                var isPreferred = preferences.Any(pref => pref.Id == option.Id);
+                                var badgeClass = isPreferred ? "bg-success" : "bg-secondary";
+                                preferencesIdList.Remove(option.Id);
+                                <li>
+                                    <span class="badge @badgeClass">@option.Name</span>
+                                </li>
+                            }
+
+                            <!--Display leftover preferences of user in RED-->
+                            @foreach(var prefId in preferencesIdList)
+                            {
+                                var missingOption = preferences.FirstOrDefault(opt => opt.Id == prefId);
+                                if (missingOption != null)
+                                {
+                                    <li>
+                                        <span class="badge bg-danger opacity-75">@missingOption.Name</span>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    }
+                </div>
+            </p>
+
+            <!-- Details button on the bottom, always bottom-->
+            <div class="row mt-auto">
+                <div class="col-6 col-sm-6">
+                    <a asp-controller="GameNight" asp-action="GameNightDetails" asp-route-gameNightId="@Model.Item1.Id" class="btn btn-primary w-100">Details</a>
+                </div>
+                @if (isAttending)
+                {
+                    <div class="col-4 col-sm-6">
+                        <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.Item1.Id" class="btn btn-danger w-100">Leave</a>
+                    </div>
+                }
+                else
+                {
+                    <div class="col-4 col-sm-6">
+                        <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.Item1.Id" class="btn btn-success w-100 @joinButtonClassAttribute">Join Now!</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

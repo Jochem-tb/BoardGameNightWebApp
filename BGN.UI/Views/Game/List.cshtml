@@ -1,0 +1,57 @@
+﻿@using BGN.Shared
+@model BGN.UI.Models.GameListModel
+
+@{
+    ViewData["IncludeFilterSection"] = true;
+    var isUserAdult = false;
+
+    if (Model.CurrentUser != null && Model.CurrentUser.DateOfBirth != DateTime.MinValue)
+    {
+        var today = DateTime.Today;
+        var birthDate = Model.CurrentUser.DateOfBirth;
+        var age = today.Year - birthDate.Year;
+
+        // Check if the user hasn't had their birthday this year yet
+        if (birthDate > today.AddYears(-age))
+        {
+            age--;
+        }
+
+        // Set isUserAdult based on the calculated age
+        isUserAdult = age >= 18;
+    }
+}
+
+<link rel="stylesheet" href="~/css/gameList.css" />
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Game's List</h2>
+        <a asp-area="" asp-controller="Game" asp-action="Create" class="btn btn-primary">Add New Game</a>
+    </div>
+</div>
+<input type="hidden" asp-for="CurrentUser" />
+@if (TempData["CreateGameMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["CreateGameMessage"]
+    </div>
+}
+@if (TempData["UpdateGameMessage"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["UpdateGameMessage"]
+    </div>
+}
+@if (TempData["UpdateGameError"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["UpdateGameError"]
+    </div>
+}
+
+
+
+
+@await Html.PartialAsync("/Views/Shared/_GameFilterAndListPartial.cshtml", (Model))
+

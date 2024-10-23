@@ -1,0 +1,286 @@
+﻿@using BGN.Shared
+@model BGN.UI.Models.GameNightDetailsModel
+@{
+    ViewData["IncludeFilterSection"] = false;
+}
+
+<div class="container mt-5">
+
+    <div class="row mb-2">
+        <h1 class="col-6 fw-bold pb-2">
+            Gamenight Details:
+            <br />
+        </h1>
+        <div class="col-6">
+            @if (@Model.CurrentUser != null)
+            {
+                //If user is adult show Join/Leave button
+                //OR
+                //there are NO 18+ games and user is NOT 18+
+                var canUserJoinAdultGameNight = Model.GameNight.Games.Any(g => g.IsAdult) && !Model.CurrentUser.IsAdult();
+                if (Model.CurrentUser.IsAdult() || canUserJoinAdultGameNight)
+                {
+                    if (@Model.GameNight.Attendees.Any(a => a.Attendee.Id == @Model.CurrentUser.Id))
+                    {
+                        <a asp-controller="GameNight" asp-action="Leave" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-danger p-2 ps-5 pe-5 ms-2 float-end">Leave</a>
+                    }
+                    else
+                    {
+                        if (Model.GameNight.Attendees.Count() < Model.GameNight.MaxPlayers)
+                        {
+                            //If there is an issue with the preferences, than show a popup on join
+                            if (TempData["PreferenceError"] != null)
+                            {
+                                <a href="javascript:void(0);" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end" onclick="confirmJoin('@Model.GameNight.Id')">Join</a>
+
+                            }
+                            else
+                            {
+                                <a asp-controller="GameNight" asp-action="Join" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-success p-2 ps-5 pe-5 ms-2 float-end">Join</a>
+                            }
+
+                        }
+                    }
+                }
+
+                if (@Model.CurrentUser.Id == @Model.GameNight.OrganiserId)
+                {
+                    //Only show Edit button if there are no Attendees (except organiser)
+                    if (!Model.GameNight.Attendees.Any(x => x.Attendee.Id != Model.CurrentUser.Id))
+                    {
+                        <a asp-controller="GameNight" asp-action="Edit" asp-route-gameNightId="@Model.GameNight.Id" class="btn btn-primary p-2 ps-5 pe-5 me-2 float-end">Edit</a>
+                    }
+                }
+            }
+        </div>
+    </div>
+
+
+    <div class="row">
+
+        @if (TempData["JoinGameNightError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["JoinGameNightError"]
+            </div>
+        }
+
+        @if (TempData["LeaveGameNightError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["LeaveGameNightError"]
+            </div>
+        }
+
+        @if (TempData["PreferenceError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["PreferenceError"]
+            </div>
+        }
+
+        @if (TempData["EditError"] != null)
+        {
+            <div class="alert alert-danger" role="alert">
+                @TempData["EditError"]
+            </div>
+        }
+
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-6">
+                            <p><strong>Name:</strong> @Model.GameNight.Name</p>
+                            <p><strong>Max Players:</strong> @Model.GameNight.MaxPlayers</p>
+                            <p><strong>Organiser:</strong> @Model.GameNight.OrganiserFirstname</p>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="text-decoration-underline"><strong>Location:</strong></h5>
+
+                            <p><strong>House:</strong> @Model.GameNight.Street @Model.GameNight.HouseNr</p>
+                            <p><strong>City:</strong> @Model.GameNight.City</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Create bigger div if person is organiser-->
+        <!--Make room for the attendingStatus options-->
+        @{
+            var attendeesDivSize = "";
+            var foodOptionsDivSize = "";
+            if (Model.CurrentUser!.Id == Model.GameNight.OrganiserId)
+            {
+                attendeesDivSize = "col-12 col-md-5";
+                foodOptionsDivSize = "col-12 col-md-3";
+            }
+            else
+            {
+                attendeesDivSize = "col-12 col-md-4";
+                foodOptionsDivSize = "col-12 col-md-4";
+            }
+        }
+        <div class="@attendeesDivSize">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <form asp-controller="GameNight" asp-action="UpdateAttendance" method="post">
+                        <input type="hidden" asp-for="GameNight.Id" />
+                        @if (Model.CurrentUser.Id == Model.GameNight.OrganiserId)
+                        {
+                            <div class="mb-3">
+                                <h5 class="fw-bold d-inline">@Model.GameNight.Attendees.Count() Attendees</h5>
+                                <h6 class="d-inline ms-2 fst-italic">
+                                    @(Model.GameNight.MaxPlayers - @Model.GameNight.Attendees.Count())
+                                    Places left
+                                </h6>
+                                <button type="submit" class=" btn btn-success p-1 ps-4 pe-4 ms-2 float-end">Save</button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                <h5 class="fw-bold d-inline">@Model.GameNight.Attendees.Count() Attendees</h5>
+                                <h6 class="d-inline ms-2 fst-italic">
+                                    @(Model.GameNight.MaxPlayers - @Model.GameNight.Attendees.Count())
+                                    Places left
+                                </h6>
+                            </div>
+                        }
+
+                        <ul class="list-group">
+                            @{
+                                PersonDto person ;
+                                if (Model.CurrentUser.Id == Model.GameNight.OrganiserId)
+                                {
+                                    //User IS organiser --> Show attendance options
+                                    @foreach (var member in Model.GameNight.Attendees)
+                                    {
+                                        person = member.Attendee;
+                                        <li class="list-group-item">
+                                            <span class="me-2" style="display: inline-block; width: 40px; text-align: right;">
+                                                @Model.ShowNoShowDictionary[person.Id]%
+                                            </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                            </svg>
+                                            @person.FirstName @person.LastName
+
+
+                                            <!-- Checkbox to mark attendance -->
+                                            <div class="form-check form-check-inline float-end">
+                                                <input class="form-check-input" type="radio" name="attendance_@person.Id" id="noShow_@person.Id" value="noShow" @((member.AttendanceStatus.HasValue && !member.AttendanceStatus.Value) ? "checked" : "")
+                                                       ) />
+                                                <label class="form-check-label" for="noShow_@person.Id">No-Show</label>
+                                            </div>
+                                            <div class="form-check form-check-inline ms-3 float-end">
+                                                <input class="form-check-input" type="radio" name="attendance_@person.Id" id="came_@person.Id" value="show" @((member.AttendanceStatus.HasValue && member.AttendanceStatus.Value) ? "checked" : "")
+                                                       ) />
+                                                <label class="form-check-label" for="came_@person.Id">Show</label>
+                                            </div>
+
+
+                                        </li>
+                                    }
+                                }
+                                //user is NOT organiser
+                                else
+                                {
+                                    @foreach (var member in Model.GameNight.Attendees)
+                                    {
+                                        person = member.Attendee;
+                                        <li class="list-group-item">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                                                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+                                                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1" />
+                                            </svg>
+                                            @person.FirstName @person.LastName
+                                        </li>
+                                    }
+                                }
+                            }
+
+                        </ul>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        @{
+            var gameNightFoodOptions = Model.GameNight.FoodOptions;
+            var preferences = Model.CurrentUser.Preferences;
+            var checkIfNotComplete = new List<int>();
+            foreach (var pref in preferences)
+            {
+                checkIfNotComplete.Add(pref.Id);
+            }
+        }
+
+        <div class="@foodOptionsDivSize">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="fw-bold">Food Options</h5>
+                    <ul class="list-group">
+
+                        <!--If preferences is empty, we dont have to do the whole logic, just display-->
+                        @if (preferences != null)
+                        {
+                            //Display the foodoptions from GameNight, if it is also our pref its background is green else normal
+                            @foreach (var option in gameNightFoodOptions)
+                            {
+
+                                if (checkIfNotComplete.Contains(option.Id))
+                                {
+                                    checkIfNotComplete.Remove(option.Id);
+                                    <li class="list-group-item bg-success bg-opacity-50">@option.Name</li>
+                                }
+                                else
+                                {
+                                    <li class="list-group-item">@option.Name</li>
+                                }
+
+                            }
+
+                            // Display any remaining preferences that were not matched, and are not present in this gamenight
+                            if (checkIfNotComplete.Count > 0)
+                            {
+                                foreach (var missingOptionId in checkIfNotComplete)
+                                {
+                                    // Find the missing option name using the ID
+                                    var missingOption = preferences.FirstOrDefault(opt => opt.Id == missingOptionId);
+                                    if (missingOption != null)
+                                    {
+                                        <li class="list-group-item bg-danger bg-opacity-75">@missingOption.Name</li>
+                                    }
+                                }
+                            }
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card shadow-sm mt-3">
+                <div class="card-body">
+                    <h5 class="fw-bold">Games</h5>
+                    @await Html.PartialAsync("/Views/Shared/_GameFilterAndListPartial.cshtml", (Model.GetGameListModel()))
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function confirmJoin(gameNightId) {
+        // Show confirmation dialog
+        if (confirm("One or more of your preferences is not present. Are you sure you want to join?")) {
+            // Redirect to Join action with CheckForMismatch set to false
+            window.location.href = `/GameNight/Join?gameNightId=${gameNightId}&CheckForMismatch=false`;
+        }
+    }
+</script>
+
+

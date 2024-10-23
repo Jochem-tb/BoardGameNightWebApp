@@ -1,0 +1,152 @@
+﻿@using BGN.Shared
+@model BGN.UI.Models.GameNightListModel
+
+@{
+    const int _minAgeOrganise = 16;
+    var isUserAbleToOrganize = false;
+    var isUserAdult = false;
+
+    var today = DateTime.Today;
+    var age = today.Year - @Model.CurrentUser.DateOfBirth.Year;
+
+    if (@Model.CurrentUser.DateOfBirth > today.AddYears(-age))
+    {
+        age--;
+    }
+
+    if (age >= _minAgeOrganise)
+    {
+        isUserAbleToOrganize = true;
+    }
+
+    if (age >= 18)
+    {
+        isUserAdult = true;
+    }
+}
+
+<link rel="stylesheet" href="~/css/gameNightList.css" />
+
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">Game Nights</h2>
+        @if (isUserAbleToOrganize)
+        {
+            <a asp-area="" asp-controller="GameNight" asp-action="Create" class="btn btn-primary">Organise Game Night</a>
+        }
+    </div>
+
+    <!-- Error message box -->
+    @if (TempData["JoinGameNightError"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["JoinGameNightError"]
+        </div>
+    }
+
+    <!-- Game Night Sections -->
+    <div class="game-night-sections">
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <!-- Attending Section -->
+                <h4>Attending</h4>
+                <hr />
+                <div class="game-night-slider">
+                    @foreach (var gameNight in Model.DisplayGameNights.OrderBy(x => x.Date))
+                    {
+                        var isAttending = false;
+                        if (gameNight.Attendees.Count() > 0)
+                        {
+                            isAttending = gameNight.Attendees.Any(att => att.Attendee.Id == Model.CurrentUser.Id);
+                        }
+                        
+                        if (isAttending)
+                        {
+                            var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                            if(gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
+
+                            var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
+
+                            ViewData["IsUserAdult"] = isUserAdult;
+                            ViewData["IsAttending"] = isAttending;
+                            ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
+                            ViewData["CurrentUserId"] = Model.CurrentUser.Id;
+                            ViewData["Preferences"] = Model.CurrentUser.Preferences;
+                            ViewData["IncludeWhatSection"] = false;
+
+                            <div class="game-night-card">
+                                @await Html.PartialAsync("_GameNightCardPartial", (gameNight, "w-100"))
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+
+
+        <!-- Organizing Section -->
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <h4>Organizing</h4>
+                <hr />
+                <div class="game-night-slider">
+                    @foreach (var gameNight in Model.DisplayGameNights)
+                    {
+                        if (gameNight.OrganiserId == Model.CurrentUser.Id)
+                            {
+                            var isAttending = gameNight.Attendees.Any(att => att.Attendee.Id == Model.CurrentUser.Id);
+                            var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                            if (gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
+                            var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
+
+                            ViewData["IsUserAdult"] = isUserAdult;
+                            ViewData["IsAttending"] = isAttending;
+                            ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
+                            ViewData["CurrentUserId"] = Model.CurrentUser.Id;
+                            ViewData["Preferences"] = Model.CurrentUser.Preferences;
+                            ViewData["IncludeWhatSection"] = false;
+
+                            <div class="game-night-card">
+                                @await Html.PartialAsync("_GameNightCardPartial", (gameNight, "w-100"))
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card shadow-sm mt-3">
+            <div class="card-body">
+                <!-- Most Recent Section -->
+                <h4>Most Recent</h4>
+                <hr />
+                <div class="game-night-slider">
+                    @foreach (var gameNight in Model.DisplayGameNights.OrderByDescending(x => x.Date))
+                    {
+                        var isAttending = gameNight.Attendees.Any(att => att.Attendee.Id == Model.CurrentUser.Id);
+                        var isGameNightAdult = gameNight.Games.Any(game => game.IsAdult);
+                        if (gameNight.OnlyAdultWelcome) { isGameNightAdult = true; }
+                        var joinButtonClassAttribute = (isGameNightAdult && !isUserAdult) ? "disabled text-warning text-decoration-underline" : "";
+
+                        ViewData["IsUserAdult"] = isUserAdult;
+                        ViewData["IsAttending"] = isAttending;
+                        ViewData["JoinButtonClassAttribute"] = joinButtonClassAttribute;
+                        ViewData["CurrentUserId"] = Model.CurrentUser.Id;
+                        ViewData["Preferences"] = Model.CurrentUser.Preferences;
+                        ViewData["IncludeWhatSection"] = false;
+
+                        <div class="game-night-card">
+                            @await Html.PartialAsync("_GameNightCardPartial", (gameNight, "w-100"))
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

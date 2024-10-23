@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["isEditMode"] = Model.isEditMode;
+    if(Model.GameNight != null)
+    {
+        ViewData["ModelGameNightId"] = Model.GameNight.Id;
+    }
+    Layout = "~/Views/Shared/_CrudLayout.cshtml";
+}
+@model BGN.UI.Models.CrudGameNightModel
+
+<link rel="stylesheet" href="~/css/gameNightList.css" />
+
+<form id="createGameNightForm" enctype="multipart/form-data" method="post" asp-controller="GameNight" asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+    <div asp-validation-summary="All"></div>
+
+    <input type="hidden" asp-for="CurrentUser" />
+
+    <div class="row d-flex justify-content-start align-items-center">
+        <!-- Game Night Name -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="GameNight.Name" class="form-control" autocomplete="gameNightName" aria-required="true" placeholder="Gamenight name" />
+                <label asp-for="GameNight.Name">Game Night name</label>
+                <span asp-validation-for="GameNight.Name" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="col-5 d-flex  mb-3">
+            <div>
+                <input asp-for="CoverPhoto" class="form-control" id="formFile" placeholder="Coverphoto">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <!-- Date -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="GameNight.Date" class="form-control" type="date" placeholder="Date" />
+                <label asp-for="GameNight.Date">Date</label>
+                <span asp-validation-for="GameNight.Date" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Time -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="GameNight.Time" class="form-control" type="time" placeholder="Time" />
+                <label asp-for="GameNight.Time">Time</label>
+                <span asp-validation-for="GameNight.Time" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Street -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="GameNight.Street" class="form-control" placeholder="Street" />
+                <label asp-for="GameNight.Street">Street</label>
+                <span asp-validation-for="GameNight.Street" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- House Number -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="GameNight.HouseNr" class="form-control" placeholder="House Number" />
+                <label asp-for="GameNight.HouseNr">House Number</label>
+                <span asp-validation-for="GameNight.HouseNr" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- City -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="GameNight.City" class="form-control" placeholder="City" />
+                <label asp-for="GameNight.City">City</label>
+                <span asp-validation-for="GameNight.City" class="text-danger"></span>
+            </div>
+        </div>
+
+        <!-- Max Players -->
+        <div class="col-6">
+            <div class="form-floating mb-3">
+                <input asp-for="GameNight.MaxPlayers" class="form-control" type="number" min="1" max="255" placeholder="Max Players" />
+                <label asp-for="GameNight.MaxPlayers">Max Players</label>
+                <span asp-validation-for="GameNight.MaxPlayers" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row ">
+        <!-- OnlyAdultWelcome -->
+        <div class="col-12">
+            <div class="form-floating mt-3 mb-3">
+                <div id="OnlyAdultWelcomeDiv" class="d-inline form-control ">
+                    <input asp-for="GameNight.OnlyAdultWelcome" id="OnlyAdultWelcomeCheckbox" class="form-check-input me-2" type="checkbox" />
+                    <label asp-for="GameNight.OnlyAdultWelcome" id="OnlyAdultWelcomeCheckboxLabel" class="form-check-label">Only adults</label>
+                </div>
+                
+                <span asp-validation-for="GameNight.OnlyAdultWelcome" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+
+    <button id="createGameNightButton" type="submit" class="mt-3 w-100 btn btn-lg btn-primary">Next</button>
+
+</form>

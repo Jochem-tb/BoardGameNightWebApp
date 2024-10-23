@@ -1,0 +1,140 @@
+﻿@{
+    var includeFilter = false;
+    if (ViewData["IncludeFilterSection"] != null)
+    {
+        includeFilter = ViewData["IncludeFilterSection"] as bool? ?? false; ;
+    }
+    
+}
+@model BGN.UI.Models.GameListModel
+
+<!-- Row for sidebar and game list -->
+<div class="row">
+    @if (includeFilter)
+    {
+
+
+        <!-- Sidebar for filters -->
+        <div class="col-12 col-md-3 mb-4">
+            <div class="bg-light p-3 rounded">
+                <h5 class="fw-bold mb-3">Filters</h5>
+
+                <form method="get" asp-controller="Game" asp-action="Filter">
+
+                    <!-- Example filter: Search by name -->
+                    <div class="mb-3">
+                        <label class="form-label">Search by Name</label>
+                        <input asp-for="SearchName" type="text" class="form-control" id="searchName" placeholder="Enter game name">
+                    </div>
+
+                    <!-- Example filter: Age restriction -->
+                    <div class="mb-3">
+                        <label class="form-label">Age Restriction</label>
+                        <div class="form-check">
+                            <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="" id="ageFilterAll" checked>
+                            <label class="form-check-label" for="ageFilterAll">All</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="false" id="ageFilterNo18">
+                            <label class="form-check-label" for="ageFilterNo18">No 18+</label>
+                        </div>
+
+                        <div class="form-check">
+                            <input asp-for="SearchIsAdult" class="form-check-input" type="radio" value="true" id="ageFilterOnly18">
+                            <label class="form-check-label" for="ageFilterOnly18">Only 18+</label>
+                        </div>
+                    </div>
+
+                    <!-- Number of players input fields -->
+                    <div class="mb-3">
+                        <label class="form-label">Number of Players</label>
+                        <div class="row">
+                            <!-- Minimum Players input -->
+                            <div class="col form-check">
+                                <input asp-for="SearchMinPlayers" type="number" class="form-control" id="SearchMinPlayers" placeholder="Min Players" min="1">
+                                <span asp-validation-for="SearchMinPlayers" class="text-danger"></span>
+                            </div>
+
+                            <!-- Maximum Players input -->
+                            <div class="col form-check">
+                                <input asp-for="SearchMaxPlayers" type="number" class="form-control" id="SearchMaxPlayers" placeholder="Max Players" min="1">
+                                <span asp-validation-for="SearchMaxPlayers" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Example filter: Genres -->
+                    <div class="mb-3">
+                        @await Component.InvokeAsync("GenreCheckboxFilter", Model)
+                    </div>
+
+
+                    <!-- Example filter: Categories -->
+                    <div class="mb-3">
+                        @await Component.InvokeAsync("CategoryCheckboxFilter", Model)
+                    </div>
+                    <!-- Filter button -->
+                    <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+
+                </form>
+            </div>
+        </div>
+    }
+
+
+
+
+
+    <div class="col-12 col-md-9">
+        <div class="row g-4">
+
+            @{
+                var isUserAdult = false;
+                if (Model.CurrentUser != null)
+                {
+                    isUserAdult = Model.CurrentUser.IsAdult();
+                }
+                foreach (var game in Model.DisplayGames)
+                {
+                    var gameCardClass = game.IsAdult && !isUserAdult ? "bg-danger bg-opacity-50" : "bg-white";
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3 ">
+
+                        <div class="card h-100 @gameCardClass">
+
+
+                            <img src=@game.ImgUrl class="card-img-top img-fluid imageFixedList" alt="Photo of Boardgame">
+
+
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title fw-semibold">
+                                    @game.Name
+                                    @if (game.IsAdult)
+                                    {
+                                        <span class="badge bg-danger ms-auto small float-end">18+</span>
+                                    }
+                                </h5>
+
+
+                                <p class="card-text">
+                                    @game.Description <br />
+                                    Playable with: @game.MinPlayers/@game.MaxPlayers
+                                </p>
+
+
+                                <!--Dont display the details button if user is Not 18+ and game is-->
+                                @if (!game.IsAdult || (isUserAdult && game.IsAdult))
+                                {
+                                    <!-- Details button on the bottem, alsways bot-->
+                                    <a asp-controller="Game" asp-action="GameDetails" asp-route-gameId="@game.Id" class="btn btn-primary mt-auto btn-sm w-100">Details</a>
+
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+        </div>
+    </div>
+</div>

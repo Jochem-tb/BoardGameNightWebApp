@@ -1,0 +1,11 @@
+﻿
+
+.crudLayoutTitle{
+    font-size: 1.5rem;
+}
+
+.crudLayoutTitle p {
+    color: black;
+    text-decoration: underline;
+}
+
