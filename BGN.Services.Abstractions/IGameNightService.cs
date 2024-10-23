@@ -14,13 +14,15 @@ namespace BGN.Services.Abstractions
         Task<IEnumerable<GameNightDto>> GetAllAsync();
         Task<IEnumerable<GameNightDto>> GetAllAsync(AbstractGameNightFilterObject filterObject);
         Task<IEnumerable<GameNightDto>> GetAllWithGameIdAsync(int gameId);
+
         Task<GameNightDto> GetByIdAsync(int id);
         Task<GameNight?> GetByIdEntityAsync(int id);
+
         void Insert(GameNight gameNight);
         Task UpdateAsync(GameNight gameNight);
         Task<bool> DeleteByIdAsync(int gameNightId, string identityUserKey);
-        void UpdateAttendance(GameNight gameNight);
 
+        void UpdateAttendance(GameNight gameNight);
         Task<bool?> JoinGameNightAsync(int gameNightId, string identityUserKey);
         Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey);
 

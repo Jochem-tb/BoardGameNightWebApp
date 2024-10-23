@@ -12,6 +12,5 @@ namespace BGN.Services.Abstractions
     {
         public Task<IEnumerable<FoodOptionDto>> GetAllFoodOptionsAsync();
         public Task<IEnumerable<FoodOptions>> GetAllFoodOptionsEntityAsync();
-        public Task<IEnumerable<FoodOptionDto>> GetAllFoodOptionDtoByIdAsync(int[] array);
     }
 }
