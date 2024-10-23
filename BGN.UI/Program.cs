@@ -44,13 +44,8 @@ builder.Services.AddControllersWithViews();
 var azureSqlConnectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTION_STRING");
 
 // Use the GitHub variable if available; otherwise, fallback to appsettings.json
-string bgnDatabaseConnection = string.IsNullOrEmpty(azureSqlConnectionString)
-    ? builder.Configuration.GetConnectionString("BGN_Database")
-    : azureSqlConnectionString;
-
-string bgnAccountsConnection = string.IsNullOrEmpty(azureSqlConnectionString)
-    ? builder.Configuration.GetConnectionString("BGN_Accounts")
-    : azureSqlConnectionString;
+string bgnDatabaseConnection = azureSqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Database");
+string bgnAccountsConnection = azureSqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Accounts");
 
 //Database for Entities
 builder.Services.AddDbContext<RepositoryDbContext>(options =>
