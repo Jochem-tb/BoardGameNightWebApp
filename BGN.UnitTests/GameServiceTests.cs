@@ -222,6 +222,7 @@ namespace BGN.UnitTests
         /* 
          * ------------
          *  Harder tests
+         *  Filter tests
          *  ------------
          */
 
