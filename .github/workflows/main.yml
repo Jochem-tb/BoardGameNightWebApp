@@ -28,9 +28,9 @@ jobs:
     - name: Install Entity Framework CLI
       run: dotnet tool install --global dotnet-ef
 
-    # Add .NET tools to PATH
+    # Add .NET tools to PATH using environment file
     - name: Add .NET Tools to PATH
-      run: echo "::add-path::${HOME}/.dotnet/tools"
+      run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
     - name: Restore
       run: dotnet restore ./BoardGameNight.sln
