@@ -19,9 +19,5 @@ namespace BGN.Domain.Repositories
 
         Task<bool> JoinGameNightAsync(int gameNightId, string identityUserKey);
         Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey);
-
-        Task<IEnumerable<Person>> GetAttendeesAsync(int gameNightId);
-        Task<IEnumerable<Game>> GetGamesAsync(int gameNightId);
-        Task<IEnumerable<FoodOptions>> GetFoodOptionsAsync(int gameNightId);
     }
 }

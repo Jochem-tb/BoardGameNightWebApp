@@ -94,21 +94,6 @@ namespace BGN.Infrastructure.Repositories
             }
         }
 
-        public Task<IEnumerable<Person>> GetAttendeesAsync(int gameNightId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<Game>> GetGamesAsync(int gameNightId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<IEnumerable<FoodOptions>> GetFoodOptionsAsync(int gameNightId)
-        {
-            throw new NotImplementedException();
-        }
-
         public void UpdateAttendance(GameNight gameNight)
         {
             _dbContext.Attendees.AttachRange(gameNight.Attendees);
@@ -130,7 +115,6 @@ namespace BGN.Infrastructure.Repositories
             _dbContext.GameNights.Add(gameNight);
             _dbContext.SaveChanges();
         }
-
         public void Remove(GameNight gameNight)
         {
             // Create a copy of the attendees to avoid modifying the collection during iteration
