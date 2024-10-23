@@ -98,10 +98,6 @@ namespace BGN.Services
 
             // Materialize the query and map to DTOs
             var gamesList = gamesQueryable.ToList(); //Calls the database when the Query is done
-            foreach(var game in gamesList)
-            {
-               //Set all the games at not tracked!
-            }
             return _mapper.Map<IEnumerable<GameDto>>(gamesList);
         }
 

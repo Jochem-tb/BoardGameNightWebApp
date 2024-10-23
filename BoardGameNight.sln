@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGN.Shared", "BGN.Shared\BG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BGN.Infrastructure", "BGN.Infrastructure\BGN.Infrastructure.csproj", "{0C67CF17-8397-4627-BE2A-77D80052CC10}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BGN.UnitTests", "BGN.UnitTests\BGN.UnitTests.csproj", "{B274E856-A19B-4242-8956-3E13206E3196}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,10 @@ Global
 		{0C67CF17-8397-4627-BE2A-77D80052CC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C67CF17-8397-4627-BE2A-77D80052CC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C67CF17-8397-4627-BE2A-77D80052CC10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B274E856-A19B-4242-8956-3E13206E3196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B274E856-A19B-4242-8956-3E13206E3196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B274E856-A19B-4242-8956-3E13206E3196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B274E856-A19B-4242-8956-3E13206E3196}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
