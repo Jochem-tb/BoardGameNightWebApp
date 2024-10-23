@@ -37,11 +37,11 @@ jobs:
 
      # Step to apply Entity Framework Migrations for BoardGameNight Database
     - name: Apply Entity Framework Migrations for BoardGameNight
-      run: dotnet ef database update --connection "$AZURE_SQL_CONNECTION_STRING" --project ./BoardGameNight/BoardGameNight.csproj
+      run: dotnet ef database update --connection "$AZURE_SQL_CONNECTION_STRING" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj
 
     # Step to apply Entity Framework Migrations for Identity Database
     - name: Apply Identity Framework Migrations
-      run: dotnet ef database update --connection "$AZURE_SQL_CONNECTION_STRING" --project ./Identity/Identity.csproj
+      run: dotnet ef database update --connection "$AZURE_SQL_CONNECTION_STRING" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj
 
     # Run xUnit tests
     - name: Run Unit Tests
