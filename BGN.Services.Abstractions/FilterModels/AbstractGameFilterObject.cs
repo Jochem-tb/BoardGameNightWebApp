@@ -14,8 +14,6 @@ namespace BGN.Services.Abstractions.FilterModels
         public int? SearchMinPlayers { get; set; }
         public int? SearchMaxPlayers { get; set; }
         public bool? SearchIsAdult { get; set; }
-        public int? SearchGenreId { get; set; }
-        public int? SearchCategoryId { get; set; }
         public int? SearchEstimatedTimeLower { get; set; }
         public int? SearchEstimatedTimeUpper { get; set; }
 
