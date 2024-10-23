@@ -78,6 +78,9 @@ namespace BGN.Services
         {
 
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
+            if (gameNight == null) {
+                return false;
+            }
 
             //Check if Attending == MaxPlayers
             //var isPlaceAvailable = gameNight.Where(x => x.Attendees.Count() < x.MaxPlayers).Any();
@@ -122,6 +125,10 @@ namespace BGN.Services
         public async Task<bool> LeaveGameNightAsync(int gameNightId, string identityUserKey)
         {
             var gameNight = await _repositoryManager.GameNightRepository.GetByIdAsync(gameNightId);
+            if (gameNight == null)
+            {
+                return false;
+            }
 
             //Check if person is attending
             var isAttending = gameNight!.Attendees.Any(y => y.Attendee.IdentityUserId == identityUserKey);

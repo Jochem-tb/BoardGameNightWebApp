@@ -254,6 +254,258 @@ namespace BGN.UnitTests
             result.Should().BeEquivalentTo(localGameNights.Where(gn => gn.Id == id).First());
         }
 
+        [Fact]
+        public async void GetByIdEntityAsync_ShouldReturnNullWhenGameNightDoesNotExist()
+        {
+            // Arrange
+            var localGameNights = gameNights;
+            var id = 1;
+            _gameNightRepository.GetByIdAsync(id).Returns((GameNight)null);
+
+            // Act
+            var result = await _sut.GetByIdEntityAsync(id);
+
+            // Assert
+            Assert.Null(result);
+        }
+
+        [Fact]
+        public void Insert_ShouldInsertGameNight()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+
+            // Act
+            _sut.Insert(gameNight);
+
+            // Assert
+            _gameNightRepository.Received(1).Insert(gameNight);
+        }
+
+        [Fact]
+        public async void UpdateAsync_ShouldUpdateGameNight()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns(gameNight);
+
+            // Act
+            await _sut.UpdateAsync(gameNight);
+
+            // Assert
+            _gameNightRepository.Received(1).Update(gameNight);
+        }
+
+        [Fact]
+        public async void UpdateAsync_ShouldNotUpdateGameNightWhenGameNightDoesNotExist()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight)null);
+
+            // Act
+            await _sut.UpdateAsync(gameNight);
+
+            // Assert
+            _gameNightRepository.DidNotReceive().Update(gameNight);
+        }
+
+        [Fact]
+        public async void DeleteByIdAsync_ShouldDeleteGameNight()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            var identityUserKey = "1";
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns(gameNight);
+
+            // Act
+            var result = await _sut.DeleteByIdAsync(gameNight.Id, identityUserKey);
+
+            // Assert
+            Assert.True(result);
+            _gameNightRepository.Received(1).Remove(gameNight);
+        }
+        [Fact]
+        public async void DeleteByIdAsync_ShouldNotDeleteGameNightWhenGameNightDoesNotExist()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            var identityUserKey = "1";
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight)null);
+
+            // Act
+            var result = await _sut.DeleteByIdAsync(gameNight.Id, identityUserKey);
+
+            // Assert
+            Assert.False(result);
+            _gameNightRepository.DidNotReceive().Remove(gameNight);
+        }
+
+        [Fact]
+        public async void DeleteByIdAsync_ShouldNotDeleteGameNightWhenUserIsNotOrganiser()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            var identityUserKey = "2";
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns(gameNight);
+
+            // Act
+            var result = await _sut.DeleteByIdAsync(gameNight.Id, identityUserKey);
+
+            // Assert
+            Assert.False(result);
+            _gameNightRepository.DidNotReceive().Remove(gameNight);
+        }
+
+        [Fact]
+        public void UpdateAttendance_ShouldUpdateAttendance()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+
+            // Act
+            _sut.UpdateAttendance(gameNight);
+
+            // Assert
+            _gameNightRepository.Received(1).UpdateAttendance(gameNight);
+        }
+
+        [Fact]
+        public async void JoinGameNightAsync_ShouldJoinGameNight()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            var identityUserKey = "1";
+            _gameNightRepository.JoinGameNightAsync(gameNight.Id, identityUserKey).Returns(true);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns(gameNight);
+
+            // Act
+            var result = await _sut.JoinGameNightAsync(gameNight.Id, identityUserKey);
+
+            // Assert
+            Assert.True(result);
+            await _gameNightRepository.Received(1).JoinGameNightAsync(gameNight.Id, identityUserKey);
+        }
+
+        [Fact]
+        public async void JoinGameNightAsync_ShouldNotJoinGameNightWhenGameNightDoesNotExist()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            var identityUserKey = "1";
+            _gameNightRepository.JoinGameNightAsync(gameNight.Id, identityUserKey).Returns(true);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight)null);
+
+            // Act
+            var result = await _sut.JoinGameNightAsync(gameNight.Id, identityUserKey);
+
+            // Assert
+            Assert.False(result);
+            await _gameNightRepository.DidNotReceive().JoinGameNightAsync(gameNight.Id, identityUserKey);
+        }
+
+        [Fact]
+        public async void LeaveGameNightAsync_ShouldLeaveGameNight()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            gameNight.Attendees.Add(
+                new GameNightAttendee()
+                {
+                    Attendee = new Person()
+                    {
+                        FirstName = "john",
+                        LastName = "doe",
+                        City = "City 1",
+                        HouseNr = "12a",
+                        PostalCode = "1234AB",
+                        Street = "Street 1",
+                        IdentityUserId = "1",
+                        Email = "xx@xx.nl",
+                    },
+                    GameNight = gameNight
+                });
+
+            var identityUserKey = "1";
+            _gameNightRepository.LeaveGameNightAsync(gameNight.Id, identityUserKey).Returns(true);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns(gameNight);
+
+            // Act
+            var result = await _sut.LeaveGameNightAsync(gameNight.Id, identityUserKey);
+
+            // Assert
+            Assert.True(result);
+            await _gameNightRepository.Received(1).LeaveGameNightAsync(gameNight.Id, identityUserKey);
+        }
+
+        [Fact]
+        public async void LeaveGameNightAsync_ShouldNotLeaveGameNightWhenGameNightDoesNotExist()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            var identityUserKey = "1";
+            _gameNightRepository.LeaveGameNightAsync(gameNight.Id, identityUserKey).Returns(true);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight)null);
+
+            // Act
+            var result = await _sut.LeaveGameNightAsync(gameNight.Id, identityUserKey);
+
+            // Assert
+            Assert.False(result);
+            await _gameNightRepository.DidNotReceive().LeaveGameNightAsync(gameNight.Id, identityUserKey);
+        }
+
+        [Fact]
+        public async void LeaveGameNightAsync_ShouldNotLeaveGameNightWhenUserIsNotAttending()
+        {
+            // Arrange
+            var gameNight = gameNights.First();
+            var identityUserKey = "2";
+            _gameNightRepository.LeaveGameNightAsync(gameNight.Id, identityUserKey).Returns(true);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns(gameNight);
+
+            // Act
+            var result = await _sut.LeaveGameNightAsync(gameNight.Id, identityUserKey);
+
+            // Assert
+            Assert.False(result);
+            await _gameNightRepository.DidNotReceive().LeaveGameNightAsync(gameNight.Id, identityUserKey);
+        }
+
+        [Fact]
+        public async void GetAllWithGameIdAsync_ShouldReturnGameNightsWithGameId()
+        {
+            // Arrange
+            var localGameNights = gameNights;
+            var gameId = 1;
+            _repositoryManager.GameNightRepository.GetAllGameNightsAsQueryableAsync().Returns(localGameNights.AsQueryable());
+            var expectedDto = _mapper.Map<IEnumerable<GameNightDto>>(localGameNights.Where(gn => gn.Games.Any(g => g.Id == gameId)));
+
+            // Act
+            var result = await _sut.GetAllWithGameIdAsync(gameId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Equal(expectedDto.Count(), result.Count());
+            result.Should().BeEquivalentTo(expectedDto);
+        }
+
+        [Fact]
+        public async void GetAllWithGameIdAsync_ShouldReturnEmptyListWhenGameDoesNotExist()
+        {
+            // Arrange
+            var localGameNights = gameNights;
+            var gameId = 1;
+            _gameNightRepository.GetAllAsync().Returns(localGameNights);
+            var expectedDto = _mapper.Map<IEnumerable<GameNightDto>>(localGameNights.Where(gn => gn.Games.Any(g => g.Id == gameId)));
+
+            // Act
+            var result = await _sut.GetAllWithGameIdAsync(gameId);
+
+            // Assert
+            Assert.NotNull(result);
+            Assert.Empty(result);
+        }
 
     }
 }
