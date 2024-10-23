@@ -7,52 +7,50 @@ on:
       - main
 
 env:
-  AZURE_WEBAPP_NAME: SSWFR-JJL-WebApp
-  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
+  AZURE_WEBAPP_NAME: SSWFR-JJL-WebApp  # Name of your Azure Web App
+  AZURE_WEBAPP_PACKAGE_PATH: "./publish" # Path where your app will be published
   AZURE_SQL_CONNECTION_STRING: "Server=${{ secrets.AZURE_SQL_SERVER_NAME }};Database=${{ secrets.AZURE_SQL_DATABASE_NAME }};User Id=${{ secrets.AZURE_SQL_USER }};Password=${{ secrets.AZURE_SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;"
-
 
 jobs:
   publish:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout Code
+        uses: actions/checkout@v3
 
-    - name: Setup .Net
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '8.0.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
 
-     # Install dotnet-ef tool
-    - name: Install Entity Framework CLI
-      run: dotnet tool install --global dotnet-ef
+      - name: Install Entity Framework CLI
+        run: dotnet tool install --global dotnet-ef
 
-    # Add .NET tools to PATH using environment file
-    - name: Add .NET Tools to PATH
-      run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
+      - name: Add .NET Tools to PATH
+        run: echo "${HOME}/.dotnet/tools" >> $GITHUB_PATH
 
-    - name: Restore
-      run: dotnet restore ./BoardGameNight.sln
+      - name: Restore Dependencies
+        run: dotnet restore ./BoardGameNight.sln
 
-    - name: Build
-      run: dotnet build ./BoardGameNight.sln --configuration Release --no-restore
+      - name: Build Solution
+        run: dotnet build ./BoardGameNight.sln --configuration Release --no-restore
 
-    - name: Apply Entity Framework Migrations for BoardGameNight
-      run: dotnet ef database update --connection "$AZURE_SQL_CONNECTION_STRING" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context RepositoryDbContext
-    
-    - name: Apply Identity Framework Migrations
-      run: dotnet ef database update --connection "$AZURE_SQL_CONNECTION_STRING" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context AuthDbContext
-    
-    # Run xUnit tests
-    - name: Run Unit Tests
-      run: dotnet test ./BGN.UnitTests/BGN.UnitTests.csproj --configuration Release
+      - name: Apply Entity Framework Migrations for BoardGameNight
+        run: dotnet ef database update --connection "${{ env.AZURE_SQL_CONNECTION_STRING }}" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context RepositoryDbContext
 
-    - name: Publish
-      run: dotnet publish ./BoardGameNight.sln--configuration Release --no-build 
+      - name: Apply Identity Framework Migrations
+        run: dotnet ef database update --connection "${{ env.AZURE_SQL_CONNECTION_STRING }}" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context AuthDbContext
 
-    - name: Deployment
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+      - name: Run Unit Tests
+        run: dotnet test ./BGN.UnitTests/BGN.UnitTests.csproj --configuration Release
+
+      - name: Publish Application
+        run: dotnet publish ./BoardGameNight.sln --configuration Release --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
