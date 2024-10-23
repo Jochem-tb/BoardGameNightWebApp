@@ -49,7 +49,7 @@ jobs:
       run: dotnet test ./BGN.UnitTests/BGN.UnitTests.csproj --configuration Release
 
     - name: Publish
-      run: dotnet publish ./BoardGameNight.sln --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
+      run: dotnet publish ./BGN.UI/BGN.UI.csproj --configuration Release --no-build --output '${{ env.AZURE_WEBAPP_PACKAGE_PATH }}'
 
     - name: Deployment
       uses: azure/webapps-deploy@v2
