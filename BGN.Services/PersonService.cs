@@ -23,7 +23,10 @@ namespace BGN.Services
 
         public void Insert(Person person)
         {
-            _repositoryManager.PersonRepository.Insert(person);
+            if(person != null)
+            {
+                _repositoryManager.PersonRepository.Insert(person);
+            }
         }
 
         public async Task<IEnumerable<GenderDto>> GetAllGendersAsync()
