@@ -8,7 +8,8 @@ on:
 
 env:
   AZURE_WEBAPP_NAME: SSWFR-JJL-WebApp  # Name of your Azure Web App
-  AZURE_WEBAPP_PACKAGE_PATH: "./publish" # Path where your app will be published
+  AZURE_WEBAPP_PACKAGE_PATH_UI: "./publish/UI"  # Path where your Web App will be published
+  AZURE_WEBAPP_PACKAGE_PATH_API: "./publish/API" # Path where your API will be published
   AZURE_ENTITY_SQL_CONNECTION_STRING: "Server=${{ secrets.AZURE_SQL_SERVER_NAME }};Database=${{ secrets.AZURE_ENTITY_SQL_DATABASE_NAME }};User Id=${{ secrets.AZURE_SQL_USER }};Password=${{ secrets.AZURE_SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;"
   AZURE_IDENTITY_SQL_CONNECTION_STRING: "Server=${{ secrets.AZURE_SQL_SERVER_NAME }};Database=${{ secrets.AZURE_IDENTITY_SQL_DATABASE_NAME }};User Id=${{ secrets.AZURE_SQL_USER }};Password=${{ secrets.AZURE_SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;"
 
@@ -40,12 +41,41 @@ jobs:
       - name: Apply Entity Framework Migrations for BoardGameNight
         run: dotnet ef database update --connection "${{ env.AZURE_ENTITY_SQL_CONNECTION_STRING }}" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context RepositoryDbContext
 
-      - name: Publish
-        run: dotnet publish ./BoardGameNight.sln --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore
+      - name: Apply Identity Framework Migrations for BoardGameNight_Auth
+        run: dotnet ef database update --connection "${{ env.AZURE_IDENTITY_SQL_CONNECTION_STRING }}" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context AuthDbContext
 
-      - name: Deploy to Azure Web App
+
+        # Publish Web App
+      - name: Publish Web App (BGN.UI)
+        run: dotnet publish ./BGN.UI/BGN.UI.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }} --no-restore
+
+      # Publish API
+      - name: Publish API (BGN.WebService)
+        run: dotnet publish ./BGN.WebService/BGN.WebService.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }} --no-restore
+
+      # Deploy Web App
+      - name: Deploy Web App to Azure
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }}
+
+      # Deploy API to Azure
+      - name: Deploy API to Azure
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }}
+          slot: 'api' # Optional: specify a subdirectory or slot name
+        
+      # - name: Publish
+      #   run: dotnet publish ./BoardGameNight.sln --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore
+
+      # - name: Deploy to Azure Web App
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
+      #     publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+      #     package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}

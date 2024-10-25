@@ -23,6 +23,13 @@ builder.Services.AddCors(options =>
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
+
+    options.AddPolicy("AllowApi", builder =>
+    {
+        builder.WithOrigins("https://sswfr-jjl-webapp-cgcdfyctfgbmggep.northeurope-01.azurewebsites.net", "https://localhost:7217") // Replace with your actual web app URL
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
 });
 
 // Add services to the container.
@@ -117,6 +124,7 @@ app.UseRouting();
 
 // Enable CORS with the specified policy
 app.UseCors("AllowWebApp");
+app.UseCors("AllowApi");
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -124,10 +132,25 @@ app.UseAuthorization();
 // Add session middleware here
 app.UseSession(); // Make sure to add this before UseEndpoints
 
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapGet("/echo",
+        context => context.Response.WriteAsync("echo"))
+        .RequireCors("AllowWebApp");
+
+    endpoints.MapControllers()
+             .RequireCors("AllowApi");
+
+    endpoints.MapGet("/echo2",
+        async context => context.Response.Body = await new RepositoryManager(new RepositoryDbContext(new DbContextOptions<RepositoryDbContext>())).GameRepository.GetAllAsync().Result.ToList();
+
+    endpoints.MapRazorPages();
+});
+
 
 app.MapRazorPages();
 
