@@ -17,19 +17,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowWebApp", builder =>
+    options.AddPolicy("AllowAll", builder =>
     {
-        builder.WithOrigins("https://sswfr-jjl-webapp-cgcdfyctfgbmggep.northeurope-01.azurewebsites.net") // Replace with your actual web app URL
+        builder.AllowAnyOrigin() 
                .AllowAnyHeader()
                .AllowAnyMethod();
     });
 
-    options.AddPolicy("AllowApi", builder =>
-    {
-        builder.WithOrigins("https://sswfr-jjl-webapp-cgcdfyctfgbmggep.northeurope-01.azurewebsites.net", "https://localhost:7217") // Replace with your actual web app URL
-               .AllowAnyHeader()
-               .AllowAnyMethod();
-    });
 });
 
 // Add services to the container.
@@ -125,6 +119,7 @@ app.UseRouting();
 // Enable CORS with the specified policy
 app.UseCors("AllowWebApp");
 app.UseCors("AllowApi");
+app.UseCors("AllowAll");
 
 app.UseAuthentication();
 app.UseAuthorization();

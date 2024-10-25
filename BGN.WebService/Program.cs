@@ -78,9 +78,12 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseDeveloperExceptionPage();
 }
 
-app.MapGet("/api/info", () => new { Message = "API is working!", Timestamp = DateTime.Now });
+//Temp workaround:
+app.UseSwagger();
+app.UseSwaggerUI();
 
 
 app.UseHttpsRedirection();
@@ -89,7 +92,7 @@ app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
-
+app.MapGet("/api/info", () => new { Message = "API is working!", Timestamp = DateTime.Now });
 app.MapControllers();
 
 app.Run();
