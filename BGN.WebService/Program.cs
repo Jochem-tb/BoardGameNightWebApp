@@ -12,8 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFromWebApp",
-        builder => builder.WithOrigins("https://sswfr-jjl-webapp-cgcdfyctfgbmggep.northeurope-01.azurewebsites.net")
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
                           .AllowAnyMethod()
                           .AllowAnyHeader());
 });
@@ -80,9 +80,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapGet("/api/info", () => new { Message = "API is working!", Timestamp = DateTime.Now });
+
+
 app.UseHttpsRedirection();
 
-app.UseCors("AllowFromWebApp");
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
