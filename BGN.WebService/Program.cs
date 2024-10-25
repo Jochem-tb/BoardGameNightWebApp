@@ -9,15 +9,6 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add CORS services
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowApi",
-        builder => builder.WithOrigins("https://sswfr-jjl-webapp-cgcdfyctfgbmggep.northeurope-01.azurewebsites.net") // Replace with your Web App URL
-                          .AllowAnyMethod()
-                          .AllowAnyHeader());
-});
-
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -84,8 +75,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Enable CORS with the specified policy
-app.UseCors("AllowApi");
+
 
 app.UseAuthorization();
 
