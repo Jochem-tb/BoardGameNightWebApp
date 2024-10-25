@@ -14,7 +14,7 @@ namespace BGN.Infrastructure
             string connectionString;
 
             // Check for the environment variable
-            var environmentConnectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTION_STRING");
+            var environmentConnectionString = Environment.GetEnvironmentVariable("AZURE_IDENTITY_SQL_CONNECTION_STRING");
 
             if (!string.IsNullOrEmpty(environmentConnectionString))
             {

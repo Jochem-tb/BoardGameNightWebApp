@@ -14,7 +14,7 @@ namespace BGN.Infrastructure
             string connectionString;
 
             // Check for the environment variable
-            var environmentConnectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTION_STRING");
+            var environmentConnectionString = Environment.GetEnvironmentVariable("AZURE_ENTITY_SQL_CONNECTION_STRING");
 
             if (!string.IsNullOrEmpty(environmentConnectionString))
             {
@@ -24,7 +24,7 @@ namespace BGN.Infrastructure
             {
                 // Load the connection string from appsettings.json
                 var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory()) // Set the base path to the current directory
+                    .SetBasePath(Directory.GetCurrentDirectory(), "../BGN.UI") // Set the base path to the current directory
                     .AddJsonFile("appsettings.json") // Load the appsettings.json file
                     .Build();
 
