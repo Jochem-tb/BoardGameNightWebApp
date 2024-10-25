@@ -10,6 +10,7 @@ env:
   AZURE_WEBAPP_NAME: SSWFR-JJL-WebApp  # Name of your Azure Web App
   AZURE_WEBAPP_PACKAGE_PATH_UI: "./publish/UI"  # Path where your Web App will be published
   AZURE_WEBAPP_PACKAGE_PATH_API: "./publish/API" # Path where your API will be published
+  AZURE_WEBAPP_PACKAGE_PATH : "./publish" # Path where your API will be published
   AZURE_ENTITY_SQL_CONNECTION_STRING: "Server=${{ secrets.AZURE_SQL_SERVER_NAME }};Database=${{ secrets.AZURE_ENTITY_SQL_DATABASE_NAME }};User Id=${{ secrets.AZURE_SQL_USER }};Password=${{ secrets.AZURE_SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;"
   AZURE_IDENTITY_SQL_CONNECTION_STRING: "Server=${{ secrets.AZURE_SQL_SERVER_NAME }};Database=${{ secrets.AZURE_IDENTITY_SQL_DATABASE_NAME }};User Id=${{ secrets.AZURE_SQL_USER }};Password=${{ secrets.AZURE_SQL_PASSWORD }};Encrypt=True;TrustServerCertificate=False;"
 
@@ -62,19 +63,19 @@ jobs:
       #     package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }}
 
       # Deploy API to Azure
-      - name: Deploy API to Azure
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }}
+      # - name: Deploy API to Azure
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: ${{ env.AZURE_WEBAPP_NAME }}
+      #     publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+      #     package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }}
         
-      - name: Deploy whole project
-        run: dotnet publish ./BoardGameNight.sln --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }} --no-restore
+      - name: Publish whole project
+        run: dotnet publish ./BoardGameNight.sln --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }}
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
