@@ -136,22 +136,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapGet("/echo",
-        context => context.Response.WriteAsync("echo"))
-        .RequireCors("AllowWebApp");
-
-    endpoints.MapControllers()
-             .RequireCors("AllowApi");
-
-    endpoints.MapGet("/echo2",
-        async context => context.Response.Body = await new RepositoryManager(new RepositoryDbContext(new DbContextOptions<RepositoryDbContext>())).GameRepository.GetAllAsync().Result.ToList();
-
-    endpoints.MapRazorPages();
-});
-
-
 app.MapRazorPages();
 
 app.Run();
