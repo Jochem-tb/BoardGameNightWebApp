@@ -60,7 +60,6 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }}
-          slot-name: '/'
 
       # Deploy API to Azure
       - name: Deploy API to Azure
@@ -69,7 +68,6 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }}
-          slot-name: 'api' # Optional: specify a subdirectory or slot name
         
       # - name: Publish
       #   run: dotnet publish ./BoardGameNight.sln --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore
