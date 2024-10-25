@@ -46,6 +46,7 @@ var azureIdentitySqlConnectionString = Environment.GetEnvironmentVariable("AZURE
 
 // Use the GitHub variable if available; otherwise, fallback to appsettings.json
 string bgnDatabaseConnection = azureEntitySqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Database");
+string bgnAccountsConnection = azureIdentitySqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Accounts");
 
 //Database for Entities
 builder.Services.AddDbContext<RepositoryDbContext>(options =>
