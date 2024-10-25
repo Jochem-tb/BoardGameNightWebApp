@@ -38,7 +38,7 @@ jobs:
         run: dotnet build ./BoardGameNight.sln --configuration Release --no-restore
 
       - name: Apply Entity Framework Migrations for BoardGameNight
-        run: dotnet ef database update --connection "${{ env.AZURE_SQL_CONNECTION_STRING }}" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context RepositoryDbContext
+        run: dotnet ef database update --connection "${{ env.AZURE_ENTITY_SQL_CONNECTION_STRING }}" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context RepositoryDbContext
 
       - name: Publish
         run: dotnet publish ./BoardGameNight.sln --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore
