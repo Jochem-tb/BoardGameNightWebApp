@@ -41,11 +41,11 @@ builder.Services.AddSession(options =>
 builder.Services.AddControllersWithViews();
 
 // Fetch the connection strings from environment variables if available
-var azureSqlConnectionString = Environment.GetEnvironmentVariable("AZURE_SQL_CONNECTION_STRING");
+var azureEntitySqlConnectionString = Environment.GetEnvironmentVariable("AZURE_ENTITY_SQL_CONNECTION_STRING");
+var azureIdentitySqlConnectionString = Environment.GetEnvironmentVariable("AZURE_IDENTITY_SQL_CONNECTION_STRING");
 
 // Use the GitHub variable if available; otherwise, fallback to appsettings.json
-string bgnDatabaseConnection = azureSqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Database");
-string bgnAccountsConnection = azureSqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Accounts");
+string bgnDatabaseConnection = azureEntitySqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Database");
 
 //Database for Entities
 builder.Services.AddDbContext<RepositoryDbContext>(options =>
