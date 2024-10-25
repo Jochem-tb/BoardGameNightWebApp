@@ -1,0 +1,7 @@
+@BGN.WebService_HostAddress = http://localhost:5191
+
+GET {{BGN.WebService_HostAddress}}/weather/
+Accept: application/json
+
+
+###
