@@ -10,6 +10,13 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFromWebApp",
+        builder => builder.WithOrigins("https://sswfr-jjl-webapp-cgcdfyctfgbmggep.northeurope-01.azurewebsites.net")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -75,9 +82,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
+app.UseCors("AllowFromWebApp");
 
 app.UseAuthorization();
+
 
 app.MapControllers();
 
