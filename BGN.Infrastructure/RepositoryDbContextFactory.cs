@@ -24,7 +24,7 @@ namespace BGN.Infrastructure
             {
                 // Load the connection string from appsettings.json
                 var configuration = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory(), "../BGN.UI") // Set the base path to the current directory
+                    .SetBasePath(Path.Combine(Directory.GetCurrentDirectory(), "../BGN.UI")) // Set the base path to the current directory
                     .AddJsonFile("appsettings.json") // Load the appsettings.json file
                     .Build();
 
