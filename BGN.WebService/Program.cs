@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add CORS services
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowWebApp",
+    options.AddPolicy("AllowApi",
         builder => builder.WithOrigins("https://sswfr-jjl-webapp-cgcdfyctfgbmggep.northeurope-01.azurewebsites.net") // Replace with your Web App URL
                           .AllowAnyMethod()
                           .AllowAnyHeader());
@@ -85,7 +85,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Enable CORS with the specified policy
-app.UseCors("AllowWebApp");
+app.UseCors("AllowApi");
 
 app.UseAuthorization();
 

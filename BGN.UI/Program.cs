@@ -14,6 +14,17 @@ using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowWebApp", builder =>
+    {
+        builder.WithOrigins("https://sswfr-jjl-webapp-cgcdfyctfgbmggep.northeurope-01.azurewebsites.net") // Replace with your actual web app URL
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
 // Add services to the container.
 //Automate the mapping of DTOs to Entities and reverse
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -103,6 +114,9 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Enable CORS with the specified policy
+app.UseCors("AllowWebApp");
 
 app.UseAuthentication();
 app.UseAuthorization();
