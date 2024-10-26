@@ -49,12 +49,12 @@ jobs:
         run: dotnet ef database update --connection "${{ env.AZURE_IDENTITY_SQL_CONNECTION_STRING }}" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context AuthDbContext
 
         # Publish Web App
-      #- name: Publish Web App (BGN.UI)
-      #  run: dotnet publish ./BGN.UI/BGN.UI.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }} --no-restore
+      - name: Publish Web App (BGN.UI)
+        run: dotnet publish ./BGN.UI/BGN.UI.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }} --no-restore
 
-        # Publish API
-      #- name: Publish API (BGN.WebService)
-      #  run: dotnet publish ./BGN.WebService/BGN.WebService.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }} --no-restore
+      # Publish API
+      - name: Publish API (BGN.WebService)
+        run: dotnet publish ./BGN.WebService/BGN.WebService.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }} --no-restore
         
       - name: Publish whole project
         run: dotnet publish ./BoardGameNight.sln --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore
