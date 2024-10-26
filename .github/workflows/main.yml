@@ -39,6 +39,9 @@ jobs:
       - name: Build Solution
         run: dotnet build ./BoardGameNight.sln --configuration Release --no-restore
 
+      - name: Run UnitTests
+        run: dotnet test
+
       - name: Apply Entity Framework Migrations for BoardGameNight
         run: dotnet ef database update --connection "${{ env.AZURE_ENTITY_SQL_CONNECTION_STRING }}" --project ./BGN.Infrastructure/BGN.Infrastructure.csproj --context RepositoryDbContext
 
