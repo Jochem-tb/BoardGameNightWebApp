@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration; // Import this namespace
+using Microsoft.Extensions.Configuration; 
 using System;
-using System.IO; // Import this namespace for Path.Combine
+using System.IO;
 
 namespace BGN.Infrastructure
 {
@@ -29,7 +29,7 @@ namespace BGN.Infrastructure
                     .Build();
 
                 // Get the connection string from the configuration
-                connectionString = configuration.GetConnectionString("BGN_Accounts"); // Adjust the name as needed
+                connectionString = configuration.GetConnectionString("BGN_Accounts")!; 
             }
 
             optionsBuilder.UseSqlServer(connectionString);

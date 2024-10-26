@@ -114,10 +114,8 @@ namespace BGN.Services
                 var isSuccess = await _repositoryManager.GameNightRepository.JoinGameNightAsync(gameNightId, identityUserKey);
                 return isSuccess;
             }
-            catch (Exception ex)
+            catch
             {
-                // Log the exception (consider using a logging framework)
-                Debug.WriteLine($"Error joining Game Night: {ex.Message}");
                 return false;
             }
         }

@@ -182,10 +182,6 @@ namespace BGN.UI.Controllers
                 //Handle case where user is not authenticated
                 TempData["JoinGameNightError"] = "You must be logged in to join a game night.";
 
-                //TODO: Fix the redirection to login page
-                //return RedirectToAction("Login", $"Identity/Account");
-
-                //Temporary fix
                 return RedirectToAction("List");
 
             }
@@ -222,10 +218,6 @@ namespace BGN.UI.Controllers
                 //Handle case where user is not authenticated
                 TempData["LeaveGameNightError"] = "You must be logged in to leave a game night.";
 
-                //TODO: Fix the redirection to login page
-                //return RedirectToAction("Login", $"Identity/Account");
-
-                //Temporary fix
                 return RedirectToAction("List");
 
             }
@@ -465,7 +457,6 @@ namespace BGN.UI.Controllers
             // Retrieve the selected games from the database based on IDs
             if (SelectedGameIds != null && SelectedGameIds.Length > 0)
             {
-                //TODO Implement logic for getting list of IDs
                 var exModel = JsonSerializer.Deserialize<CrudGameNightModel>(HttpContext.Session.GetString(GAMENIGHT_SESSION_PERSISTENT_KEY)!);
                 var allGameEntity = await _gameService.GetAllEntityAsync();
                 var selectedGames = allGameEntity.Where(g => SelectedGameIds.Contains(g.Id)).ToList();
@@ -512,7 +503,6 @@ namespace BGN.UI.Controllers
             // Retrieve the selected foodoption from the database based on IDs
             if (SelectedFoodOptionsIds != null && SelectedFoodOptionsIds.Length > 0)
             {
-                //TODO Implement logic for getting list of IDs
                 var allFoodOptionEntity = await _miscService.GetAllFoodOptionsEntityAsync();
                 var selectedFoodOptions = allFoodOptionEntity.Where(f => SelectedFoodOptionsIds.Contains(f.Id)).ToList();
                 exModel!.GameNight!.FoodOptions = selectedFoodOptions;

@@ -228,7 +228,7 @@ namespace BGN.UnitTests
             // Arrange
             var localGameNights = gameNights;
             var id = 1;
-            _gameNightRepository.GetByIdAsync(id).Returns((GameNight)null);
+            _gameNightRepository.GetByIdAsync(id).Returns((GameNight?)null);
 
             // Act
             var result = await _sut.GetByIdAsync(id);
@@ -260,7 +260,7 @@ namespace BGN.UnitTests
             // Arrange
             var localGameNights = gameNights;
             var id = 1;
-            _gameNightRepository.GetByIdAsync(id).Returns((GameNight)null);
+            _gameNightRepository.GetByIdAsync(id).Returns((GameNight?)null);
 
             // Act
             var result = await _sut.GetByIdEntityAsync(id);
@@ -301,7 +301,7 @@ namespace BGN.UnitTests
         {
             // Arrange
             var gameNight = gameNights.First();
-            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight)null);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight?)null);
 
             // Act
             await _sut.UpdateAsync(gameNight);
@@ -331,7 +331,7 @@ namespace BGN.UnitTests
             // Arrange
             var gameNight = gameNights.First();
             var identityUserKey = "1";
-            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight)null);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight?)null);
 
             // Act
             var result = await _sut.DeleteByIdAsync(gameNight.Id, identityUserKey);
@@ -394,7 +394,7 @@ namespace BGN.UnitTests
             var gameNight = gameNights.First();
             var identityUserKey = "1";
             _gameNightRepository.JoinGameNightAsync(gameNight.Id, identityUserKey).Returns(true);
-            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight)null);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight?)null);
 
             // Act
             var result = await _sut.JoinGameNightAsync(gameNight.Id, identityUserKey);
@@ -445,7 +445,7 @@ namespace BGN.UnitTests
             var gameNight = gameNights.First();
             var identityUserKey = "1";
             _gameNightRepository.LeaveGameNightAsync(gameNight.Id, identityUserKey).Returns(true);
-            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight)null);
+            _gameNightRepository.GetByIdAsync(gameNight.Id).Returns((GameNight?)null);
 
             // Act
             var result = await _sut.LeaveGameNightAsync(gameNight.Id, identityUserKey);

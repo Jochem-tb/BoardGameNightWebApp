@@ -33,9 +33,9 @@ namespace BGN.WebService.Controllers
             var result = await _signInManager.PasswordSignInAsync(input.Email, input.Password, false, lockoutOnFailure: false);
             if (result.Succeeded)
             {
-                var userKeyId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userKeyId = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                var person = await _personRepository.GetPersonIdByUserKey(userKeyId);
+                var person = await _personRepository.GetPersonIdByUserKey(userKeyId!);
                 if (person == null)
                 {
                     return new JsonResult(new { message = "Something went wrong" });

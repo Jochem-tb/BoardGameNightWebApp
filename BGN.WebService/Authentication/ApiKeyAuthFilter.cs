@@ -21,7 +21,7 @@ namespace BGN.WebService.Authentication
             }
 
             var apiKey = _configuration.GetValue<string>(AuthConstants.ApiKeySectionName);
-            if (!apiKey.Equals(extractedApiKey))
+            if (!apiKey!.Equals(extractedApiKey))
             {
                 context.Result = new UnauthorizedResult();
                 return;

@@ -57,8 +57,8 @@ var azureEntitySqlConnectionString = Environment.GetEnvironmentVariable("AZURE_E
 var azureIdentitySqlConnectionString = Environment.GetEnvironmentVariable("AZURE_IDENTITY_SQL_CONNECTION_STRING");
 
 // Use the GitHub variable if available; otherwise, fallback to appsettings.json
-string bgnDatabaseConnection = azureEntitySqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Database");
-string bgnAccountsConnection = azureIdentitySqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Accounts");
+string bgnDatabaseConnection = azureEntitySqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Database")!;
+string bgnAccountsConnection = azureIdentitySqlConnectionString ?? builder.Configuration.GetConnectionString("BGN_Accounts")!;
 
 //Database for Entities
 builder.Services.AddDbContext<RepositoryDbContext>(options =>
@@ -117,8 +117,6 @@ app.UseStaticFiles();
 app.UseRouting();
 
 // Enable CORS with the specified policy
-app.UseCors("AllowWebApp");
-app.UseCors("AllowApi");
 app.UseCors("AllowAll");
 
 app.UseAuthentication();

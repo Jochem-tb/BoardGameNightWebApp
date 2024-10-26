@@ -86,13 +86,13 @@ namespace BGN.UnitTests
         public void Insert_WhenCalledWithNullPerson_ThrowsArgumentNullException()
         {
             // Arrange
-            Person person = null;
+            Person? person = null;
 
             //Act
-            Action act = () => _sut.Insert(person);
+            Action act = () => _sut.Insert(person!);
 
             //Assert
-            _personRepository.DidNotReceive().Insert(person);
+            _personRepository.DidNotReceive().Insert(person!);
         }
 
     }

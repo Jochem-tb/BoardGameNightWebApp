@@ -41,22 +41,22 @@ namespace BGN.WebService.Controllers
             {
                 return new JsonResult(new { message = "Invalid GameNight ID. Please provide a valid integer." });
             }
-            _httpContextAccessor.HttpContext.Request.Headers.TryGetValue(AuthConstants.UserKeyHeader, out var userKeyHeader);
+            _httpContextAccessor.HttpContext!.Request.Headers.TryGetValue(AuthConstants.UserKeyHeader, out var userKeyHeader);
             if (userKeyHeader.IsNullOrEmpty())
             {
                 return new JsonResult(new { message = $"Invalid header value for: {AuthConstants.UserKeyHeader}" });
             }
 
-            var personCanJoinThisGameNight = await CheckJoinConstraintsAsync(gameNightId, userKeyHeader);
+            var personCanJoinThisGameNight = await CheckJoinConstraintsAsync(gameNightId, userKeyHeader!);
 
             if(personCanJoinThisGameNight)
             {
-                bool success = await _gameNightRepository.JoinGameNightAsync(gameNightId, userKeyHeader);
+                bool success = await _gameNightRepository.JoinGameNightAsync(gameNightId, userKeyHeader!);
 
                 if (success)
                 {
                     var gameNight = await _gameNightRepository.GetByIdAsync(gameNightId);
-                    return new JsonResult(new { message = "Successfully joined GameNight", Attendees = gameNight.Attendees });
+                    return new JsonResult(new { message = "Successfully joined GameNight", Attendees = gameNight!.Attendees });
                 }
 
                 return new JsonResult(new { message = "Something went wrong while joining GameNight" });
