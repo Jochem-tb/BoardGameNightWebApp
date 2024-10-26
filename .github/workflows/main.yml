@@ -53,22 +53,6 @@ jobs:
       # Publish API
       - name: Publish API (BGN.WebService)
         run: dotnet publish ./BGN.WebService/BGN.WebService.csproj --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }} --no-restore
-
-         # Deploy Web App
-      - name: Deploy Web App to Azure
-        uses: azure/webapps-deploy@v2
-        with:
-         app-name: ${{ env.AZURE_WEBAPP_NAME }}
-         publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-         package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_UI }}
-
-      # Deploy API to Azure
-      - name: Deploy API to Azure
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH_API }}
         
       - name: Publish whole project
         run: dotnet publish ./BoardGameNight.sln --configuration Release --output ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --no-restore
